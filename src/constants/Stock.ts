@@ -1,5 +1,3 @@
-import { IMerchant } from "../types/MerchantTypes";
-import ClothingImg from "../assets/images/merchants/clothing.jpg";
 import ComicImg from "../assets/images/merchants/comic.jpg";
 import ComputerImg from "../assets/images/merchants/computer.jpg";
 import ElectronicsImg from "../assets/images/merchants/electronics.jpg";

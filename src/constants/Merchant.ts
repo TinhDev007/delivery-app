@@ -8,8 +8,6 @@ import FruitImg from "../assets/images/merchants/fruit.jpg";
 import HardwareImg from "../assets/images/merchants/hardware.jpg";
 import MusicImg from "../assets/images/merchants/music.jpg";
 import PoolImg from "../assets/images/merchants/pool.jpg";
-import LogoImg1 from "../assets/images/logos/logo1.png";
-import LogoImg2 from "../assets/images/logos/logo2.png";
 import LogoImg3 from "../assets/images/logos/logo3.png";
 import LogoImg4 from "../assets/images/logos/logo4.png";
 import LogoImg5 from "../assets/images/logos/logo5.png";

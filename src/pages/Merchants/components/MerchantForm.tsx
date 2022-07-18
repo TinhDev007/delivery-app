@@ -20,7 +20,7 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 import { IMerchant } from '../../../types/MerchantTypes';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { createMerchantRequest } from "../../../redux/reducer/merchantsReducer";
+import { createMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
 
 import { RootState } from "../../../redux/store";
 
@@ -50,7 +50,7 @@ const MerchantForm = (props: IProps) => {
 
   const handleSubmit = () => {
     closeModal();
-    dispatch(createMerchantRequest(merchantData));
+    dispatch(createMerchantSuccess(merchantData));
   };
 
   const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {

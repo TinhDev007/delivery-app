@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Dispatch } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog, 
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { Stocks } from "../../../constants/Stock";
 import { IStock } from "../../../types/StockTypes";
 import StockForm from "./StockForm";
+import { getProductsSuccess, deleteProductSuccess } from "../../../redux/reducer/productsReducer";
+import { RootState } from "../../../redux/store";
+import { Groups } from "../../../constants/Groups";
 
 const TableView = () => {
+  const dispatch: Dispatch<any> = useDispatch();
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState<IStock>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
+
+  const products = useSelector((state: RootState) => state.products.list);
 
   const handleCloseModal = () => {
     setVisibleEditModal(false);
@@ -18,8 +25,22 @@ const TableView = () => {
 
   const showEditModal = (stock: IStock) => {
     setVisibleEditModal(true);
-    setSelectedStock(stock)
-  };  
+    setSelectedStock(stock);
+  };
+
+  useEffect(() => {
+    dispatch(getProductsSuccess());
+  }, [dispatch]);
+
+  const showConfirmDelteModal = (stock: IStock) => {
+    setVisibleConfirmModal(true);
+    setSelectedStock(stock);
+  }
+
+  const handleDeleteProduct = () => {
+    setVisibleConfirmModal(false);
+    dispatch(deleteProductSuccess(selectedStock?.id));
+  };
 
   return (
     <>
@@ -32,6 +53,7 @@ const TableView = () => {
               </TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>Group</TableCell>
               <TableCell>Price</TableCell>            
               <TableCell>Quantity</TableCell>
               <TableCell>Image</TableCell>
@@ -39,7 +61,7 @@ const TableView = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Stocks.map((stock) => (
+            {products.map((stock) => (
               <TableRow
                 key={stock.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -53,6 +75,7 @@ const TableView = () => {
                   </Avatar>
                 </TableCell>
                 <TableCell>{stock.description}</TableCell>
+                <TableCell>{Groups.find((group) => group.id === stock.group)?.name}</TableCell>
                 <TableCell>${stock.price}</TableCell>
                 <TableCell>{stock.quantity}</TableCell>              
                 <TableCell>
@@ -68,7 +91,7 @@ const TableView = () => {
                     <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(stock)}>
                       <Edit />
                     </IconButton>
-                    <IconButton aria-label="delete" color="secondary" onClick={() => setVisibleConfirmModal(true)}>
+                    <IconButton aria-label="delete" color="secondary" onClick={() => showConfirmDelteModal(stock)}>
                       <Delete />
                     </IconButton>
                   </Box>                
@@ -95,7 +118,7 @@ const TableView = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setVisibleConfirmModal(false)}>No</Button>
-            <Button onClick={() => setVisibleConfirmModal(false)}>Yes</Button>
+            <Button onClick={() => handleDeleteProduct()}>Yes</Button>
           </DialogActions>
         </Dialog>
       )}

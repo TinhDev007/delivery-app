@@ -17,6 +17,8 @@ import DeliveryInfoPage from "./pages/DeliveryInfoPage";
 import PaymentPage from "./pages/Payment";
 import QRCodePage from "./pages/QRCode";
 
+import CategoryListPage from "./pages/Category";
+
 import Header from "./components/Header";
 
 import { RootState } from './redux/store';
@@ -74,7 +76,8 @@ const RoutesList = () => {
             <Route path="/cart" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<CartPage />}/>} />
             <Route path="/delivery-info" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<DeliveryInfoPage />}/>} />
             <Route path="/payment-methods" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<PaymentPage />}/>} />
-            <Route path="/qr-codes" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<QRCodePage />}/>} />                 
+            <Route path="/qr-codes" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<QRCodePage />}/>} />
+            <Route path="/categories" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<CategoryListPage />}/>} />
           </Routes>
         </>
       </Router>

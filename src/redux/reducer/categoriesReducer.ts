@@ -23,9 +23,33 @@ export const categoriesSlice = createSlice({
     getCategoriesFailure: () => {
       
     },
+    createCategoryRequest: () => {},
+    createCategorySuccess: (state, action) => {
+      const { payload } = action;
+      state.list = state.list.concat(payload);
+    },
+    createCategoryFailure: () => {},
+    updateCategoryRequest: () => {},
+    updateCategorySuccess: (state, action) => {
+      const { payload } = action;
+      const index = state.list.findIndex((item) => item.id === payload.id);
+      state.list[index] = payload;
+    },
+    updateCategoryFailure: () => {},
+    deleteCategoryRequest: () => {},
+    deleteCategorySuccess: (state, action) => {
+      const { payload } = action;
+      state.list = state.list.filter((category) => category.id !== payload );
+    },
+    deleteCategoryFailure: () => {}
   },
 })
 
-export const { getCategoriesRequest, getCategoriesSuccess, getCategoriesFailure } = categoriesSlice.actions;
+export const {
+  getCategoriesRequest, getCategoriesSuccess, getCategoriesFailure,
+  createCategoryRequest, createCategorySuccess, createCategoryFailure,
+  updateCategoryRequest, updateCategorySuccess, updateCategoryFailure,
+  deleteCategoryRequest, deleteCategorySuccess, deleteCategoryFailure,
+} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer

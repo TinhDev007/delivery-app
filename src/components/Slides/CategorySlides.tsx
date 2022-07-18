@@ -21,7 +21,6 @@ const CategorySlides = (props: IProps) => {
   const dispatch: Dispatch<any> = useDispatch();
   const theme = useTheme();
   const { selectedCategory, handleSelectCategory } = props;
-  const navigate = useNavigate();
   const [viewportRef, embla] = useEmblaCarousel({
     dragFree: true,
     // containScroll: "trimSnaps",

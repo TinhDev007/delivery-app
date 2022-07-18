@@ -37,8 +37,6 @@ const PaymentPage = () => {
     });
     const isInvalid = result.filter((r) => !r).length > 0;
 
-    console.log('isInvalid', isInvalid);
-
     if (!isInvalid) {
       setBtnDisabled(false);
     } else {
@@ -96,7 +94,6 @@ const PaymentPage = () => {
     if (isInvalid) {
       return;
     }
-    console.log('handle component');
 
     navigate('/delivery-info')
   };

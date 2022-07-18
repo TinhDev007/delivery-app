@@ -23,9 +23,31 @@ export const productsSlice = createSlice({
     getProductsFailure: () => {
       
     },
+    createProductRequest: () => {},
+    createProductSuccess: (state, action) => {
+      const { payload } = action;
+      state.list = [ ...state.list, payload];
+    },
+    createProductFailure: () => {},
+    updateProductRequest: () => {},
+    updateProductSuccess: (state, action) => {
+      
+    },
+    updateProductFailure: () => {},
+    deleteProductRequest: () => {},
+    deleteProductSuccess: (state, action) => {
+      const { payload } = action;
+      state.list = state.list.filter((item) => item.id !== payload);
+    },
+    deleteProductFailure: () => {},
   },
 })
 
-export const { getProductsRequest, getProductsSuccess, getProductsFailure } = productsSlice.actions;
+export const { 
+  getProductsRequest, getProductsSuccess, getProductsFailure,
+  createProductRequest, createProductSuccess, createProductFailure,
+  updateProductRequest, updateProductSuccess, updateProductFailure,
+  deleteProductRequest, deleteProductSuccess, deleteProductFailure
+} = productsSlice.actions;
 
 export default productsSlice.reducer

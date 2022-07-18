@@ -1,7 +1,12 @@
 import React,  { useState } from "react";
-import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box } from "@mui/material";
+import { Dispatch } from 'redux';
+import { useDispatch } from "react-redux";
+import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
+import { SelectChangeEvent } from '@mui/material/Select';
 import { IStock } from "../../../types/StockTypes";
+import { Groups } from "../../../constants/Groups";
+import { createProductSuccess, updateProductSuccess } from "../../../redux/reducer/productsReducer";
 
 interface IProps {
   mode: string,
@@ -12,6 +17,7 @@ interface IProps {
 
 const StockForm = (props: IProps) => {
   const { open, closeModal, stock, mode } = props;
+  const dispatch: Dispatch<any> = useDispatch();
 
   const stockFormData = {
     name: "",
@@ -19,28 +25,30 @@ const StockForm = (props: IProps) => {
     price: "",
     quantity: "",
     image: "",
-    logo: ""
+    logo: "",
+    group: ""
   };
 
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
 
-  const handleChange = (event:  React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
+  const handleChange = (event:  SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
     const { value, files } = event.target as HTMLInputElement;
 
-    if (!files?.length) {
-      return;
-    }
-
-    const file = files[0];
+    const file = !files?.length ? new Blob() : files[0];
 
     setStockData((stockData) => {
       return {
-        ...stockData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? value : URL.createObjectURL(file)
+        ...stockData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? URL.createObjectURL(file) : value
       }
     });
   };
 
   const handleSubmit = () => {
+    if (mode === 'create') {
+      dispatch(createProductSuccess(stockData));
+    } else {
+      dispatch(updateProductSuccess(stockData));
+    }
     closeModal();
   }
 
@@ -49,7 +57,7 @@ const StockForm = (props: IProps) => {
       <DialogTitle sx={{ textAlign: "center", fontWeight: "bold" }}>{mode} Product</DialogTitle>
       <DialogContent>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={12} sx={{ marginY: 2 }}>
+          <Grid item xs={12} sx={{ marginY: 1 }}>
             <TextField
               id="merchant-name"
               value={stockData?.name} 
@@ -59,16 +67,17 @@ const StockForm = (props: IProps) => {
               onChange={(event) => handleChange(event, 'name')}
             />
           </Grid>
-          <Grid item xs={6} sx={{ marginY: 2 }}>
+          <Grid item xs={6} sx={{ marginY: 1 }}>
             <TextField
               label="Price"
               variant="outlined"
+              type="number"
               fullWidth
               value={stockData?.price}
               onChange={(event) => handleChange(event, 'price')}
             />
           </Grid>
-          <Grid item xs={6} sx={{ marginY: 2 }}>
+          <Grid item xs={6} sx={{ marginY: 1 }}>
             <TextField
               label="Quantity"
               variant="outlined"
@@ -78,7 +87,23 @@ const StockForm = (props: IProps) => {
               onChange={(event) => handleChange(event, 'quantity')}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ marginY: 1 }}>
+            <FormControl fullWidth>
+              <InputLabel id="product-group">Group</InputLabel>
+              <Select
+                labelId="product-group"
+                id="product-group-select"
+                value={stockData?.group}
+                label="Group"
+                onChange={(event) => handleChange(event, 'group')}
+              >
+                {Groups.map((groupItem) => (
+                  <MenuItem value={groupItem.id} key={groupItem.id}>{groupItem.name}</MenuItem>  
+                ))}                
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sx={{ marginY: 1 }}>
             <TextField
               id="merchant-description"
               label="Description"

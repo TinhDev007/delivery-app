@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, Typography, Button, IconButton, Avatar, useMediaQuery } from "@mui/material";
-import { ShoppingCart, Brightness4, Brightness7, Storefront } from "@mui/icons-material";
+import { ShoppingCart, Brightness4, Brightness7, Storefront, Category } from "@mui/icons-material";
 import { toggleTheme } from "../redux/reducer/settingsReducer";
 
 import Logo from '../assets/images/logos/logo2.png';
@@ -44,6 +44,10 @@ const Header = () => {
 
   const goToMerchantPage = () => {
     navigate('/merchants');
+  };
+
+  const goToCategoryPage = () => {
+    navigate('/categories');
   }
 
   return (
@@ -76,6 +80,9 @@ const Header = () => {
               justifyContent: 'center'
             }}
           >
+            <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCategoryPage}>
+              <Category />
+            </IconButton>
             <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToMerchantPage}>
               <Storefront />
             </IconButton>

@@ -28,7 +28,8 @@ export const merchantsSlice = createSlice({
       
     },
     createMerchantSuccess: (state, action) => {
-      
+      const { payload } = action;
+      state.list = [payload, ...state.list];
     },
     createMerchantFailure: () => {
 
