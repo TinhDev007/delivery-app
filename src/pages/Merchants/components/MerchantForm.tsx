@@ -20,7 +20,7 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 import { IMerchant } from '../../../types/MerchantTypes';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { createMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
+import { createMerchantSuccess, updateMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
 
 import { RootState } from "../../../redux/store";
 
@@ -50,13 +50,21 @@ const MerchantForm = (props: IProps) => {
 
   const handleSubmit = () => {
     closeModal();
-    dispatch(createMerchantSuccess(merchantData));
+    if (mode === 'Create') {
+      dispatch(createMerchantSuccess(merchantData));
+    } else {
+      dispatch(updateMerchantSuccess(merchantData));
+    }
   };
 
   const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
+    const { value, files } = event.target as HTMLInputElement;
+
+    const file = !files?.length ? new Blob() : files[0];
+
     setMerchantData((merchantData) => {
       return {
-        ...merchantData, [fieldName]: event.target.value
+        ...merchantData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? URL.createObjectURL(file) : value
       }
     });
   };
@@ -137,6 +145,7 @@ const MerchantForm = (props: IProps) => {
                 type="file" 
                 id="select-logo"
                 style={{ display: 'none' }}
+                onChange={(event) => handleChange(event, 'logo')}
               />
               <label htmlFor="select-logo">
                 {merchantData.logo ? (
@@ -157,6 +166,7 @@ const MerchantForm = (props: IProps) => {
                 type="file" 
                 id="select-image"
                 style={{ display: 'none' }}
+                onChange={(event) => handleChange(event, 'image')}
               />
               <label htmlFor="select-image">
                 {merchantData.image ? (

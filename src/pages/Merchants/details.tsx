@@ -38,17 +38,17 @@ const useStyles = makeStyles((theme) => (
     shoppingCounts: {
       width: 16,
       height: 16,
-      background: '#fff',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 20,
       textAlign: 'center',
       position: 'absolute',
-      top: 10,
+      top: 5,
       left: 10,
-      fontSize: 12,
+      fontSize: 11,
       fontWeight: 'bold',
+      color: '#fff'
     }
   }
 ));

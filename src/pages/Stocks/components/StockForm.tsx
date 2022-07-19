@@ -143,6 +143,7 @@ const StockForm = (props: IProps) => {
                 type="file" 
                 id="select-image"
                 style={{ display: 'none' }}
+                onChange={(event) => handleChange(event, 'image')}
               />
               <label htmlFor="select-image">
                 {stockData.image ? (

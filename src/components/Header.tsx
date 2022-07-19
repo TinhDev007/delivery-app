@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, Typography, Button, IconButton, Avatar, useMediaQuery } from "@mui/material";
-import { ShoppingCart, Brightness4, Brightness7, Storefront, Category } from "@mui/icons-material";
+import { ShoppingCart, Brightness4, Brightness7, Storefront, Category, Login, PowerSettingsNew } from "@mui/icons-material";
 import { toggleTheme } from "../redux/reducer/settingsReducer";
 
 import Logo from '../assets/images/logos/logo2.png';
@@ -93,13 +93,13 @@ const Header = () => {
               {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
             </IconButton>
             {isAuthed ? (
-              <Button onClick={() => handleLogout()} variant="contained" color="primary">
-                Log Out
-              </Button>
+              <IconButton onClick={() => handleLogout()} color="inherit">
+                <PowerSettingsNew />
+              </IconButton>
             ) : (
-              <Button component={Link} to="/login" variant="contained" color="primary">
-                Log In
-              </Button>
+              <IconButton component={Link} to="/login" color="inherit">
+                <Login />
+              </IconButton>
             )} 
           </Box>   
         </Toolbar>

@@ -31,7 +31,9 @@ export const productsSlice = createSlice({
     createProductFailure: () => {},
     updateProductRequest: () => {},
     updateProductSuccess: (state, action) => {
-      
+      const { payload } = action;
+      const index = state.list.findIndex((item) => item.id === payload.id);
+      state.list[index] = payload;
     },
     updateProductFailure: () => {},
     deleteProductRequest: () => {},

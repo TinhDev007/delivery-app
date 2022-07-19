@@ -34,6 +34,13 @@ export const merchantsSlice = createSlice({
     createMerchantFailure: () => {
 
     },
+    updateMerchantRequest: (state, action) => {},
+    updateMerchantSuccess: (state, action) => {
+      const { payload } = action;
+      const index = state.list.findIndex((item) => item.id === payload.id);
+      state.list[index] = payload;
+    },
+    updateMerchantFailure: (state, action) => {},
     deleteMerchantRequest: (state, action) => {
       
     },
@@ -47,6 +54,7 @@ export const merchantsSlice = createSlice({
 export const { 
   getMerchantsRequest, getMerchantsSuccess, getMerchantsFailure,
   createMerchantRequest, createMerchantSuccess, createMerchantFailure,
+  updateMerchantRequest, updateMerchantSuccess, updateMerchantFailure,
   deleteMerchantRequest, deleteMerchantSuccess, deleteMerchantFailure
 } = merchantsSlice.actions;
 
