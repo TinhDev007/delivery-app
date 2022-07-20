@@ -22,28 +22,38 @@ export const categoriesSlice = createSlice({
       const { payload } = action;
       state.list = payload;
     },
-    getCategoriesFailure: () => {
-      
+    getCategoriesFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
     },
     createCategoryRequest: () => {},
     createCategorySuccess: (state, action) => {
       const { payload } = action;
       state.list = state.list.concat(payload);
     },
-    createCategoryFailure: () => {},
+    createCategoryFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
+    },
     updateCategoryRequest: () => {},
     updateCategorySuccess: (state, action) => {
       const { payload } = action;
       const index = state.list.findIndex((item) => item.id === payload.id);
       state.list[index] = payload;
     },
-    updateCategoryFailure: () => {},
+    updateCategoryFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
+    },
     deleteCategoryRequest: () => {},
     deleteCategorySuccess: (state, action) => {
       const { payload } = action;
       state.list = state.list.filter((category) => category.id !== payload );
     },
-    deleteCategoryFailure: () => {}
+    deleteCategoryFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
+    }
   },
 })
 

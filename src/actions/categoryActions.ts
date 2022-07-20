@@ -3,9 +3,9 @@ import { Dispatch } from "redux";
 import CategoryApi from "../api/CategoryApi";
 import {
   getCategoriesSuccess, getCategoriesFailure,
-  createCategorySuccess,
-  updateCategorySuccess,
-  deleteCategorySuccess
+  createCategorySuccess, createCategoryFailure,
+  updateCategorySuccess, updateCategoryFailure,
+  deleteCategorySuccess, deleteCategoryFailure
 } from "../redux/reducer/categoriesReducer";
 
 export const getAllCategories = () => {
@@ -13,10 +13,10 @@ export const getAllCategories = () => {
     return CategoryApi
       .getAllCategories()
       .then(resp => {
-          return dispatch(getCategoriesSuccess(resp.data.data))
+        return dispatch(getCategoriesSuccess(resp.data.data))
         })
       .catch(error => {
-        // return dispatch(getCategoriesFailure(error.response.data))
+        return dispatch(getCategoriesFailure(error.response.data))
       });
   };  
 };
@@ -28,9 +28,8 @@ export const createCategory = (data: any) => {
       .then(resp => {
           return dispatch(createCategorySuccess(resp.data.data))
         })
-      .catch(error => {
-        console.log('error', error);
-        // return dispatch(getMerchantsFailure(error.response.data))
+      .catch(error => {        
+        return dispatch(createCategoryFailure(error.response.data))
       });
   };  
 };
@@ -42,9 +41,8 @@ export const updateCategory = (data: any, categoryID: string) => {
       .then(resp => {
           return dispatch(updateCategorySuccess(resp.data.data))
         })
-      .catch(error => {
-        console.log('error', error);
-        // return dispatch(getMerchantsFailure(error.response.data))
+      .catch(error => {        
+        return dispatch(updateCategoryFailure(error.response.data))
       });
   };  
 };
@@ -57,9 +55,8 @@ export const deleteCategory = (categoryID: string | undefined) => {
       .then(resp => {
           return dispatch(deleteCategorySuccess(categoryID))
         })
-      .catch(error => {
-        console.log('error', error);
-        // return dispatch(getMerchantsFailure(error.response.data))
+      .catch(error => {        
+        return dispatch(deleteCategoryFailure(error.response.data))
       });
   };  
 };
