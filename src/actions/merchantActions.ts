@@ -35,10 +35,10 @@ export const createMerchant = (data: any) => {
   };  
 };
 
-export const updateMerchant = (data: any) => {
+export const updateMerchant = (data: any, merchantID: string) => {
   return async (dispatch: Dispatch) => {
     return MerchantApi
-      .updateMerchant(data)
+      .updateMerchant(data, merchantID)
       .then(resp => {
           return dispatch(updateMerchantSuccess(resp.data.data))
         })
@@ -55,7 +55,6 @@ export const deleteMerchant = (merchantID: string | undefined) => {
     return MerchantApi
       .deleteMerchant(merchantID)
       .then(resp => {
-          console.log('resp', resp);
           return dispatch(deleteMerchantSuccess(merchantID))
         })
       .catch(error => {

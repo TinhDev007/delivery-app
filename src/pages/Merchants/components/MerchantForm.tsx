@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dispatch } from 'redux';
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -34,7 +34,8 @@ interface IProps {
 const MerchantForm = (props: IProps) => {
   const dispatch: Dispatch<any> = useDispatch();
   const { open, closeModal, merchant, mode } = props;
-  const merchantFormData = {
+  const merchantFormData: IMerchant = {
+    id: "",
     name: "",
     description: "",
     category: "",
@@ -43,12 +44,36 @@ const MerchantForm = (props: IProps) => {
     phone: "",
     logo: "",
     image: "",
+    logo_preview_url: "",
+    image_preview_url: ""
   };
+
+  const [errors, setErrors] = useState({
+    name: "",
+    description: "",
+    category: "",
+    address: "",
+    email: "",
+    phone: "",
+    logo: "",
+    image: "",
+  });
+
   const [merchantData, setMerchantData] = useState(merchant ? merchant : merchantFormData);
 
   const categories = useSelector((state: RootState) => state.categories.list);
 
   const handleSubmit = () => {
+    const result = Object.keys(merchantData).map((key) => {
+      return handleValidate(merchantData[key as  keyof IMerchant], key);
+    });
+
+    const isInvalid = result.filter((r) => !r).length > 0;
+
+    if (isInvalid) {
+      return;
+    }
+
     closeModal();
     if (mode === 'Create') {
       const formData = new FormData();
@@ -63,6 +88,7 @@ const MerchantForm = (props: IProps) => {
       dispatch(createMerchant(formData));
     } else {
       const formData = new FormData();
+      formData.append("id", merchantData.id || "");
       formData.append( "name", merchantData.name);
       formData.append( "description", merchantData.description);
       formData.append( "category", merchantData.category);
@@ -71,20 +97,53 @@ const MerchantForm = (props: IProps) => {
       formData.append( "phone", merchantData.phone);
       formData.append( "logo", merchantData.logo);
       formData.append( "image", merchantData.image);
-      dispatch(updateMerchant(merchantData));
+      dispatch(updateMerchant(formData, merchantData.id || ""));
     }
   };
 
-  const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
+  const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {    
     const { value, files } = event.target as HTMLInputElement;
 
     const file = !files?.length ? new Blob() : files[0];
 
+    handleValidate((fieldName === 'logo' || fieldName === 'image') ? file : value, fieldName);
+
     setMerchantData((merchantData) => {
       return {
-        ...merchantData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : value
+        ...merchantData, 
+        [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : value,
+        'logo_preview_url': fieldName === 'logo' ? URL.createObjectURL(file) : merchantData['logo_preview_url'],
+        'image_preview_url': fieldName === 'image' ? URL.createObjectURL(file) : merchantData['image_preview_url'],
       }
     });
+  };
+
+  const handleValidate = (value: any, fieldName: string) => {
+    if (mode === 'Create' && fieldName === 'id') {
+      return true;
+    }
+
+    if (fieldName === 'logo_preview_url' || fieldName === 'image_preview_url') {
+      return true;
+    }
+
+    if(!value) {
+      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.`}));
+      return false;
+    } else {
+      if (fieldName === "email") {
+        let regex = /\S+@\S+\.\S+/;        
+        if (!regex.test(value)) {
+          setErrors((errors) => ({ ...errors, [fieldName]: "Invalid email format."}));
+          return false;
+        }
+        setErrors((errors) => ({ ...errors, [fieldName]: "" }));
+        return true;
+      } else {
+        setErrors((errors) => ({ ...errors, [fieldName]: "" }));
+        return true;
+      }
+    }
   };
 
   return (
@@ -100,6 +159,8 @@ const MerchantForm = (props: IProps) => {
               variant="outlined" 
               fullWidth 
               onChange={(event) => handleChange(event, 'name')}
+              error={errors.name !== ""}
+              helperText={errors.name}
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 2 }}>
@@ -123,6 +184,8 @@ const MerchantForm = (props: IProps) => {
               fullWidth
               value={merchantData.address}
               onChange={(event) => handleChange(event, 'address')}
+              error={errors.address !== ""}
+              helperText={errors.address}
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 2 }}>
@@ -133,6 +196,8 @@ const MerchantForm = (props: IProps) => {
               type="email"
               value={merchantData.email}
               onChange={(event) => handleChange(event, 'email')}
+              error={errors.email !== ""}
+              helperText={errors.email}
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 2 }}>
@@ -142,6 +207,8 @@ const MerchantForm = (props: IProps) => {
               fullWidth
               value={merchantData.phone}
               onChange={(event) => handleChange(event, 'phone')}
+              error={errors.phone !== ""}
+              helperText={errors.phone}
             />
           </Grid>          
           <Grid item xs={12}>
@@ -153,6 +220,8 @@ const MerchantForm = (props: IProps) => {
               fullWidth
               value={merchantData.description}
               onChange={(event) => handleChange(event, 'description')}
+              error={errors.description !== ""}
+              helperText={errors.description}
             />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>
@@ -165,13 +234,18 @@ const MerchantForm = (props: IProps) => {
                 style={{ display: 'none' }}
                 onChange={(event) => handleChange(event, 'logo')}
               />
-              <label htmlFor="select-logo">
-                {merchantData.logo ? (
-                  <img src={merchantData.logo} alt="" />
-                ) : (
-                  <Fab component="span">
-                    <AddPhotoAlternate />
-                  </Fab>
+              <label htmlFor="select-logo">                
+                {mode === 'Create' && (
+                  merchantData.logo_preview_url ? (
+                    <img src={merchantData.logo_preview_url} alt="" style={{ width: "100%"}} />
+                  ) : (
+                      <Fab component="span">
+                        <AddPhotoAlternate />
+                      </Fab>
+                    )
+                )}
+                {mode === 'Edit' && (
+                  <img src={merchantData.logo_preview_url ? merchantData.logo_preview_url : merchantData.logo} alt="" style={{ width: "100%"}} />
                 )}
               </label>
             </Box>
@@ -186,14 +260,19 @@ const MerchantForm = (props: IProps) => {
                 style={{ display: 'none' }}
                 onChange={(event) => handleChange(event, 'image')}
               />
-              <label htmlFor="select-image">
-                {merchantData.image ? (
-                  <img src={merchantData.image} alt="" style={{ width: "100%"}} />
-                ) : (
-                  <Fab component="span">
-                    <AddPhotoAlternate />
-                  </Fab>
-                )}                
+              <label htmlFor="select-image">                
+                {mode === 'Create' && (
+                  merchantData.image_preview_url ? (
+                    <img src={merchantData.image_preview_url} alt="" style={{ width: "100%"}} />
+                  ) : (
+                      <Fab component="span">
+                        <AddPhotoAlternate />
+                      </Fab>
+                    )
+                )}
+                {mode === 'Edit' && (
+                  <img src={merchantData.image_preview_url ? merchantData.image_preview_url : merchantData.image} alt="" style={{ width: "100%"}} />
+                )}
               </label>
             </Box>            
           </Grid>

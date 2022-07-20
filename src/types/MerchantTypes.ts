@@ -1,5 +1,5 @@
 export interface IMerchant {
-  id: string | undefined,
+  id?: string | undefined,
   name: string,
   description: string,
   category: string,
@@ -7,5 +7,7 @@ export interface IMerchant {
   phone: string,
   email: string,
   logo: string,
-  image: string
+  image: string,
+  logo_preview_url?: string,
+  image_preview_url?: string
 };
