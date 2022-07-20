@@ -51,24 +51,6 @@ const TableView = () => {
     setVisibleConfirmModal(true);
     setSelectedMerchant(merchant)
   };
-  function convertDataUrlToBlob(dataUrl: string): Blob {
-    if (dataUrl) {
-      const arr = dataUrl.split(',');
-      
-      const mime = arr[0]?.match(/:(.*?);/)![1];
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-
-      while (n--) {
-          u8arr[n] = bstr.charCodeAt(n);
-      }
-
-      return new Blob([u8arr], {type: mime});
-    }
-    
-    return new Blob();
-}
 
   return (
     <>
@@ -108,7 +90,7 @@ const TableView = () => {
                 <TableCell>{merchant.phone}</TableCell>
                 <TableCell>{merchant.email}</TableCell>
                 <TableCell>                  
-                  <img src={URL.createObjectURL(convertDataUrlToBlob(merchant.image))} alt="StoreImage" height={120} />
+                  <img src={merchant.image} alt="StoreImage" height={120} />
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

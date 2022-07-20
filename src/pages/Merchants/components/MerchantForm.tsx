@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Dispatch } from 'redux';
 import { useDispatch, useSelector } from "react-redux";
+import NumberFormat from 'react-number-format';
 import {
   TextField,
   Grid,
@@ -14,13 +15,15 @@ import {
   DialogContent,
   DialogActions,
   Fab,
-  Box
+  Box,
+  FormHelperText
 } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { IMerchant } from '../../../types/MerchantTypes';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import { createMerchant, updateMerchant } from "../../../actions/merchantActions";
+import { getAllCategories } from "../../../actions/categoryActions";
 
 import { RootState } from "../../../redux/store";
 
@@ -62,6 +65,10 @@ const MerchantForm = (props: IProps) => {
   const [merchantData, setMerchantData] = useState(merchant ? merchant : merchantFormData);
 
   const categories = useSelector((state: RootState) => state.categories.list);
+
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
 
   const handleSubmit = () => {
     const result = Object.keys(merchantData).map((key) => {
@@ -164,7 +171,7 @@ const MerchantForm = (props: IProps) => {
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 2 }}>
-            <FormControl fullWidth>
+            <FormControl fullWidth error={errors.category !== ""}>
               <InputLabel id="demo-simple-select-label">Category</InputLabel>
               <Select
                 label="Category"
@@ -175,6 +182,7 @@ const MerchantForm = (props: IProps) => {
                   <MenuItem value={category.name} key={category.id} sx={{ textTransform: 'uppercase'}}>{category.name.toUpperCase()}</MenuItem>
                 ))}                
               </Select>
+              <FormHelperText>{errors.category}</FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={12} sx={{ marginY: 2 }}>
@@ -201,14 +209,18 @@ const MerchantForm = (props: IProps) => {
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 2 }}>
-            <TextField
+            <NumberFormat
+              id="merchant-phone-number"
               label="Contact Number"
-              variant="outlined"
-              fullWidth
+              format="+# (###) ###-####"
+              mask="_"
+              customInput={TextField}              
+              type="text"
               value={merchantData.phone}
-              onChange={(event) => handleChange(event, 'phone')}
+              onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleChange(event, 'phone')}
+              fullWidth              
               error={errors.phone !== ""}
-              helperText={errors.phone}
+              helperText={errors.phone}              
             />
           </Grid>          
           <Grid item xs={12}>
