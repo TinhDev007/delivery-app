@@ -20,8 +20,7 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 import { IMerchant } from '../../../types/MerchantTypes';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { createMerchantSuccess, updateMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
-import { createMerchant } from "../../../actions/merchantActions";
+import { createMerchant, updateMerchant } from "../../../actions/merchantActions";
 
 import { RootState } from "../../../redux/store";
 
@@ -52,9 +51,27 @@ const MerchantForm = (props: IProps) => {
   const handleSubmit = () => {
     closeModal();
     if (mode === 'Create') {
-      dispatch(createMerchant(merchantData));
+      const formData = new FormData();
+      formData.append( "name", merchantData.name);
+      formData.append( "description", merchantData.description);
+      formData.append( "category", merchantData.category);
+      formData.append( "address", merchantData.address);
+      formData.append( "email", merchantData.email);
+      formData.append( "phone", merchantData.phone);
+      formData.append( "logo", merchantData.logo);
+      formData.append( "image", merchantData.image);
+      dispatch(createMerchant(formData));
     } else {
-      dispatch(updateMerchantSuccess(merchantData));
+      const formData = new FormData();
+      formData.append( "name", merchantData.name);
+      formData.append( "description", merchantData.description);
+      formData.append( "category", merchantData.category);
+      formData.append( "address", merchantData.address);
+      formData.append( "email", merchantData.email);
+      formData.append( "phone", merchantData.phone);
+      formData.append( "logo", merchantData.logo);
+      formData.append( "image", merchantData.image);
+      dispatch(updateMerchant(merchantData));
     }
   };
 
@@ -65,7 +82,7 @@ const MerchantForm = (props: IProps) => {
 
     setMerchantData((merchantData) => {
       return {
-        ...merchantData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? URL.createObjectURL(file) : value
+        ...merchantData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : value
       }
     });
   };

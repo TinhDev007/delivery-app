@@ -10,7 +10,6 @@ import {
   TableCell,
   TableBody,
   Paper,
-  CardMedia,
   Avatar,
   IconButton,
   Box,
@@ -20,7 +19,6 @@ import {
 import { Delete, Edit, RemoveRedEye } from "@mui/icons-material";
 import MerchantForm from "./MerchantForm";
 import { IMerchant } from "../../../types/MerchantTypes";
-import { deleteMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
 import { RootState } from "../../../redux/store";
 import { deleteMerchant } from "../../../actions/merchantActions";
 
@@ -58,9 +56,7 @@ const TableView = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>
-              Name
-              </TableCell>
+              <TableCell>Name</TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Category</TableCell>            
@@ -95,13 +91,13 @@ const TableView = () => {
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <IconButton aria-label="view" onClick={() => {navigate("/merchants/" + merchant.id)}}>
+                    <IconButton aria-label="view" onClick={() => {navigate("/merchants/" + merchant.id)}} size="small">
                       <RemoveRedEye />
                     </IconButton>
-                    <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)}>
+                    <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
                       <Edit />
                     </IconButton>
-                    <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)}>
+                    <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
                       <Delete />
                     </IconButton>
                   </Box>                

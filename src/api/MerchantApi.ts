@@ -25,7 +25,7 @@ class MerchantApi extends BaseApi {
     );
   }
 
-  updateMerchant(data: { id: string; }) {
+  updateMerchant(data: any) {
     return axios.put(
       this.REACT_APP_SERVER_URL + "merchants/" + data.id,
       data,

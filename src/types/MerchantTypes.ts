@@ -7,5 +7,5 @@ export interface IMerchant {
   phone: string,
   email: string,
   logo: string,
-  image: string,
+  image: string
 };
