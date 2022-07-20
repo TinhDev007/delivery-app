@@ -8,7 +8,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import "./styles.css";
 
 import { ICategory } from "../../types/CategoryTypes";
-import { getCategoriesRequest } from "../../redux/reducer/categoriesReducer";
+import { getAllCategories } from "../../actions/categoryActions";
 
 import type { RootState } from '../../redux/store';
 
@@ -53,7 +53,7 @@ const CategorySlides = (props: IProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(getCategoriesRequest());
+      await dispatch(getAllCategories());
     };
   
     fetchData();

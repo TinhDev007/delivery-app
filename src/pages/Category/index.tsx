@@ -16,7 +16,8 @@ import {
   Dialog, 
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
-import { getCategoriesSuccess, deleteCategorySuccess } from "../../redux/reducer/categoriesReducer";
+
+import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
 
 import { Delete, Edit } from "@mui/icons-material";
 import { RootState } from "../../redux/store";
@@ -32,7 +33,7 @@ const CategoryListPage = () => {
   const [visibleCategoryForm, setVisibleCategoryForm] = useState(false);
 
   useEffect(() => {
-    dispatch(getCategoriesSuccess());
+    dispatch(getAllCategories());
   }, [dispatch]);
 
   const categories = useSelector((state: RootState) => state.categories.list);
@@ -51,7 +52,7 @@ const CategoryListPage = () => {
 
   const handleDeleteCategory = () => {
     setVisibleConfirmModal(false);
-    dispatch(deleteCategorySuccess(selectedCategory?.id));
+    dispatch(deleteCategory(selectedCategory?.id));
   };
 
   const handleCloseFormModal = () => {

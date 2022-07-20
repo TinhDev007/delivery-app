@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Categories } from '../../constants/Categories';
 import { ICategory } from '../../types/CategoryTypes';
 
 interface CategoriesState {
@@ -9,7 +8,7 @@ interface CategoriesState {
 
 const initialState: CategoriesState = {
   isLoading: false,
-  list: Categories,
+  list: [],
 }
 
 export const categoriesSlice = createSlice({
@@ -17,8 +16,9 @@ export const categoriesSlice = createSlice({
   initialState,
   reducers: {
     getCategoriesRequest: () => {},
-    getCategoriesSuccess: (state) => {
-      
+    getCategoriesSuccess: (state, action) => {
+      const { payload } = action;
+      state.list = payload;
     },
     getCategoriesFailure: () => {
       
