@@ -22,6 +22,7 @@ import MerchantForm from "./MerchantForm";
 import { IMerchant } from "../../../types/MerchantTypes";
 import { deleteMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
 import { RootState } from "../../../redux/store";
+import { deleteMerchant } from "../../../actions/merchantActions";
 
 const TableView = () => {
   const dispatch: Dispatch<any> = useDispatch();
@@ -43,7 +44,7 @@ const TableView = () => {
 
   const handleDeleteMerchant = () => {
     setVisibleConfirmModal(false);
-    dispatch(deleteMerchantSuccess({ merchantId: selectedMerchant?.id}));
+    dispatch(deleteMerchant(selectedMerchant?.id));
   };
 
   const showDeleteConfirmModal = (merchant: IMerchant) => {
@@ -87,15 +88,10 @@ const TableView = () => {
                 <TableCell>{merchant.description}</TableCell>
                 <TableCell>{merchant.category}</TableCell>
                 <TableCell>{merchant.address}</TableCell>
-                <TableCell>{merchant.contact_number}</TableCell>
-                <TableCell>{merchant.contact_mail}</TableCell>
-                <TableCell>
-                  <CardMedia
-                    component="img"
-                    height="120"
-                    image={merchant.image}
-                    alt="Store Image"
-                  />
+                <TableCell>{merchant.phone}</TableCell>
+                <TableCell>{merchant.email}</TableCell>
+                <TableCell>                  
+                  <img src={merchant.image} alt="StoreImage" height={120} />
                 </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -4,8 +4,8 @@ export interface IMerchant {
   description: string,
   category: string,
   address: string,
-  contact_number: string,
-  contact_mail: string,
+  phone: string,
+  email: string,
   logo: string,
   image: string,
 };

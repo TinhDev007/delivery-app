@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { Dispatch } from "redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Container, Grid, Box, Typography, ToggleButtonGroup, ToggleButton, Button, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { List, GridView } from '@mui/icons-material';
@@ -8,8 +9,10 @@ import { IMerchant } from "../../types/MerchantTypes";
 import TableView from "./components/Table";
 import MerchantForm from "./components/MerchantForm";
 import { RootState } from "../../redux/store";
+import { getAllMerchants } from "../../actions/merchantActions";
 
 const MerchantListPage = () => {
+  const dispatch: Dispatch<any> = useDispatch();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
   const [viewMode, setViewMode] = useState("list");
@@ -21,6 +24,10 @@ const MerchantListPage = () => {
   const handleCloseModal = () => {
     setCreateMerchantModal(false);
   };
+
+  useEffect(() => {
+    dispatch(getAllMerchants());
+  }, [dispatch]);
 
   return (
     <>

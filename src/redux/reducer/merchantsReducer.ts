@@ -1,16 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Merchants } from '../../constants/Merchant';
 import { IMerchant } from '../../types/MerchantTypes';
 
 // Define a type for the slice state
 interface MerchantsState {
   isLoading: boolean,
-  list: IMerchant[]
+  list: IMerchant[],
+  error: string
 }
 
 const initialState: MerchantsState = {
   isLoading: false,
-  list: Merchants,
+  list: [],
+  error: ''
 }
 
 export const merchantsSlice = createSlice({
@@ -18,11 +19,11 @@ export const merchantsSlice = createSlice({
   initialState,
   reducers: {
     getMerchantsRequest: () => {},
-    getMerchantsSuccess: (state) => {
-      
+    getMerchantsSuccess: (state, action) => {
+      state.list = action.payload;
     },
-    getMerchantsFailure: () => {
-      
+    getMerchantsFailure: (state, action) => {
+      state.list = action.payload;
     },
     createMerchantRequest: (state, action) => {
       
@@ -44,8 +45,9 @@ export const merchantsSlice = createSlice({
     deleteMerchantRequest: (state, action) => {
       
     },
-    deleteMerchantSuccess: (state, action) => {      
-      state.list = state.list.filter((item) => item.id !== action.payload.merchantId);
+    deleteMerchantSuccess: (state, action) => {
+      const { payload } = action; 
+      state.list = state.list.filter((item) => item.id !== payload);
     },
     deleteMerchantFailure: () => {},    
   },

@@ -21,6 +21,7 @@ import { IMerchant } from '../../../types/MerchantTypes';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import { createMerchantSuccess, updateMerchantSuccess } from "../../../redux/reducer/merchantsReducer";
+import { createMerchant } from "../../../actions/merchantActions";
 
 import { RootState } from "../../../redux/store";
 
@@ -39,8 +40,8 @@ const MerchantForm = (props: IProps) => {
     description: "",
     category: "",
     address: "",
-    contact_number: "",
-    contact_mail: "",
+    email: "",
+    phone: "",
     logo: "",
     image: "",
   };
@@ -51,7 +52,7 @@ const MerchantForm = (props: IProps) => {
   const handleSubmit = () => {
     closeModal();
     if (mode === 'Create') {
-      dispatch(createMerchantSuccess(merchantData));
+      dispatch(createMerchant(merchantData));
     } else {
       dispatch(updateMerchantSuccess(merchantData));
     }
@@ -113,8 +114,8 @@ const MerchantForm = (props: IProps) => {
               variant="outlined"
               fullWidth
               type="email"
-              value={merchantData.contact_mail}
-              onChange={(event) => handleChange(event, 'contact_mail')}
+              value={merchantData.email}
+              onChange={(event) => handleChange(event, 'email')}
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 2 }}>
@@ -122,8 +123,8 @@ const MerchantForm = (props: IProps) => {
               label="Contact Number"
               variant="outlined"
               fullWidth
-              value={merchantData.contact_number}
-              onChange={(event) => handleChange(event, 'contact_number')}
+              value={merchantData.phone}
+              onChange={(event) => handleChange(event, 'phone')}
             />
           </Grid>          
           <Grid item xs={12}>
