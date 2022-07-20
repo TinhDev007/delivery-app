@@ -4,14 +4,14 @@ import { IMerchant } from '../../types/MerchantTypes';
 // Define a type for the slice state
 interface MerchantsState {
   isLoading: boolean,
-  list: IMerchant[],
-  error: string
+  error: string,
+  list: IMerchant[]  
 }
 
 const initialState: MerchantsState = {
   isLoading: false,
-  list: [],
-  error: ''
+  error: '',
+  list: []  
 }
 
 export const merchantsSlice = createSlice({
@@ -20,10 +20,12 @@ export const merchantsSlice = createSlice({
   reducers: {
     getMerchantsRequest: () => {},
     getMerchantsSuccess: (state, action) => {
-      state.list = action.payload;
+      const { payload } = action;
+      state.list = payload;
     },
     getMerchantsFailure: (state, action) => {
-      state.list = action.payload;
+      const { payload } = action;
+      state.error = payload;
     },
     createMerchantRequest: (state, action) => {
       
@@ -32,8 +34,9 @@ export const merchantsSlice = createSlice({
       const { payload } = action;
       state.list = [payload, ...state.list];
     },
-    createMerchantFailure: () => {
-
+    createMerchantFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
     },
     updateMerchantRequest: (state, action) => {},
     updateMerchantSuccess: (state, action) => {
@@ -41,7 +44,10 @@ export const merchantsSlice = createSlice({
       const index = state.list.findIndex((item) => item.id === payload.id);
       state.list[index] = payload;
     },
-    updateMerchantFailure: (state, action) => {},
+    updateMerchantFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
+    },
     deleteMerchantRequest: (state, action) => {
       
     },
@@ -49,7 +55,10 @@ export const merchantsSlice = createSlice({
       const { payload } = action; 
       state.list = state.list.filter((item) => item.id !== payload);
     },
-    deleteMerchantFailure: () => {},    
+    deleteMerchantFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
+    }   
   },
 })
 

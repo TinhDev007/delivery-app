@@ -3,11 +3,13 @@ import { ICategory } from '../../types/CategoryTypes';
 
 interface CategoriesState {
   isLoading: boolean,
+  error: string,
   list: ICategory[]
 }
 
 const initialState: CategoriesState = {
   isLoading: false,
+  error: "",
   list: [],
 }
 

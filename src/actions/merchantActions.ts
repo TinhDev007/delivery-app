@@ -3,9 +3,9 @@ import { Dispatch } from "redux";
 import MerchantApi from "../api/MerchantApi";
 import {
   getMerchantsSuccess, getMerchantsFailure,
-  createMerchantSuccess,
-  updateMerchantSuccess,
-  deleteMerchantSuccess
+  createMerchantSuccess, createMerchantFailure,
+  updateMerchantSuccess, updateMerchantFailure,
+  deleteMerchantSuccess, deleteMerchantFailure
 } from "../redux/reducer/merchantsReducer";
 
 export const getAllMerchants = () => {
@@ -16,7 +16,7 @@ export const getAllMerchants = () => {
           return dispatch(getMerchantsSuccess(resp.data.data))
         })
       .catch(error => {
-        // return dispatch(getMerchantsFailure(error.response.data))
+        return dispatch(getMerchantsFailure(error.response.data))
       });
   };  
 };
@@ -28,9 +28,8 @@ export const createMerchant = (data: any) => {
       .then(resp => {
           return dispatch(createMerchantSuccess(resp.data.data))
         })
-      .catch(error => {
-        console.log('error', error);
-        // return dispatch(getMerchantsFailure(error.response.data))
+      .catch(error => {        
+        return dispatch(createMerchantFailure(error.response.data))
       });
   };  
 };
@@ -42,9 +41,8 @@ export const updateMerchant = (data: any, merchantID: string) => {
       .then(resp => {
           return dispatch(updateMerchantSuccess(resp.data.data))
         })
-      .catch(error => {
-        console.log('error', error);
-        // return dispatch(getMerchantsFailure(error.response.data))
+      .catch(error => {        
+        return dispatch(updateMerchantFailure(error.response.data))
       });
   };  
 };
@@ -57,9 +55,8 @@ export const deleteMerchant = (merchantID: string | undefined) => {
       .then(resp => {
           return dispatch(deleteMerchantSuccess(merchantID))
         })
-      .catch(error => {
-        console.log('error', error);
-        // return dispatch(getMerchantsFailure(error.response.data))
+      .catch(error => {        
+        return dispatch(deleteMerchantFailure(error.response.data))
       });
   };  
 };
