@@ -1,12 +1,13 @@
 import React,  { useState } from "react";
+import { useParams } from "react-router-dom";
 import { Dispatch } from 'redux';
 import { useDispatch } from "react-redux";
-import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { IStock } from "../../../types/StockTypes";
 import { Groups } from "../../../constants/Groups";
-import { createProductSuccess, updateProductSuccess } from "../../../redux/reducer/productsReducer";
+import { createProduct, updateProduct } from "../../../actions/productActions";
 
 interface IProps {
   mode: string,
@@ -16,40 +17,108 @@ interface IProps {
 }
 
 const StockForm = (props: IProps) => {
+  const { id } = useParams();
   const { open, closeModal, stock, mode } = props;
   const dispatch: Dispatch<any> = useDispatch();
 
-  const stockFormData = {
+  const stockFormData: IStock = {
+    id: "",
+    name: "",
+    description: "",
+    price: 0,
+    quantity: 0,
+    image: "",
+    logo: "",
+    prod_group: "",
+    logo_preview_url: "",
+    image_preview_url: "",
+    carts_quantity: 0
+  };
+
+  const [errors, setErrors] = useState({
+    id: "",
     name: "",
     description: "",
     price: "",
     quantity: "",
     image: "",
     logo: "",
-    group: ""
-  };
+    prod_group: "",
+  });
 
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
+
+  const handleValidate = (value: any, fieldName: string) => {
+    if (mode === 'Create' && fieldName === 'id') {
+      return true;
+    }
+
+    if (fieldName === 'logo_preview_url' || fieldName === 'image_preview_url' || fieldName === 'carts_quantity') {
+      return true;
+    }
+
+    if(!value) {
+      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.`}));
+      return false;
+    } else {
+      setErrors((errors) => ({ ...errors, [fieldName]: "" }));
+      return true;
+    }
+  };
 
   const handleChange = (event:  SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
     const { value, files } = event.target as HTMLInputElement;
 
     const file = !files?.length ? new Blob() : files[0];
 
+    handleValidate((fieldName === 'logo' || fieldName === 'image') ? file : value, fieldName);
+
     setStockData((stockData) => {
       return {
-        ...stockData, [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? URL.createObjectURL(file) : value
+        ...stockData, 
+        [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : value,
+        'logo_preview_url': fieldName === 'logo' ? URL.createObjectURL(file) : stockData['logo_preview_url'],
+        'image_preview_url': fieldName === 'image' ? URL.createObjectURL(file) : stockData['image_preview_url'],
       }
     });
   };
 
   const handleSubmit = () => {
-    if (mode === 'create') {
-      dispatch(createProductSuccess(stockData));
-    } else {
-      dispatch(updateProductSuccess(stockData));
+    const result = Object.keys(stockData).map((key) => {
+      return handleValidate(stockData[key as  keyof IStock], key);
+    });
+
+    const isInvalid = result.filter((r) => !r).length > 0;
+
+    if (isInvalid) {
+      return;
     }
+
     closeModal();
+
+    if (mode === 'Create') {
+      const formData = new FormData();
+      formData.append( "name", stockData.name);
+      formData.append( "price", stockData.price.toString());
+      formData.append( "quantity", stockData.quantity.toString());
+      formData.append( "prod_group", stockData.prod_group);
+      formData.append( "description", stockData.description);
+      formData.append( "logo", stockData.logo);
+      formData.append( "image", stockData.image);
+      formData.append("merchantId", id || "");
+      dispatch(createProduct(formData));
+    } else {
+      const formData = new FormData();
+      formData.append("id", stockData.id || "");
+      formData.append( "name", stockData.name);
+      formData.append( "price", stockData.price.toString());
+      formData.append( "quantity", stockData.quantity.toString());
+      formData.append( "prod_group", stockData.prod_group);
+      formData.append( "description", stockData.description);
+      formData.append( "logo", stockData.logo);
+      formData.append( "image", stockData.image);
+      dispatch(updateProduct(formData, stockData.id || ""));
+    }
   }
 
   return (
@@ -65,6 +134,8 @@ const StockForm = (props: IProps) => {
               variant="outlined" 
               fullWidth 
               onChange={(event) => handleChange(event, 'name')}
+              error={errors.name !== ""}
+              helperText={errors.name}
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 1 }}>
@@ -75,6 +146,8 @@ const StockForm = (props: IProps) => {
               fullWidth
               value={stockData?.price}
               onChange={(event) => handleChange(event, 'price')}
+              error={errors.price !== ""}
+              helperText={errors.price}
             />
           </Grid>
           <Grid item xs={6} sx={{ marginY: 1 }}>
@@ -85,22 +158,25 @@ const StockForm = (props: IProps) => {
               type="number"
               value={stockData?.quantity}
               onChange={(event) => handleChange(event, 'quantity')}
+              error={errors.quantity !== ""}
+              helperText={errors.quantity}
             />
           </Grid>
           <Grid item xs={12} sx={{ marginY: 1 }}>
-            <FormControl fullWidth>
+            <FormControl fullWidth error={errors.prod_group !== ""}>
               <InputLabel id="product-group">Group</InputLabel>
               <Select
                 labelId="product-group"
                 id="product-group-select"
-                value={stockData?.group}
-                label="Group"
-                onChange={(event) => handleChange(event, 'group')}
+                value={stockData?.prod_group}
+                label="Product Group"
+                onChange={(event) => handleChange(event, 'prod_group')}
               >
                 {Groups.map((groupItem) => (
                   <MenuItem value={groupItem.id} key={groupItem.id}>{groupItem.name}</MenuItem>  
                 ))}                
               </Select>
+              <FormHelperText>{errors.prod_group}</FormHelperText>
             </FormControl>
           </Grid>
           <Grid item xs={12} sx={{ marginY: 1 }}>
@@ -112,6 +188,8 @@ const StockForm = (props: IProps) => {
               fullWidth
               value={stockData?.description}
               onChange={(event) => handleChange(event, 'description')}
+              error={errors.description !== ""}
+              helperText={errors.description}
             />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>
@@ -125,12 +203,17 @@ const StockForm = (props: IProps) => {
                 onChange={(event) => handleChange(event, 'logo')}
               />
               <label htmlFor="select-logo">
-                {stockData.logo ? (
-                  <img src={stockData.logo} alt="" style={{ width: "100%"}} />
-                ) : (
-                  <Fab component="span">
-                    <AddPhotoAlternate />
-                  </Fab>
+                {mode === 'Create' && (
+                  stockData.logo_preview_url ? (
+                    <img src={stockData.logo_preview_url} alt="" style={{ width: "100%"}} />
+                  ) : (
+                      <Fab component="span">
+                        <AddPhotoAlternate />
+                      </Fab>
+                    )
+                )}
+                {mode === 'Edit' && (
+                  <img src={stockData.logo_preview_url ? stockData.logo_preview_url : stockData.logo} alt="" style={{ width: "100%"}} />
                 )}
               </label>
             </Box>
@@ -146,13 +229,18 @@ const StockForm = (props: IProps) => {
                 onChange={(event) => handleChange(event, 'image')}
               />
               <label htmlFor="select-image">
-                {stockData.image ? (
-                  <img src={stockData.image} alt="" style={{ width: "100%"}} />
-                ) : (
-                  <Fab component="span">
-                    <AddPhotoAlternate />
-                  </Fab>
-                )}                
+                {mode === 'Create' && (
+                  stockData.image_preview_url ? (
+                    <img src={stockData.image_preview_url} alt="" style={{ width: "100%"}} />
+                  ) : (
+                      <Fab component="span">
+                        <AddPhotoAlternate />
+                      </Fab>
+                    )
+                )}
+                {mode === 'Edit' && (
+                  <img src={stockData.image_preview_url ? stockData.image_preview_url : stockData.image} alt="" style={{ width: "100%"}} />
+                )}               
               </label>
             </Box>            
           </Grid>       

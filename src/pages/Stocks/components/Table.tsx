@@ -7,7 +7,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper
 import { Delete, Edit } from "@mui/icons-material";
 import { IStock } from "../../../types/StockTypes";
 import StockForm from "./StockForm";
-import { getProductsSuccess, deleteProductSuccess } from "../../../redux/reducer/productsReducer";
+import { getAllProducts, deleteProduct } from "../../../actions/productActions";
 import { RootState } from "../../../redux/store";
 import { Groups } from "../../../constants/Groups";
 
@@ -29,7 +29,7 @@ const TableView = () => {
   };
 
   useEffect(() => {
-    dispatch(getProductsSuccess());
+    dispatch(getAllProducts());
   }, [dispatch]);
 
   const showConfirmDelteModal = (stock: IStock) => {
@@ -39,7 +39,7 @@ const TableView = () => {
 
   const handleDeleteProduct = () => {
     setVisibleConfirmModal(false);
-    dispatch(deleteProductSuccess(selectedStock?.id));
+    dispatch(deleteProduct(selectedStock?.id));
   };
 
   return (
@@ -75,7 +75,7 @@ const TableView = () => {
                   </Avatar>
                 </TableCell>
                 <TableCell>{stock.description}</TableCell>
-                <TableCell>{Groups.find((group) => group.id === stock.group)?.name}</TableCell>
+                <TableCell>{Groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
                 <TableCell>${stock.price}</TableCell>
                 <TableCell>{stock.quantity}</TableCell>              
                 <TableCell>

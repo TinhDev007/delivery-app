@@ -16,7 +16,8 @@ import {
   DialogActions,
   Fab,
   Box,
-  FormHelperText
+  FormHelperText,
+  Typography
 } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { IMerchant } from '../../../types/MerchantTypes';
@@ -260,6 +261,7 @@ const MerchantForm = (props: IProps) => {
                   <img src={merchantData.logo_preview_url ? merchantData.logo_preview_url : merchantData.logo} alt="" style={{ width: "100%"}} />
                 )}
               </label>
+              
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>

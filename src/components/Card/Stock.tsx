@@ -56,14 +56,14 @@ const StockCard = (props: IProps) => {
             </Typography>
           </Box>
         </CardContent>
-        <CardActions disableSpacing sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        {/* <CardActions disableSpacing sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: "center" }}>
             <Rating name="read-only" value={stock?.ratings} precision={0.1} readOnly />
             <Typography variant="body2" sx={{ marginLeft: 1 }}>
               {!matches ? `${stock?.reviewers + ' Reviews'}` : ''}
             </Typography>
           </Box>
-        </CardActions>
+        </CardActions> */}
       </Card>
       {visibleConfirmModal && (
         <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>          

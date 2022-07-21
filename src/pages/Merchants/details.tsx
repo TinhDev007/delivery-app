@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { Dispatch } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Box, ToggleButtonGroup,ToggleButton, Button, useMediaQuery } from "@mui/material";
 import { List, GridView } from '@mui/icons-material';
 import UserStockItem from "../../components/Card/UserStockItem";
 import { IStock } from "../../types/StockTypes";
 import TableView from "../Stocks/components/Table";
-import GridMerchantView from "./components/GridView";
+import ProductsGridView from "./components/ProductsGridView";
 import StockForm from "../Stocks/components/StockForm";
 import { RootState } from "../../redux/store";
 import { ShoppingCart } from "@mui/icons-material";
 import { makeStyles } from '@mui/styles';
+import { getProductsByMerchantID } from "../../actions/productActions";
 
 const useStyles = makeStyles((theme) => (
   {
@@ -54,6 +56,8 @@ const useStyles = makeStyles((theme) => (
 ));
 
 const MerchantDetail = () => {
+  const { id } = useParams();
+  const dispatch: Dispatch<any> = useDispatch();
   const classes = useStyles();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -65,8 +69,14 @@ const MerchantDetail = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [shoppingProductsCount, setShoppingProductsCount] = useState(0);
 
-  const products = useSelector((state: RootState) => state.products.list);
+  const products = useSelector((state: RootState) => state.products.merchantProducts);
   const shoppingProducts = useSelector((state: RootState) => state.cart.list);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getProductsByMerchantID(id));
+    }    
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (shoppingProducts.length > 0) {
@@ -139,7 +149,7 @@ const MerchantDetail = () => {
             )}      
           </Box>
           {viewMode === 'list' ? (
-            <GridMerchantView />
+            <ProductsGridView />
           ) : (
             <TableView />
           )}      

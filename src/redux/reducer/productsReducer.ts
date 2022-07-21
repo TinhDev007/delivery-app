@@ -1,15 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { IStock } from "../../types/StockTypes";
-import { Stocks } from "../../constants/Stock";
 
 interface ProductsState {
   isLoading: boolean,
-  list: IStock[]
+  error: string,
+  list: IStock[],
+  merchantProducts: IStock[]
 }
 
 const initialState: ProductsState = {
   isLoading: false,
-  list: Stocks,
+  error: "",
+  list: [],
+  merchantProducts: []
 }
 
 export const productsSlice = createSlice({
@@ -17,10 +20,19 @@ export const productsSlice = createSlice({
   initialState,
   reducers: {
     getProductsRequest: () => {},
-    getProductsSuccess: (state) => {
+    getProductsSuccess: (state, action) => {
+      const { payload } = action;
+      state.list = payload;
+    },
+    getProductsFailure: (state, action) => {
       
     },
-    getProductsFailure: () => {
+    getProductsByMerchantIDRequest: () => {},
+    getProductsByMerchantIDSuccess: (state, action) => {
+      const { payload } = action;
+      state.merchantProducts = payload;
+    },
+    getProductsByMerchantIDFailure: (state, action) => {
       
     },
     createProductRequest: () => {},
@@ -28,20 +40,20 @@ export const productsSlice = createSlice({
       const { payload } = action;
       state.list = [ ...state.list, payload];
     },
-    createProductFailure: () => {},
+    createProductFailure: (state, action) => {},
     updateProductRequest: () => {},
     updateProductSuccess: (state, action) => {
       const { payload } = action;
       const index = state.list.findIndex((item) => item.id === payload.id);
       state.list[index] = payload;
     },
-    updateProductFailure: () => {},
+    updateProductFailure: (state, action) => {},
     deleteProductRequest: () => {},
     deleteProductSuccess: (state, action) => {
       const { payload } = action;
       state.list = state.list.filter((item) => item.id !== payload);
     },
-    deleteProductFailure: () => {},
+    deleteProductFailure: (state, action) => {},
   },
 })
 
@@ -49,7 +61,8 @@ export const {
   getProductsRequest, getProductsSuccess, getProductsFailure,
   createProductRequest, createProductSuccess, createProductFailure,
   updateProductRequest, updateProductSuccess, updateProductFailure,
-  deleteProductRequest, deleteProductSuccess, deleteProductFailure
+  deleteProductRequest, deleteProductSuccess, deleteProductFailure,
+  getProductsByMerchantIDRequest, getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure
 } = productsSlice.actions;
 
 export default productsSlice.reducer

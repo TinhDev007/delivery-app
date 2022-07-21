@@ -5,9 +5,9 @@ export interface IStock {
   quantity: number,
   price: number,
   image: string,
-  ratings: number,
-  reviewers: number,
   logo: string,
-  group: string,
-  carts_quantity: number
+  prod_group: string,
+  carts_quantity: number,
+  logo_preview_url?: string,
+  image_preview_url?: string
 };

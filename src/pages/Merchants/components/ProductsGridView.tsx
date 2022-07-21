@@ -7,7 +7,7 @@ import { Groups } from "../../../constants/Groups";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RootState } from "../../../redux/store";
 
-const GridView = () => {
+const ProductsGridView = () => {
   const [expanded, setExpanded] = useState<string | false>(Groups[0].name);
 
   const handleChangePanel =
@@ -15,7 +15,9 @@ const GridView = () => {
       setExpanded(isExpanded ? panel : false);
     };
 
-  const products = useSelector((state: RootState) => state.products.list);
+  const products = useSelector((state: RootState) => state.products.merchantProducts);
+
+  console.log('products', products);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -32,7 +34,7 @@ const GridView = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-              {products.slice(4, products.length + 1).filter((stock) => stock.group === group.id).map((stock: IStock) => (
+              {products.slice(4, products.length + 1).filter((stock) => stock.prod_group === group.id).map((stock: IStock) => (
                 <Grid item xs={12} sm={4} md={4} key={stock.id}>
                   <UserStockItem stock={stock} />
                 </Grid>
@@ -45,4 +47,4 @@ const GridView = () => {
   );
 };
 
-export default GridView;
+export default ProductsGridView;
