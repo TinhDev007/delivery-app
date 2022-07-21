@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Grid, Box, Accordion, AccordionSummary, Typography, AccordionDetails } from "@mui/material";
 import UserStockItem from "../../../components/Card/UserStockItem";
@@ -8,6 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RootState } from "../../../redux/store";
 
 const ProductsGridView = () => {
+  const { id } = useParams();
   const [expanded, setExpanded] = useState<string | false>(Groups[0].name);
 
   const handleChangePanel =
@@ -15,9 +17,7 @@ const ProductsGridView = () => {
       setExpanded(isExpanded ? panel : false);
     };
 
-  const products = useSelector((state: RootState) => state.products.merchantProducts);
-
-  console.log('products', products);
+  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -34,7 +34,7 @@ const ProductsGridView = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-              {products.slice(4, products.length + 1).filter((stock) => stock.prod_group === group.id).map((stock: IStock) => (
+              {products.filter((stock) => stock.prod_group === group.id).map((stock: IStock) => (
                 <Grid item xs={12} sm={4} md={4} key={stock.id}>
                   <UserStockItem stock={stock} />
                 </Grid>

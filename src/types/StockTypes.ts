@@ -9,5 +9,6 @@ export interface IStock {
   prod_group: string,
   carts_quantity: number,
   logo_preview_url?: string,
-  image_preview_url?: string
+  image_preview_url?: string,
+  merchantid: string | undefined
 };

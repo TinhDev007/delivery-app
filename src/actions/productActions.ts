@@ -62,12 +62,12 @@ export const updateProduct = (data: any, categoryID: string) => {
 };
 
 
-export const deleteProduct = (categoryID: string | undefined) => {
+export const deleteProduct = (productID: string | undefined) => {
   return async (dispatch: Dispatch) => {
     return ProductApi
-      .deleteProduct(categoryID)
+      .deleteProduct(productID)
       .then(resp => {
-          return dispatch(deleteProductSuccess(categoryID))
+          return dispatch(deleteProductSuccess(productID))
         })
       .catch(error => {        
         return dispatch(deleteProductFailure(error.response.data))

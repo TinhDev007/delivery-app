@@ -13,7 +13,7 @@ import StockForm from "../Stocks/components/StockForm";
 import { RootState } from "../../redux/store";
 import { ShoppingCart } from "@mui/icons-material";
 import { makeStyles } from '@mui/styles';
-import { getProductsByMerchantID } from "../../actions/productActions";
+import { getAllProducts } from "../../actions/productActions";
 
 const useStyles = makeStyles((theme) => (
   {
@@ -69,14 +69,12 @@ const MerchantDetail = () => {
   const [subTotal, setSubTotal] = useState(0);
   const [shoppingProductsCount, setShoppingProductsCount] = useState(0);
 
-  const products = useSelector((state: RootState) => state.products.merchantProducts);
+  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
   const shoppingProducts = useSelector((state: RootState) => state.cart.list);
 
   useEffect(() => {
-    if (id) {
-      dispatch(getProductsByMerchantID(id));
-    }    
-  }, [dispatch, id]);
+    dispatch(getAllProducts());
+  }, [dispatch]);
 
   useEffect(() => {
     if (shoppingProducts.length > 0) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog, 
@@ -12,12 +13,13 @@ import { RootState } from "../../../redux/store";
 import { Groups } from "../../../constants/Groups";
 
 const TableView = () => {
+  const { id } = useParams();
   const dispatch: Dispatch<any> = useDispatch();
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState<IStock>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
 
-  const products = useSelector((state: RootState) => state.products.list);
+  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
 
   const handleCloseModal = () => {
     setVisibleEditModal(false);

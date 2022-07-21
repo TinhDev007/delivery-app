@@ -32,6 +32,7 @@ const StockForm = (props: IProps) => {
     prod_group: "",
     logo_preview_url: "",
     image_preview_url: "",
+    merchantid: "",
     carts_quantity: 0
   };
 
@@ -53,7 +54,7 @@ const StockForm = (props: IProps) => {
       return true;
     }
 
-    if (fieldName === 'logo_preview_url' || fieldName === 'image_preview_url' || fieldName === 'carts_quantity') {
+    if (fieldName === 'logo_preview_url' || fieldName === 'image_preview_url' || fieldName === 'carts_quantity' || fieldName === 'merchantid') {
       return true;
     }
 
@@ -87,6 +88,9 @@ const StockForm = (props: IProps) => {
     const result = Object.keys(stockData).map((key) => {
       return handleValidate(stockData[key as  keyof IStock], key);
     });
+
+    // console.log('result', result);
+    console.log('errors', errors);
 
     const isInvalid = result.filter((r) => !r).length > 0;
 

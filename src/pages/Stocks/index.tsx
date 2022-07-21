@@ -7,7 +7,7 @@ import { List, GridView } from '@mui/icons-material';
 import StockCard from "../../components/Card/Stock";
 import TableView from "./components/Table";
 import StockForm from "./components/StockForm";
-import { getProductsByMerchantID } from "../../actions/productActions";
+import { getAllProducts } from "../../actions/productActions";
 import { RootState } from "../../redux/store";
 import { IStock } from "../../types/StockTypes";
 
@@ -17,17 +17,15 @@ const StockListPage = () => {
   const [viewMode, setViewMode] = useState("list");
   const [createStockModal, setCreateStockModal] = useState(false);
 
-  const products = useSelector((state: RootState) => state.products.merchantProducts);
+  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
 
   const handleCloseModal = () => {
     setCreateStockModal(false);
   };
 
   useEffect(() => {
-    if (id) {
-      dispatch(getProductsByMerchantID(id));
-    }    
-  }, [dispatch, id]);
+    dispatch(getAllProducts());
+  }, [dispatch]);
 
   const userRole = localStorage.getItem("role");
 
