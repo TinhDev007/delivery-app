@@ -29,6 +29,7 @@ const ProductGroupForm = (props: IProps) => {
   const productGroupFormData: IGroup = {
     id: "",
     name: "",
+    merchantid: ""
   };
 
   const [errors, setErrors] = useState({
@@ -39,6 +40,10 @@ const ProductGroupForm = (props: IProps) => {
 
   const handleValidate = (value: any, fieldName: string) => {
     if (mode === 'Create' && fieldName === 'id') {
+      return true;
+    }
+
+    if (fieldName === 'merchantid') {
       return true;
     }
 
@@ -68,6 +73,7 @@ const ProductGroupForm = (props: IProps) => {
       return handleValidate(productGroupData[key as  keyof IGroup], key);
     });
 
+    console.log('result', result);
     const isInvalid = result.filter((r) => !r).length > 0;
 
     if (isInvalid) {

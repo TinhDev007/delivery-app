@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,7 +11,6 @@ import {
   TableCell,
   TableBody,
   Paper,
-  Avatar,
   IconButton,
   Box,
   Dialog, 
@@ -26,8 +26,9 @@ const productGroups: IGroup[] = [];
 
 const TableView = () => {
   const dispatch: Dispatch<any> = useDispatch();
+  const { id } = useParams();
 
-  const groups = useSelector((state: RootState) => state.products.productGroups);
+  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
 
   console.log('groups', groups);
 

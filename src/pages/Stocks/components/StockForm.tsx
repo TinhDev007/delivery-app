@@ -1,13 +1,13 @@
-import React,  { useState } from "react";
+import React,  { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Dispatch } from 'redux';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { IStock } from "../../../types/StockTypes";
-import { Groups } from "../../../constants/Groups";
-import { createProduct, updateProduct } from "../../../actions/productActions";
+import { createProduct, getAllProductGroups, updateProduct } from "../../../actions/productActions";
+import { RootState } from "../../../redux/store";
 
 interface IProps {
   mode: string,
@@ -48,6 +48,11 @@ const StockForm = (props: IProps) => {
   });
 
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
+  const groups = useSelector((state: RootState) => state.products.merchantProducts).filter((group) => group.merchantid === id);
+
+  useEffect(() => {
+    dispatch(getAllProductGroups());
+  }, [dispatch]);
 
   const handleValidate = (value: any, fieldName: string) => {
     if (mode === 'Create' && fieldName === 'id') {
@@ -88,9 +93,6 @@ const StockForm = (props: IProps) => {
     const result = Object.keys(stockData).map((key) => {
       return handleValidate(stockData[key as  keyof IStock], key);
     });
-
-    // console.log('result', result);
-    console.log('errors', errors);
 
     const isInvalid = result.filter((r) => !r).length > 0;
 
@@ -176,8 +178,8 @@ const StockForm = (props: IProps) => {
                 label="Product Group"
                 onChange={(event) => handleChange(event, 'prod_group')}
               >
-                {Groups.map((groupItem) => (
-                  <MenuItem value={groupItem.id} key={groupItem.id}>{groupItem.name}</MenuItem>  
+                {groups.map((group) => (
+                  <MenuItem value={group.id} key={group.id}>{group.name}</MenuItem>  
                 ))}                
               </Select>
               <FormHelperText>{errors.prod_group}</FormHelperText>

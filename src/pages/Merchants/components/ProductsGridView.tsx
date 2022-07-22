@@ -1,16 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Dispatch } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Grid, Box, Accordion, AccordionSummary, Typography, AccordionDetails } from "@mui/material";
 import UserStockItem from "../../../components/Card/UserStockItem";
 import { IStock } from "../../../types/StockTypes";
-import { Groups } from "../../../constants/Groups";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RootState } from "../../../redux/store";
+import { getAllProductGroups } from "../../../actions/productActions";
 
 const ProductsGridView = () => {
+  const dispatch: Dispatch<any> = useDispatch();
   const { id } = useParams();
-  const [expanded, setExpanded] = useState<string | false>(Groups[0].name);
+  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
+  const [expanded, setExpanded] = useState<string | false>(groups[0]?.name);  
+
+  useEffect(() => {
+    dispatch(getAllProductGroups());
+  }, [dispatch]);
 
   const handleChangePanel =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -21,7 +28,7 @@ const ProductsGridView = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      {Groups.map((group) => (
+      {groups.map((group) => (
         <Accordion expanded={expanded === group.name} onChange={handleChangePanel(group.name)} sx={{ marginBottom: 2 }} key={group.id}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}

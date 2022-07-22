@@ -10,7 +10,6 @@ import { IStock } from "../../../types/StockTypes";
 import StockForm from "./StockForm";
 import { getAllProducts, deleteProduct } from "../../../actions/productActions";
 import { RootState } from "../../../redux/store";
-import { Groups } from "../../../constants/Groups";
 
 const TableView = () => {
   const { id } = useParams();
@@ -20,6 +19,7 @@ const TableView = () => {
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
 
   const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
 
   const handleCloseModal = () => {
     setVisibleEditModal(false);
@@ -77,7 +77,7 @@ const TableView = () => {
                   </Avatar>
                 </TableCell>
                 <TableCell>{stock.description}</TableCell>
-                <TableCell>{Groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
+                <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
                 <TableCell>${stock.price}</TableCell>
                 <TableCell>{stock.quantity}</TableCell>              
                 <TableCell>
