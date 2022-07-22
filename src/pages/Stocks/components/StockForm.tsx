@@ -48,7 +48,7 @@ const StockForm = (props: IProps) => {
   });
 
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
-  const groups = useSelector((state: RootState) => state.products.merchantProducts).filter((group) => group.merchantid === id);
+  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
 
   useEffect(() => {
     dispatch(getAllProductGroups());
