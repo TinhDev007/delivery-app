@@ -6,7 +6,9 @@ import {
   createProductSuccess, createProductFailure,
   updateProductSuccess, updateProductFailure,
   deleteProductSuccess, deleteProductFailure,
-  getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure
+  getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure,
+  getAllProductGroupsSuccess, getAllProductGroupsFailure,
+  createProductGroupSuccess, createProductGroupFailure
 } from "../redux/reducer/productsReducer";
 
 export const getAllProducts = () => {
@@ -71,6 +73,32 @@ export const deleteProduct = (productID: string | undefined) => {
         })
       .catch(error => {        
         return dispatch(deleteProductFailure(error.response.data))
+      });
+  };  
+};
+
+export const getAllProductGroups = () => {
+  return async (dispatch: Dispatch) => {
+    return ProductApi
+      .getAllProductGroups()
+      .then(resp => {
+        return dispatch(getAllProductGroupsSuccess(resp.data.data))
+        })
+      .catch(error => {
+        return dispatch(getAllProductGroupsFailure(error.response.data))
+      });
+  };  
+};
+
+export const createProductGroup = (data: any) => {
+  return async (dispatch: Dispatch) => {
+    return ProductApi
+      .createProductGroup(data)
+      .then(resp => {
+          return dispatch(createProductGroupSuccess(resp.data.data))
+        })
+      .catch(error => {        
+        return dispatch(createProductGroupFailure(error.response.data))
       });
   };  
 };

@@ -11,6 +11,7 @@ import MerchantSignupPage from "./pages/Auth/MerchantSignup";
 import MerchantListPage from "./pages/Merchants";
 import MerchantDetailPage from "./pages/Merchants/details";
 import MerchantProductsPage from "./pages/Stocks";
+import ProductGroupsPage from "./pages/ProductGroups";
 
 import CartPage from "./pages/CartPage";
 import DeliveryInfoPage from "./pages/DeliveryInfoPage";
@@ -72,7 +73,8 @@ const RoutesList = () => {
             <Route path="/signup/merchant" element={<MerchantSignupPage />} />
             <Route path="/merchants" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantListPage />}/>} />
             <Route path="/merchants/:id" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantDetailPage />}/>} />
-            <Route path="/merchants/:id/products" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantProductsPage />}/>} /> 
+            <Route path="/merchants/:id/products" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantProductsPage />}/>} />
+            <Route path="/merchants/:id/product-groups" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<ProductGroupsPage />}/>} /> 
             <Route path="/cart" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<CartPage />}/>} />
             <Route path="/delivery-info" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<DeliveryInfoPage />}/>} />
             <Route path="/payment-methods" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<PaymentPage />}/>} />

@@ -13,6 +13,7 @@ import { ICategory } from "../types/CategoryTypes";
 
 // Import Actions
 import { getMerchantsRequest } from "../redux/reducer/merchantsReducer";
+import { getAllCategories } from "../actions/categoryActions";
 
 import type { RootState } from '../redux/store';
 
@@ -23,6 +24,7 @@ const HomePage = () => {
   const [selectedMerchants, setSelectedMerchants] = useState<IMerchant[]>([]);
 
   const merchants = useSelector((state: RootState) => state.merchants.list);
+  const categories = useSelector((state: RootState) => state.categories.list);
 
   const handleSelectCategory = (category: ICategory | undefined) => {
     setSelectedCategory(category);
@@ -30,7 +32,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if(selectedCategory) {
-      setSelectedMerchants(merchants.filter((merchant) => merchant.category === selectedCategory?.name));
+      setSelectedMerchants(merchants.filter((merchant) => merchant.category === selectedCategory?.id));
     } else {
       setSelectedMerchants(merchants);
     }
@@ -44,9 +46,17 @@ const HomePage = () => {
     fetchData();
   }, [dispatch]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(getAllCategories());
+    };
+  
+    fetchData();
+  }, [dispatch]);
+
   return (
     <Container sx={{ paddingY: 8 }}>
-      <CategorySlides selectedCategory={selectedCategory} handleSelectCategory={handleSelectCategory}/>
+      {categories.length > 0 && <CategorySlides selectedCategory={selectedCategory} handleSelectCategory={handleSelectCategory}/>}
       <Typography variant="h3" gutterBottom component="div" sx={{ margin: 5 }}>
         All Stores
       </Typography>

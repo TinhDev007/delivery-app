@@ -1,18 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { IGroup } from '../../types/GroupType';
 import { IStock } from "../../types/StockTypes";
 
 interface ProductsState {
   isLoading: boolean,
   error: string,
   list: IStock[],
-  merchantProducts: IStock[]
+  merchantProducts: IStock[],
+  productGroups: IGroup[]
 }
 
 const initialState: ProductsState = {
   isLoading: false,
   error: "",
   list: [],
-  merchantProducts: []
+  merchantProducts: [],
+  productGroups: []
 }
 
 export const productsSlice = createSlice({
@@ -54,6 +57,20 @@ export const productsSlice = createSlice({
       state.list = state.list.filter((item) => item.id !== payload);
     },
     deleteProductFailure: (state, action) => {},
+    getAllProductGroupsRequest: () => {},
+    getAllProductGroupsSuccess: (state, action) => {
+      const { payload } = action;
+      state.productGroups = payload;
+    },
+    getAllProductGroupsFailure: (state, action) => {
+      
+    },
+    createProductGroupRequest: () => {},
+    createProductGroupSuccess: (state, action) => {
+      const { payload } = action;
+      state.productGroups = [ ...state.productGroups, payload];
+    },
+    createProductGroupFailure: (state, action) => {},
   },
 })
 
@@ -62,7 +79,9 @@ export const {
   createProductRequest, createProductSuccess, createProductFailure,
   updateProductRequest, updateProductSuccess, updateProductFailure,
   deleteProductRequest, deleteProductSuccess, deleteProductFailure,
-  getProductsByMerchantIDRequest, getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure
+  getProductsByMerchantIDRequest, getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure,
+  getAllProductGroupsRequest, getAllProductGroupsSuccess, getAllProductGroupsFailure,
+  createProductGroupRequest, createProductGroupSuccess, createProductGroupFailure
 } = productsSlice.actions;
 
 export default productsSlice.reducer

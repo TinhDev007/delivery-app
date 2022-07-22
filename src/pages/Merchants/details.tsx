@@ -100,6 +100,10 @@ const MerchantDetail = () => {
     navigate('/cart');
   };
 
+  const goToProductGroups = () => {
+    navigate(`/merchants/` + id + `/product-groups`);
+  };
+
   return (
     <>
       <Box sx={{ paddingY: 8, position: 'relative' }}>
@@ -130,6 +134,7 @@ const MerchantDetail = () => {
             {userRole === "admin" && (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: `${matches ? '20px' : 0}` }}>
                 <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setCreateStockModal(true)}>Create</Button>
+                <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => goToProductGroups()}>Product Groups</Button>
                 <ToggleButtonGroup
                   value={viewMode}
                   exclusive

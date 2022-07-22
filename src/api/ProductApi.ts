@@ -52,7 +52,30 @@ class ProductApi extends BaseApi {
     return axios.delete(
       this.REACT_APP_SERVER_URL + "products/" + id
     );
-  } 
+  }
+
+  getAllProductGroups() {
+    return axios.get(
+      this.REACT_APP_SERVER_URL + 'productgroups',
+      {        
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
+  createProductGroup(data: any) {
+    return axios.post(
+      this.REACT_APP_SERVER_URL + 'productgroups/create',
+      data,
+      {      
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
 }
 
 export default new ProductApi();
