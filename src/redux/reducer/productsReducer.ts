@@ -71,6 +71,19 @@ export const productsSlice = createSlice({
       state.productGroups = [ ...state.productGroups, payload];
     },
     createProductGroupFailure: (state, action) => {},
+    updateProductGroupRequest: () => {},
+    updateProductGroupSuccess: (state, action) => {
+      const { payload } = action;
+      const index = state.productGroups.findIndex((item) => item.id === payload.id);
+      state.productGroups[index] = payload;
+    },
+    updateProductGroupFailure: (state, action) => {},
+    deleteProductGroupRequest: (state, action) => {},
+    deleteProductGroupSuccess: (state, action) => {
+      const { payload } = action;
+      state.productGroups = state.productGroups.filter((item) => item.id !== payload);
+    },
+    deleteProductGroupFailure: (state, action) => {},
   },
 })
 
@@ -81,7 +94,10 @@ export const {
   deleteProductRequest, deleteProductSuccess, deleteProductFailure,
   getProductsByMerchantIDRequest, getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure,
   getAllProductGroupsRequest, getAllProductGroupsSuccess, getAllProductGroupsFailure,
-  createProductGroupRequest, createProductGroupSuccess, createProductGroupFailure
+  createProductGroupRequest, createProductGroupSuccess, createProductGroupFailure,
+  updateProductGroupRequest, updateProductGroupSuccess, updateProductGroupFailure,
+  deleteProductGroupRequest, deleteProductGroupSuccess, deleteProductGroupFailure
+
 } = productsSlice.actions;
 
 export default productsSlice.reducer

@@ -76,6 +76,24 @@ class ProductApi extends BaseApi {
       }
     );
   }
+
+  updateProductGroup(data: any) {
+    return axios.put(
+      this.REACT_APP_SERVER_URL + 'productgroups/' + data.id,
+      data,
+      {      
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
+  deleteProductGroup(id: string | undefined) {
+    return axios.delete(
+      this.REACT_APP_SERVER_URL + "productgroups/" + id
+    );
+  }  
 }
 
 export default new ProductApi();

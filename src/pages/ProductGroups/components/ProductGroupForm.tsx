@@ -1,7 +1,7 @@
 import React,  { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   TextField,
   Grid,
@@ -12,7 +12,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { IGroup } from "../../../types/GroupType";
-import { createProductGroup } from "../../../actions/productActions";
+import { createProductGroup, updateProductGroup } from "../../../actions/productActions";
 
 interface IProps {
   mode: string,
@@ -73,7 +73,6 @@ const ProductGroupForm = (props: IProps) => {
       return handleValidate(productGroupData[key as  keyof IGroup], key);
     });
 
-    console.log('result', result);
     const isInvalid = result.filter((r) => !r).length > 0;
 
     if (isInvalid) {
@@ -83,14 +82,13 @@ const ProductGroupForm = (props: IProps) => {
     closeModal();
 
     if (mode === 'Create') {
-      console.log('productGroupData', productGroupData);
       const formData = {
         name: productGroupData.name,
         merchantid: id
       };
       dispatch(createProductGroup(formData));
     } else {
-      
+      dispatch(updateProductGroup(productGroupData));
     }
   };
 

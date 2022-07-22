@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,29 +19,40 @@ import {
 
 import { Delete, Edit } from "@mui/icons-material";
 import { IGroup } from "../../../types/GroupType";
-import { getAllProductGroups } from "../../../actions/productActions";
+import { getAllProductGroups, deleteProductGroup } from "../../../actions/productActions";
 import { RootState } from "../../../redux/store";
-
-const productGroups: IGroup[] = [];
+import ProductGroupForm from "./ProductGroupForm";
 
 const TableView = () => {
   const dispatch: Dispatch<any> = useDispatch();
   const { id } = useParams();
+  const [editForm, setEditForm] = useState(false);
+  const [confirmModal, setConfirmModal] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<IGroup>();
 
   const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
-
-  console.log('groups', groups);
 
   useEffect(() => {
     dispatch(getAllProductGroups());
   }, [dispatch]);
 
   const showEditModal = (group: IGroup) => {
-
+    setEditForm(true);
+    setSelectedGroup(group);   
   };
 
   const showDeleteConfirmModal = (group: IGroup) => {
+    setSelectedGroup(group);
+    setConfirmModal(true);
+  };
 
+  const handleCloseModal = () => {
+    setEditForm(false);
+  };
+
+  const handleDeleteProductGroup = () => {
+    setConfirmModal(false);
+    dispatch(deleteProductGroup(selectedGroup?.id));
   };
 
   return (
@@ -78,6 +89,27 @@ const TableView = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      {editForm && (
+        <ProductGroupForm
+          mode="Edit"
+          open={editForm}
+          closeModal={() => handleCloseModal()}
+          group={selectedGroup}
+        />
+      )}
+      {confirmModal && (
+        <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>          
+          <DialogContent>
+            <DialogContentText>
+              Are you sure to delete this product group?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmModal(false)}>No</Button>
+            <Button onClick={() => handleDeleteProductGroup()}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   )
 }
