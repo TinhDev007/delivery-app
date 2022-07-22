@@ -80,6 +80,11 @@ const CategoryListPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              {categories.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3}>There is no categories</TableCell>
+                </TableRow>
+              )}
               {categories.map((category) => (
                 <TableRow
                   key={category.id}

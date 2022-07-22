@@ -70,8 +70,12 @@ const TableView = () => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {merchants.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={9}>There is no merchants</TableCell>
+              </TableRow>
+            )}
             {merchants.map((merchant) => (
-              
               <TableRow
                 key={merchant.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

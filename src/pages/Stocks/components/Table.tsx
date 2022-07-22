@@ -50,9 +50,7 @@ const TableView = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>
-              Name
-              </TableCell>
+              <TableCell>Name</TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Group</TableCell>
@@ -63,6 +61,11 @@ const TableView = () => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {products.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={8}>There is no products</TableCell>
+              </TableRow>
+            )}
             {products.map((stock) => (
               <TableRow
                 key={stock.id}
