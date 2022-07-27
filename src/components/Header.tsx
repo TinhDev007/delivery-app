@@ -97,7 +97,7 @@ const Header = () => {
                 <PowerSettingsNew />
               </IconButton>
             ) : (
-              <IconButton component={Link} to="/login" color="inherit">
+              <IconButton component={Link} to="/signup" color="inherit">
                 <Login />
               </IconButton>
             )} 

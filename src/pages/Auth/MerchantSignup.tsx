@@ -78,7 +78,7 @@ const MerchantSignup = () => {
 
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
-      <Box>
+      <Box sx={{ minWidth: 375 }}>
         <Typography component="h1" variant="h5" sx={{ marginBottom: 4 }}>
           Sign up
         </Typography>

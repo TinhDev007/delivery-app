@@ -4,15 +4,17 @@ import productsReducer from './reducer/productsReducer';
 import categoriesReducer from './reducer/categoriesReducer';
 import settingsReducer from './reducer/settingsReducer';
 import cartReducer from './reducer/cartReducer';
+import authReducer from './reducer/authReducer';
 
 
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
     merchants: merchantsReducer,
     products: productsReducer,
     categories: categoriesReducer,
     settings: settingsReducer,
-    cart: cartReducer
+    cart: cartReducer,
   },
 })
 

@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { useDispatch } from "react-redux";
 import { Button, TextField, Link, Grid, Typography, Container, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
-import { userRegister } from "../../actions/authActions";
+import { userLogin } from "../../actions/authActions";
 
 const useStyles = makeStyles({
   container: {
@@ -19,7 +19,7 @@ interface IUserData {
   email: string
 }
 
-const Login = () => {
+const SignUp = () => {
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
   const classes = useStyles();
@@ -68,11 +68,10 @@ const Login = () => {
     }
 
     const formData = {
-      email: userData.email,
-      role: "user"
+      email: userData.email
     };
 
-    dispatch(userRegister(formData));
+    dispatch(userLogin(formData));
 
     // localStorage.setItem("role", 'admin');
     // navigate('/merchants');
@@ -82,7 +81,7 @@ const Login = () => {
     <Container component="main" maxWidth="xs" className={classes.container}>
       <Box sx={{ minWidth: 375 }}>
         <Typography component="h1" variant="h5" sx={{ marginBottom: 4 }}>
-          Sign Up
+          Log In
         </Typography>
         <Box>
           <Grid container spacing={2}>            
@@ -110,19 +109,12 @@ const Login = () => {
             sx={{ margin: '15px 0' }}
             onClick={() => handleSignup()}
           >
-            Sign up
+            Log In
           </Button>
-        </Box>
-        <Grid>
-          <Grid item>
-            <Link href="/signup/merchant" variant="body2">
-              If you want be a Merchant, please click here.
-            </Link>
-          </Grid>
-        </Grid>
+        </Box>        
       </Box>
     </Container>
   );
 };
 
-export default Login
+export default SignUp
