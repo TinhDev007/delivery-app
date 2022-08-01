@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch } from "react-redux";
-import { Button, TextField, Link, Grid, Typography, Container, Box } from "@mui/material";
+import { useAppDispatch } from "../../redux/hooks";
+import { Button, TextField, Grid, Typography, Container, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import { login } from "../../actions/authActions";
 
@@ -19,9 +18,9 @@ interface IUserData {
   email: string
 }
 
-const SignUp = () => {
+const Login = () => {
   const navigate = useNavigate();
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const classes = useStyles();
   const [userData, setUserData] = useState<IUserData>({
     email: "",
@@ -56,7 +55,7 @@ const SignUp = () => {
     setUserData((userData) => {return {...userData, [fieldName]: event.target.value }});
   };
 
-  const handleSignup = () => {
+  const handleLogin = async () => {
     const result = Object.keys(userData).map((key) => {
       return handleValidate(key, userData[key as keyof IUserData]);
     });
@@ -71,10 +70,10 @@ const SignUp = () => {
       email: userData.email
     };
 
-    dispatch(login(formData));
-
-    // localStorage.setItem("role", 'admin');
-    // navigate('/merchants');
+    let resp = await dispatch(login(formData));
+    if (resp.payload.role) {
+      navigate('/');
+    }
   }
 
   return (
@@ -107,7 +106,7 @@ const SignUp = () => {
             variant="contained"
             color="primary"            
             sx={{ margin: '15px 0' }}
-            onClick={() => handleSignup()}
+            onClick={() => handleLogin()}
           >
             Log In
           </Button>
@@ -117,4 +116,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp
+export default Login

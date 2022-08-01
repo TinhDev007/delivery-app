@@ -13,27 +13,18 @@ const useStyles = makeStyles({
 });
 
 interface IUserData {
-  firstname: string,
-  lastname: string,
-  email: string,
-  password: string
+  email: string
 }
 
 const MerchantSignup = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const [merchantData, setMerchantData] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: ""
+    email: ""
   });
 
   const [errors, setErrors] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: ""
+    email: ""
   });
 
   const handleValidate = (fieldName: string, value: string) => {
@@ -72,8 +63,10 @@ const MerchantSignup = () => {
       return;
     }
 
-    localStorage.setItem("role", 'merchant');
-    navigate('/merchants');
+    console.log()
+
+    // localStorage.setItem("role", 'merchant');
+    // navigate('/merchants');
   }
 
   return (
@@ -84,37 +77,6 @@ const MerchantSignup = () => {
         </Typography>
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                value={merchantData.firstname}
-                onChange={(event) => handleChange(event, 'firstname')}
-                error={errors.firstname !== ""}
-                helperText={errors.firstname}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-                value={merchantData.lastname}
-                onChange={(event) => handleChange(event, 'lastname')}
-                error={errors.lastname !== ""}
-                helperText={errors.lastname}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -129,23 +91,7 @@ const MerchantSignup = () => {
                 error={errors.email !== ""}
                 helperText={errors.email}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={merchantData.password}
-                onChange={(event) => handleChange(event, 'password')}
-                error={errors.password !== ""}
-                helperText={errors.password}
-              />
-            </Grid>            
+            </Grid>                       
           </Grid>
           <Button
             type="submit"

@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import { Grid, Box, Accordion, AccordionSummary, Typography, AccordionDetails } from "@mui/material";
 import UserStockItem from "../../../components/Card/UserStockItem";
 import { IStock } from "../../../types/StockTypes";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { RootState } from "../../../redux/store";
 import { getAllProductGroups } from "../../../actions/productActions";
 
 const ProductsGridView = () => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
-  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
+  const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
   const [expanded, setExpanded] = useState<string | false>(groups[0]?.name);  
 
   useEffect(() => {
@@ -24,7 +22,7 @@ const ProductsGridView = () => {
       setExpanded(isExpanded ? panel : false);
     };
 
-  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
 
   return (
     <Box sx={{ width: '100%' }}>

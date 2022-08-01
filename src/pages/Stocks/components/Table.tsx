@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog, 
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
@@ -9,17 +8,16 @@ import { Delete, Edit } from "@mui/icons-material";
 import { IStock } from "../../../types/StockTypes";
 import StockForm from "./StockForm";
 import { getAllProducts, deleteProduct } from "../../../actions/productActions";
-import { RootState } from "../../../redux/store";
 
 const TableView = () => {
   const { id } = useParams();
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState<IStock>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
 
-  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
-  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
+  const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
 
   const handleCloseModal = () => {
     setVisibleEditModal(false);

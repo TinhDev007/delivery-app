@@ -16,18 +16,10 @@ const Header = () => {
   const dispatch: Dispatch<any> = useDispatch();
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
-  const [isAuthed, setIsAuthed] = useState(false);
 
   const themeMode = useSelector((state: RootState) => state.settings.theme);
-
-  useEffect(() => {
-    const userRole = localStorage.getItem("role");
-    if (userRole) {
-      setIsAuthed(true);
-    } else {
-      setIsAuthed(false);
-    }
-  }, [isAuthed]);
+  const userRole = useSelector((state: RootState) => state.auth.role);
+  const isAuthed = useSelector((state: RootState) => state.auth.authenticated);
 
   const handleLogout = () => {
     localStorage.removeItem("role");
@@ -80,9 +72,11 @@ const Header = () => {
               justifyContent: 'center'
             }}
           >
-            <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCategoryPage}>
-              <Category />
-            </IconButton>
+            {userRole === 'admin' && (
+              <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCategoryPage}>
+                <Category />
+              </IconButton>
+            )}            
             <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToMerchantPage}>
               <Storefront />
             </IconButton>

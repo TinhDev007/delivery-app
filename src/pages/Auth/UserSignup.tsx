@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Button, TextField, Link, Grid, Typography, Container, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
 import { signup } from "../../actions/authActions";
-import { RootState } from "../../redux/store";
 
 const useStyles = makeStyles({
   container: {
@@ -22,7 +20,7 @@ interface IUserData {
 
 const Login = () => {
   const navigate = useNavigate();
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const classes = useStyles();
   const [userData, setUserData] = useState<IUserData>({
     email: "",
@@ -32,8 +30,8 @@ const Login = () => {
     email: ""
   });
 
-  const systemError = useSelector((state:RootState) => state.auth.error);
-  const loginSuccess = useSelector((state:RootState) => state.auth.loginSuccess);
+  const systemError = useAppSelector((state) => state.auth.error);
+  const signupSuccessed = useAppSelector((state) => state.auth.signupSuccessed);
 
   const handleValidate = (fieldName: string, value: string) => {
     if(!value) {
@@ -124,7 +122,7 @@ const Login = () => {
         <Typography variant="body2" sx={{ marginY: 3 }} color="red">
           {systemError}
         </Typography>
-        {loginSuccess && (
+        {signupSuccessed && (
           <Typography variant="body2" sx={{ marginY: 3 }} color="green">
             Sign up Success. &nbsp;
             <Link href="/login" variant="body2">
