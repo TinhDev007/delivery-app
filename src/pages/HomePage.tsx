@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { Container, Typography, Grid, Box, Button } from "@mui/material";
 
 // Import Components
@@ -16,17 +15,15 @@ import { ICategory } from "../types/CategoryTypes";
 import { getMerchantsRequest } from "../redux/reducer/merchantsReducer";
 import { getAllCategories } from "../actions/categoryActions";
 
-import type { RootState } from '../redux/store';
-
-
 const HomePage = () => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<ICategory>();
   const [selectedMerchants, setSelectedMerchants] = useState<IMerchant[]>([]);
 
-  const merchants = useSelector((state: RootState) => state.merchants.list);
-  const categories = useSelector((state: RootState) => state.categories.list);
+  const merchants = useAppSelector((state) => state.merchants.list);
+  const categories = useAppSelector((state) => state.categories.list);
+  const userRole = useAppSelector((state) => state.auth.role);
 
   const handleSelectCategory = (category: ICategory | undefined) => {
     setSelectedCategory(category);
@@ -67,7 +64,7 @@ const HomePage = () => {
   return (
     <Container sx={{ paddingY: 8 }}>
       {categories.length > 0 && <CategorySlides selectedCategory={selectedCategory} handleSelectCategory={handleSelectCategory}/>}      
-      {categories.length === 0 && (
+      {categories.length === 0 && userRole === "admin" && (
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h5" gutterBottom component="div" sx={{ marginY: 5 }}>
             Please add the categories
@@ -83,7 +80,9 @@ const HomePage = () => {
           <Typography variant="h6" gutterBottom component="div" sx={{ marginY: 5 }}>
             There is no merchants.
           </Typography>
-          <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => goToMerchantPage()}>Create</Button>
+          {userRole === "admin" && (
+            <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => goToMerchantPage()}>Create</Button>
+          )}          
         </Box>        
       )}
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>        

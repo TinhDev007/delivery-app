@@ -7,7 +7,7 @@ class CategoryApi extends BaseApi {
       this.REACT_APP_SERVER_URL + 'categories',      
       {        
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json"          
         }
       }
     );
@@ -19,7 +19,8 @@ class CategoryApi extends BaseApi {
       data,
       {      
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
         }
       }
     );
@@ -31,7 +32,8 @@ class CategoryApi extends BaseApi {
       data,
       {      
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
         }
       }
     );
@@ -39,7 +41,12 @@ class CategoryApi extends BaseApi {
 
   deleteCategory(id: string | undefined) {
     return axios.delete(
-      this.REACT_APP_SERVER_URL + "categories/" + id
+      this.REACT_APP_SERVER_URL + "categories/" + id,
+      {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      }
     );
   } 
 }

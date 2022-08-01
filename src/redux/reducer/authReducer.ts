@@ -20,7 +20,7 @@ const initialState: AuthState = {
   error: '',
   token: token ? token : '',
   role: role ? role : '',
-  authenticated: false
+  authenticated: token ? true : false
 }
 
 export const authSlice = createSlice({
@@ -46,13 +46,19 @@ export const authSlice = createSlice({
     },
     loginFailure: (state, action) => {
 
-    },  
+    },
+    logout: (state) => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      state.authenticated = false;
+    }
   },
 })
 
 export const { 
   signupRequest, signupSuccess, signupFailure,
-  loginRequest, loginSuccess, loginFailure
+  loginRequest, loginSuccess, loginFailure,
+  logout
 } = authSlice.actions;
 
 export default authSlice.reducer

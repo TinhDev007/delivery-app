@@ -1,28 +1,27 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useTheme } from '@mui/material/styles';
 import { AppBar, Box, Toolbar, Typography, Button, IconButton, Avatar, useMediaQuery, Tooltip } from "@mui/material";
 import { ShoppingCart, Brightness4, Brightness7, Storefront, Category, Login, PowerSettingsNew } from "@mui/icons-material";
 import { toggleTheme } from "../redux/reducer/settingsReducer";
+import { logout } from "../redux/reducer/authReducer";
 
 import Logo from '../assets/images/logos/logo2.png';
 
-import { RootState } from "../redux/store";
-
 const Header = () => {
   const theme = useTheme();
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
 
-  const themeMode = useSelector((state: RootState) => state.settings.theme);
-  const userRole = useSelector((state: RootState) => state.auth.role);
-  const isAuthed = useSelector((state: RootState) => state.auth.authenticated);
+  const themeMode = useAppSelector((state) => state.settings.theme);
+  const userRole = useAppSelector((state) => state.auth.role);
+  const isAuthed = useAppSelector((state) => state.auth.authenticated);
 
   const handleLogout = () => {
     localStorage.removeItem("role");
+    dispatch(logout());
     navigate('/');
   };
 
