@@ -3,13 +3,13 @@ import { Dispatch } from "redux";
 import AuthApi from "../api/AuthApi";
 import {
   loginSuccess, loginFailure,
-  registerSuccess, registerFailure,
+  signupSuccess, signupFailure,
 } from "../redux/reducer/authReducer";
 
-export const userLogin = (data: any) => {
+export const login = (data: any) => {
   return async (dispatch: Dispatch) => {
     return AuthApi
-      .userLogin(data)
+      .login(data)
       .then(resp => {
         return dispatch(loginSuccess(resp.data.data))
         })
@@ -19,15 +19,15 @@ export const userLogin = (data: any) => {
   };  
 };
 
-export const userRegister = (data: any) => {
+export const signup = (data: any) => {
   return async (dispatch: Dispatch) => {
     return AuthApi
-      .userRegister(data)
+      .signup(data)
       .then(resp => {
-          return dispatch(registerSuccess(resp.data.data))
+          return dispatch(signupSuccess(resp.data))
         })
-      .catch(error => {        
-        return dispatch(registerFailure(error.response.data))
+      .catch(error => {
+        return dispatch(signupFailure(error.response.data.statusText))
       });
   };  
 };

@@ -2,9 +2,9 @@ import axios from 'axios';
 import BaseApi from './BaseApi';
 
 class AuthApi extends BaseApi {  
-  userLogin(data: any) {
+  login(data: any) {
     return axios.post(
-      this.REACT_APP_SERVER_URL + 'users/login',
+      this.REACT_APP_SERVER_URL + 'login',
       data,
       {      
         headers: {
@@ -14,9 +14,9 @@ class AuthApi extends BaseApi {
     );
   }
 
-  userRegister(data: any) {
+  signup(data: any) {
     return axios.post(
-      this.REACT_APP_SERVER_URL + 'users/signup',
+      this.REACT_APP_SERVER_URL + 'signup',
       data,
       {      
         headers: {

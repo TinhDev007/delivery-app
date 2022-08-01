@@ -4,7 +4,7 @@ import { Dispatch } from "redux";
 import { useDispatch } from "react-redux";
 import { Button, TextField, Link, Grid, Typography, Container, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
-import { userLogin } from "../../actions/authActions";
+import { login } from "../../actions/authActions";
 
 const useStyles = makeStyles({
   container: {
@@ -71,7 +71,7 @@ const SignUp = () => {
       email: userData.email
     };
 
-    dispatch(userLogin(formData));
+    dispatch(login(formData));
 
     // localStorage.setItem("role", 'admin');
     // navigate('/merchants');

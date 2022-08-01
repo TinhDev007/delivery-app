@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "redux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, TextField, Link, Grid, Typography, Container, Box } from "@mui/material";
 import { makeStyles } from '@mui/styles';
-import { userRegister } from "../../actions/authActions";
+import { signup } from "../../actions/authActions";
+import { RootState } from "../../redux/store";
 
 const useStyles = makeStyles({
   container: {
@@ -31,6 +32,9 @@ const Login = () => {
     email: ""
   });
 
+  const systemError = useSelector((state:RootState) => state.auth.error);
+  const loginSuccess = useSelector((state:RootState) => state.auth.loginSuccess);
+
   const handleValidate = (fieldName: string, value: string) => {
     if(!value) {
       setErrors((errors) => ({ ...errors, [fieldName]: "This field should be not empty."}));
@@ -56,7 +60,7 @@ const Login = () => {
     setUserData((userData) => {return {...userData, [fieldName]: event.target.value }});
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     const result = Object.keys(userData).map((key) => {
       return handleValidate(key, userData[key as keyof IUserData]);
     });
@@ -72,10 +76,7 @@ const Login = () => {
       role: "user"
     };
 
-    dispatch(userRegister(formData));
-
-    // localStorage.setItem("role", 'admin');
-    // navigate('/merchants');
+    dispatch(signup(formData));
   }
 
   return (
@@ -118,6 +119,22 @@ const Login = () => {
             <Link href="/signup/merchant" variant="body2">
               If you want be a Merchant, please click here.
             </Link>
+          </Grid>
+        </Grid>
+        <Typography variant="body2" sx={{ marginY: 3 }} color="red">
+          {systemError}
+        </Typography>
+        {loginSuccess && (
+          <Typography variant="body2" sx={{ marginY: 3 }} color="green">
+            Sign up Success. &nbsp;
+            <Link href="/login" variant="body2">
+              Please login with your email.
+            </Link>
+          </Typography>
+        )}
+        <Grid>
+          <Grid item>
+            
           </Grid>
         </Grid>
       </Box>
