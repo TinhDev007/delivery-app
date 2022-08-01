@@ -18,7 +18,7 @@ class ProductApi extends BaseApi {
       this.REACT_APP_SERVER_URL + 'products/' + merchantID,      
       {        
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         }
       }
     );
@@ -65,13 +65,25 @@ class ProductApi extends BaseApi {
     );
   }
 
+  getProductGroupsByMerchantId(id: string | undefined) {
+    return axios.get(
+      this.REACT_APP_SERVER_URL + 'productgroups/' + id,
+      {        
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
   createProductGroup(data: any) {
     return axios.post(
       this.REACT_APP_SERVER_URL + 'productgroups/create',
       data,
       {      
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
         }
       }
     );

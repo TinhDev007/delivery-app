@@ -92,6 +92,19 @@ export const getAllProductGroups = () => {
   };  
 };
 
+export const getProductGroupsByMerchantId = (id: string | undefined) => {
+  return async (dispatch: Dispatch) => {
+    return ProductApi
+      .getProductGroupsByMerchantId(id)
+      .then(resp => {
+        return dispatch(getAllProductGroupsSuccess(resp.data.data))
+        })
+      .catch(error => {
+        return dispatch(getAllProductGroupsFailure(error.response.data))
+      });
+  };  
+};
+
 export const createProductGroup = (data: any) => {
   return async (dispatch: Dispatch) => {
     return ProductApi

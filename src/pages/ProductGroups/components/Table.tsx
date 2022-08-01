@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
 import { 
   TableContainer,
@@ -19,22 +18,21 @@ import {
 
 import { Delete, Edit } from "@mui/icons-material";
 import { IGroup } from "../../../types/GroupType";
-import { getAllProductGroups, deleteProductGroup } from "../../../actions/productActions";
-import { RootState } from "../../../redux/store";
+import { getProductGroupsByMerchantId, deleteProductGroup } from "../../../actions/productActions";
 import ProductGroupForm from "./ProductGroupForm";
 
 const TableView = () => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
   const [editForm, setEditForm] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<IGroup>();
 
-  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
+  const groups = useAppSelector((state) => state.products.productGroups);
 
   useEffect(() => {
-    dispatch(getAllProductGroups());
-  }, [dispatch]);
+    dispatch(getProductGroupsByMerchantId(id));
+  }, [dispatch, id]);
 
   const showEditModal = (group: IGroup) => {
     setEditForm(true);

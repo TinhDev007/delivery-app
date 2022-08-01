@@ -5,7 +5,7 @@ import { Grid, Box, Accordion, AccordionSummary, Typography, AccordionDetails } 
 import UserStockItem from "../../../components/Card/UserStockItem";
 import { IStock } from "../../../types/StockTypes";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { getAllProductGroups } from "../../../actions/productActions";
+import { getProductGroupsByMerchantId } from "../../../actions/productActions";
 
 const ProductsGridView = () => {
   const dispatch = useAppDispatch();
@@ -14,8 +14,8 @@ const ProductsGridView = () => {
   const [expanded, setExpanded] = useState<string | false>(groups[0]?.name);  
 
   useEffect(() => {
-    dispatch(getAllProductGroups());
-  }, [dispatch]);
+    dispatch(getProductGroupsByMerchantId(id));
+  }, [dispatch, id]);
 
   const handleChangePanel =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
