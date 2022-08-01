@@ -5,9 +5,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from "@mui/material";
 
 import HomePage from "./pages/HomePage";
-import UserLoginPage from "./pages/Auth/UserLogin";
-import UserSignupPage from "./pages/Auth/UserSignup";
-import MerchantSignupPage from "./pages/Auth/MerchantSignup";
+import LoginPage from "./pages/Auth/Login";
+import SignupPage from "./pages/Auth/Signup";
 
 import MerchantListPage from "./pages/Merchants";
 import MerchantDetailPage from "./pages/Merchants/details";
@@ -70,9 +69,8 @@ const RoutesList = () => {
           <Header /> 
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<UserLoginPage />} />
-            <Route path="/signup" element={<UserSignupPage />} />
-            <Route path="/signup/merchant" element={<MerchantSignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
             <Route path="/merchants" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantListPage />}/>} />
             <Route path="/merchants/:id" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantDetailPage />}/>} />
             <Route path="/merchants/:id/products" element={<ProtectedRoute {...defaultProtectedRouteProps} outlet={<MerchantProductsPage />}/>} />

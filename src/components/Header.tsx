@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from '@mui/material/styles';
-import { AppBar, Box, Toolbar, Typography, Button, IconButton, Avatar, useMediaQuery } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, Button, IconButton, Avatar, useMediaQuery, Tooltip } from "@mui/material";
 import { ShoppingCart, Brightness4, Brightness7, Storefront, Category, Login, PowerSettingsNew } from "@mui/icons-material";
 import { toggleTheme } from "../redux/reducer/settingsReducer";
 
@@ -73,27 +73,39 @@ const Header = () => {
             }}
           >
             {userRole === 'admin' && (
-              <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCategoryPage}>
-                <Category />
+              <Tooltip title="Categories">
+                <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCategoryPage}>
+                  <Category />
+                </IconButton>
+              </Tooltip>
+            )}
+            <Tooltip title="Merchants">
+              <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToMerchantPage}>
+                <Storefront />
               </IconButton>
-            )}            
-            <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToMerchantPage}>
-              <Storefront />
-            </IconButton>
-            <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCartPage}>
-              <ShoppingCart />
-            </IconButton>
-            <IconButton sx={{ mr: 2 }} color="inherit" onClick={handleToggelTheme}>
-              {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
-            </IconButton>
+            </Tooltip>
+            <Tooltip title="Carts">
+              <IconButton sx={{ mr: 2 }} color="inherit" onClick={goToCartPage}>
+                <ShoppingCart />
+              </IconButton>
+            </Tooltip>            
+            <Tooltip title={themeMode === 'dark' ? 'Light Mode' : 'Dark Mode'}>
+              <IconButton sx={{ mr: 2 }} color="inherit" onClick={handleToggelTheme}>
+                {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+              </IconButton>
+            </Tooltip>
             {isAuthed ? (
-              <IconButton onClick={() => handleLogout()} color="inherit">
-                <PowerSettingsNew />
-              </IconButton>
+              <Tooltip title="Log out">
+                <IconButton onClick={() => handleLogout()} color="inherit">
+                  <PowerSettingsNew />
+                </IconButton>
+              </Tooltip>              
             ) : (
-              <IconButton component={Link} to="/signup" color="inherit">
-                <Login />
-              </IconButton>
+              <Tooltip title="Log In">
+                <IconButton component={Link} to="/login" color="inherit">
+                  <Login />
+                </IconButton>
+              </Tooltip>              
             )} 
           </Box>   
         </Toolbar>

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../redux/hooks";
-import { Button, TextField, Grid, Typography, Container, Box } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { Button, TextField, Link, Grid, Typography, Container, Box, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { makeStyles } from '@mui/styles';
-import { login } from "../../actions/authActions";
+import { signup } from "../../actions/authActions";
 
 const useStyles = makeStyles({
   container: {
@@ -18,8 +17,7 @@ interface IUserData {
   email: string
 }
 
-const Login = () => {
-  const navigate = useNavigate();
+const Signup = () => {
   const dispatch = useAppDispatch();
   const classes = useStyles();
   const [userData, setUserData] = useState<IUserData>({
@@ -29,6 +27,15 @@ const Login = () => {
   const [errors, setErrors] = useState({
     email: ""
   });
+
+  const [merchantRole, setMerchantRole] = useState(true);
+
+  const handleMerchantRole = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMerchantRole(event.target.checked);
+  };
+
+  const systemError = useAppSelector((state) => state.auth.error);
+  const signupSuccessed = useAppSelector((state) => state.auth.signupSuccessed);
 
   const handleValidate = (fieldName: string, value: string) => {
     if(!value) {
@@ -55,7 +62,7 @@ const Login = () => {
     setUserData((userData) => {return {...userData, [fieldName]: event.target.value }});
   };
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     const result = Object.keys(userData).map((key) => {
       return handleValidate(key, userData[key as keyof IUserData]);
     });
@@ -67,20 +74,18 @@ const Login = () => {
     }
 
     const formData = {
-      email: userData.email
+      email: userData.email,
+      role: merchantRole ? "merchant" : "user"
     };
 
-    let resp = await dispatch(login(formData));
-    if (resp.payload.role) {
-      navigate('/');
-    }
+    dispatch(signup(formData));
   }
 
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
       <Box sx={{ minWidth: 375 }}>
         <Typography component="h1" variant="h5" sx={{ marginBottom: 4 }}>
-          Log In
+          Sign Up
         </Typography>
         <Box>
           <Grid container spacing={2}>            
@@ -98,7 +103,12 @@ const Login = () => {
                 error={errors.email !== ""}
                 helperText={errors.email}
               />
-            </Grid>                      
+            </Grid>
+          </Grid>
+          <Grid sx={{ marginY: 2 }}>
+            <FormGroup>
+              <FormControlLabel control={<Checkbox value={merchantRole} onChange={handleMerchantRole}/>} label="If you want be a Merchant, please click this." />
+            </FormGroup>
           </Grid>
           <Button
             type="submit"
@@ -106,14 +116,30 @@ const Login = () => {
             variant="contained"
             color="primary"            
             sx={{ margin: '15px 0' }}
-            onClick={() => handleLogin()}
+            onClick={() => handleSignup()}
           >
-            Log In
+            Sign up
           </Button>
-        </Box>        
+        </Box>
+        <Typography variant="body2" sx={{ marginY: 3 }} color="red">
+          {systemError}
+        </Typography>
+        {signupSuccessed && (
+          <Typography variant="body2" sx={{ marginY: 3 }} color="green">
+            Sign up Success. &nbsp;
+            <Link href="/login" variant="body2">
+              Please login with your email.
+            </Link>
+          </Typography>
+        )}
+        <Grid>
+          <Grid item>
+            
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );
 };
 
-export default Login
+export default Signup
