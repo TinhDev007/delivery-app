@@ -10,7 +10,7 @@ import { getProductGroupsByMerchantId } from "../../../actions/productActions";
 const ProductsGridView = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
+  const groups = useAppSelector((state) => state.products.productGroups);
   const [expanded, setExpanded] = useState<string | false>(groups[0]?.name);  
 
   useEffect(() => {

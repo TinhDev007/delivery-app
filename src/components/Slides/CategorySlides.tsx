@@ -47,7 +47,7 @@ const CategorySlides = (props: IProps) => {
   }, [embla, onSelect]);
 
   const showStoresForCategory = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, category: ICategory) => {
-    localStorage.setItem("category", category.name);
+    localStorage.setItem("category", category.id);
     handleSelectCategory(category);
   };
 

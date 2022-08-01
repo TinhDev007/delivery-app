@@ -31,6 +31,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if(selectedCategory) {
+
       setSelectedMerchants(merchants.filter((merchant) => merchant.category === selectedCategory?.id));
     } else {
       setSelectedMerchants(merchants);

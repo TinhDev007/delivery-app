@@ -85,26 +85,26 @@ const MerchantForm = (props: IProps) => {
     closeModal();
     if (mode === 'Create') {
       const formData = new FormData();
-      formData.append( "name", merchantData.name);
-      formData.append( "description", merchantData.description);
-      formData.append( "category", merchantData.category);
-      formData.append( "address", merchantData.address);
-      formData.append( "email", merchantData.email);
-      formData.append( "phone", merchantData.phone);
-      formData.append( "logo", merchantData.logo);
-      formData.append( "image", merchantData.image);
+      formData.append("name", merchantData.name);
+      formData.append("description", merchantData.description);
+      formData.append("category", merchantData.category);
+      formData.append("address", merchantData.address);
+      formData.append("email", merchantData.email);
+      formData.append("phone", merchantData.phone);
+      formData.append("logo", merchantData.logo);
+      formData.append("image", merchantData.image);
       dispatch(createMerchant(formData));
     } else {
       const formData = new FormData();
       formData.append("id", merchantData.id || "");
-      formData.append( "name", merchantData.name);
-      formData.append( "description", merchantData.description);
-      formData.append( "category", merchantData.category);
-      formData.append( "address", merchantData.address);
-      formData.append( "email", merchantData.email);
-      formData.append( "phone", merchantData.phone);
-      formData.append( "logo", merchantData.logo);
-      formData.append( "image", merchantData.image);
+      formData.append("name", merchantData.name);
+      formData.append("description", merchantData.description);
+      formData.append("category", merchantData.category);
+      formData.append("address", merchantData.address);
+      formData.append("email", merchantData.email);
+      formData.append("phone", merchantData.phone);
+      formData.append("logo", merchantData.logo);
+      formData.append("image", merchantData.image);
       dispatch(updateMerchant(formData, merchantData.id || ""));
     }
   };
@@ -180,7 +180,7 @@ const MerchantForm = (props: IProps) => {
                 onChange={(event) => handleChange(event, 'category')}
               >
                 {categories.map((category) => (
-                  <MenuItem value={category.name} key={category.id} sx={{ textTransform: 'uppercase'}}>{category.name.toUpperCase()}</MenuItem>
+                  <MenuItem value={category.id} key={category.id} sx={{ textTransform: 'uppercase'}}>{category.name.toUpperCase()}</MenuItem>
                 ))}                
               </Select>
               <FormHelperText>{errors.category}</FormHelperText>

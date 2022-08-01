@@ -104,25 +104,26 @@ const StockForm = (props: IProps) => {
 
     if (mode === 'Create') {
       const formData = new FormData();
-      formData.append( "name", stockData.name);
-      formData.append( "price", stockData.price.toString());
-      formData.append( "quantity", stockData.quantity.toString());
-      formData.append( "prod_group", stockData.prod_group);
-      formData.append( "description", stockData.description);
-      formData.append( "logo", stockData.logo);
-      formData.append( "image", stockData.image);
-      formData.append("merchantId", id || "");
+      formData.append("name", stockData.name);
+      formData.append("price", stockData.price.toString());
+      formData.append("quantity", stockData.quantity.toString());
+      formData.append("prod_group", stockData.prod_group);
+      formData.append("description", stockData.description);
+      formData.append("logo", stockData.logo);
+      formData.append("image", stockData.image);
+      formData.append("merchantid", id || "");
       dispatch(createProduct(formData));
     } else {
       const formData = new FormData();
       formData.append("id", stockData.id || "");
-      formData.append( "name", stockData.name);
-      formData.append( "price", stockData.price.toString());
-      formData.append( "quantity", stockData.quantity.toString());
-      formData.append( "prod_group", stockData.prod_group);
-      formData.append( "description", stockData.description);
-      formData.append( "logo", stockData.logo);
-      formData.append( "image", stockData.image);
+      formData.append("name", stockData.name);
+      formData.append("price", stockData.price.toString());
+      formData.append("quantity", stockData.quantity.toString());
+      formData.append("prod_group", stockData.prod_group);
+      formData.append("description", stockData.description);
+      formData.append("logo", stockData.logo);
+      formData.append("image", stockData.image);
+      formData.append("merchantid", id || "");
       dispatch(updateProduct(formData, stockData.id || ""));
     }
   }

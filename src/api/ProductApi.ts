@@ -30,7 +30,8 @@ class ProductApi extends BaseApi {
       data,
       {      
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
         }
       }
     );
@@ -42,7 +43,8 @@ class ProductApi extends BaseApi {
       data,
       {      
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
         }
       }
     );
@@ -50,7 +52,12 @@ class ProductApi extends BaseApi {
 
   deleteProduct(id: string | undefined) {
     return axios.delete(
-      this.REACT_APP_SERVER_URL + "products/" + id
+      this.REACT_APP_SERVER_URL + "products/" + id,
+      {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      }
     );
   }
 
