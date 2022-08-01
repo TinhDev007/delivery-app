@@ -16,8 +16,7 @@ import {
   DialogActions,
   Fab,
   Box,
-  FormHelperText,
-  Typography
+  FormHelperText
 } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { IMerchant } from '../../../types/MerchantTypes';
