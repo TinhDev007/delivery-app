@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { 
   TableContainer,
   Table,
@@ -19,19 +18,19 @@ import {
 import { Delete, Edit, RemoveRedEye } from "@mui/icons-material";
 import MerchantForm from "./MerchantForm";
 import { IMerchant } from "../../../types/MerchantTypes";
-import { RootState } from "../../../redux/store";
 import { deleteMerchant } from "../../../actions/merchantActions";
 
 
 
 const TableView = () => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [visibleMerchantFormMdoal, setVisibleMerchantFormMdoal] = useState(false);  
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
   const [selectedMerchant, setSelectedMerchant] = useState<IMerchant>();
 
-  const merchants = useSelector((state: RootState) => state.merchants.list);
+  const merchants = useAppSelector((state) => state.merchants.list);
+  const categories = useAppSelector((state) => state.categories.list);
 
   const handleCloseModal = () => {
     setVisibleMerchantFormMdoal(false);
@@ -89,7 +88,7 @@ const TableView = () => {
                   </Avatar>
                 </TableCell>
                 <TableCell>{merchant.description}</TableCell>
-                <TableCell>{merchant.category}</TableCell>
+                <TableCell>{categories.find((category) => category.id === merchant.category)?.name}</TableCell>
                 <TableCell>{merchant.address}</TableCell>
                 <TableCell>{merchant.phone}</TableCell>
                 <TableCell>{merchant.email}</TableCell>

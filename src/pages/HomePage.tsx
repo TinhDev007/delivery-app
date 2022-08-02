@@ -12,8 +12,8 @@ import { IMerchant } from "../types/MerchantTypes";
 import { ICategory } from "../types/CategoryTypes";
 
 // Import Actions
-import { getMerchantsRequest } from "../redux/reducer/merchantsReducer";
 import { getAllCategories } from "../actions/categoryActions";
+import { getAllMerchants } from "../actions/merchantActions";
 
 const HomePage = () => {
   const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(getMerchantsRequest());
+      await dispatch(getAllMerchants());
     };
   
     fetchData();

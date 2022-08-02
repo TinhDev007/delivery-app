@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Box, ToggleButtonGroup,ToggleButton, Button, useMediaQuery } from "@mui/material";
 import { List, GridView } from '@mui/icons-material';
@@ -10,7 +9,6 @@ import { IStock } from "../../types/StockTypes";
 import TableView from "../Stocks/components/Table";
 import ProductsGridView from "./components/ProductsGridView";
 import StockForm from "../Stocks/components/StockForm";
-import { RootState } from "../../redux/store";
 import { ShoppingCart } from "@mui/icons-material";
 import { makeStyles } from '@mui/styles';
 import { getAllProducts } from "../../actions/productActions";
@@ -57,7 +55,7 @@ const useStyles = makeStyles((theme) => (
 
 const MerchantDetail = () => {
   const { id } = useParams();
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const classes = useStyles();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -65,12 +63,13 @@ const MerchantDetail = () => {
   const [viewMode, setViewMode] = useState("list");
   const [showCheckoutPopup, setCheckoutPopup] = useState(false);
   const [createStockModal, setCreateStockModal] = useState(false);
-  const userRole = localStorage.getItem("role");
   const [subTotal, setSubTotal] = useState(0);
   const [shoppingProductsCount, setShoppingProductsCount] = useState(0);
 
-  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
-  const shoppingProducts = useSelector((state: RootState) => state.cart.list);
+  const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const shoppingProducts = useAppSelector((state) => state.cart.list);
+  const userRole = useAppSelector((state) => state.auth.role);
+  const userId = useAppSelector((state) => state.auth.user_id);
 
   useEffect(() => {
     dispatch(getAllProducts());
@@ -133,7 +132,7 @@ const MerchantDetail = () => {
             <Typography variant="h4" sx={{ marginY: 5, textAlign: `${matches ? 'center' : 'left'}` }}>
               Our Store's Products
             </Typography>
-            {userRole === "admin" && (
+            {((userRole === "merchant" && id === userId) || userRole === "admin") && (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: `${matches ? '20px' : 0}` }}>
                 <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setCreateStockModal(true)}>Create</Button>
                 <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => goToProductGroups()}>Product Groups</Button>

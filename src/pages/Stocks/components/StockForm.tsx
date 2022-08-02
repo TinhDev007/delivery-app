@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Dispatch } from 'redux';
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { SelectChangeEvent } from '@mui/material/Select';
+
+// Import Types
 import { IStock } from "../../../types/StockTypes";
-import { createProduct, getAllProductGroups, updateProduct } from "../../../actions/productActions";
-import { RootState } from "../../../redux/store";
+
+// Import Actions
+import { createProduct, updateProduct, getProductGroupsByMerchantId } from "../../../actions/productActions";
 import { base64ToArrayBuffer } from "../../convertBasetoBinary";
 
 interface IProps {
@@ -20,7 +22,7 @@ interface IProps {
 const StockForm = (props: IProps) => {
   const { id } = useParams();
   const { open, closeModal, stock, mode } = props;
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
 
   const stockFormData: IStock = {
     id: "",
@@ -49,11 +51,11 @@ const StockForm = (props: IProps) => {
   });
 
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
-  const groups = useSelector((state: RootState) => state.products.productGroups).filter((group) => group.merchantid === id);
+  const groups = useAppSelector((state) => state.products.productGroups);
 
   useEffect(() => {
-    dispatch(getAllProductGroups());
-  }, [dispatch]);
+    dispatch(getProductGroupsByMerchantId(id));
+  }, [dispatch, id]);
 
   const handleValidate = (value: any, fieldName: string) => {
     if (mode === 'Create' && fieldName === 'id') {

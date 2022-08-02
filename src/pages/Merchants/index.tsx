@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dispatch } from "redux";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Container, Grid, Box, Typography, ToggleButtonGroup, ToggleButton, Button, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { List, GridView } from '@mui/icons-material';
@@ -8,18 +7,18 @@ import MerchantCard from "../../components/Card/Merchant";
 import { IMerchant } from "../../types/MerchantTypes";
 import TableView from "./components/Table";
 import MerchantForm from "./components/MerchantForm";
-import { RootState } from "../../redux/store";
 import { getAllMerchants } from "../../actions/merchantActions";
+import { getAllCategories } from "../../actions/categoryActions";
 
 const MerchantListPage = () => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
   const [viewMode, setViewMode] = useState("list");
   const [createMerchantModal, setCreateMerchantModal] = useState(false);
   const userRole = localStorage.getItem("role");
 
-  const merchants = useSelector((state: RootState) => state.merchants.list);
+  const merchants = useAppSelector((state) => state.merchants.list);
 
   const handleCloseModal = () => {
     setCreateMerchantModal(false);
@@ -27,6 +26,7 @@ const MerchantListPage = () => {
 
   useEffect(() => {
     dispatch(getAllMerchants());
+    dispatch(getAllCategories());
   }, [dispatch]);
 
   return (
