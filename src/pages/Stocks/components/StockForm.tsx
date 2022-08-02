@@ -1,4 +1,4 @@
-import React,  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Dispatch } from 'redux';
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import { IStock } from "../../../types/StockTypes";
 import { createProduct, getAllProductGroups, updateProduct } from "../../../actions/productActions";
 import { RootState } from "../../../redux/store";
+import { base64ToArrayBuffer } from "../../convertBasetoBinary";
 
 interface IProps {
   mode: string,
@@ -63,8 +64,8 @@ const StockForm = (props: IProps) => {
       return true;
     }
 
-    if(!value) {
-      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.`}));
+    if (!value) {
+      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.` }));
       return false;
     } else {
       setErrors((errors) => ({ ...errors, [fieldName]: "" }));
@@ -72,7 +73,7 @@ const StockForm = (props: IProps) => {
     }
   };
 
-  const handleChange = (event:  SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
+  const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
     const { value, files } = event.target as HTMLInputElement;
 
     const file = !files?.length ? new Blob() : files[0];
@@ -81,7 +82,7 @@ const StockForm = (props: IProps) => {
 
     setStockData((stockData) => {
       return {
-        ...stockData, 
+        ...stockData,
         [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : value,
         'logo_preview_url': fieldName === 'logo' ? URL.createObjectURL(file) : stockData['logo_preview_url'],
         'image_preview_url': fieldName === 'image' ? URL.createObjectURL(file) : stockData['image_preview_url'],
@@ -91,7 +92,7 @@ const StockForm = (props: IProps) => {
 
   const handleSubmit = () => {
     const result = Object.keys(stockData).map((key) => {
-      return handleValidate(stockData[key as  keyof IStock], key);
+      return handleValidate(stockData[key as keyof IStock], key);
     });
 
     const isInvalid = result.filter((r) => !r).length > 0;
@@ -121,8 +122,8 @@ const StockForm = (props: IProps) => {
       formData.append("quantity", stockData.quantity.toString());
       formData.append("prod_group", stockData.prod_group);
       formData.append("description", stockData.description);
-      formData.append("logo", stockData.logo);
-      formData.append("image", stockData.image);
+      formData.append("logo", base64ToArrayBuffer(stockData.logo));
+      formData.append("image", base64ToArrayBuffer(stockData.image));
       formData.append("merchantid", id || "");
       dispatch(updateProduct(formData, stockData.id || ""));
     }
@@ -136,10 +137,10 @@ const StockForm = (props: IProps) => {
           <Grid item xs={12} sx={{ marginY: 1 }}>
             <TextField
               id="merchant-name"
-              value={stockData?.name} 
-              label="Name" 
-              variant="outlined" 
-              fullWidth 
+              value={stockData?.name}
+              label="Name"
+              variant="outlined"
+              fullWidth
               onChange={(event) => handleChange(event, 'name')}
               error={errors.name !== ""}
               helperText={errors.name}
@@ -180,8 +181,8 @@ const StockForm = (props: IProps) => {
                 onChange={(event) => handleChange(event, 'prod_group')}
               >
                 {groups.map((group) => (
-                  <MenuItem value={group.id} key={group.id}>{group.name}</MenuItem>  
-                ))}                
+                  <MenuItem value={group.id} key={group.id}>{group.name}</MenuItem>
+                ))}
               </Select>
               <FormHelperText>{errors.prod_group}</FormHelperText>
             </FormControl>
@@ -201,63 +202,69 @@ const StockForm = (props: IProps) => {
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-              <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
-              <input 
-                accept="image/*" 
-                type="file" 
-                id="select-logo"
-                style={{ display: 'none' }}
-                onChange={(event) => handleChange(event, 'logo')}
-              />
-              <label htmlFor="select-logo">
-                {mode === 'Create' && (
-                  stockData.logo_preview_url ? (
-                    <img src={stockData.logo_preview_url} alt="" style={{ width: "100%"}} />
-                  ) : (
+              <FormControl error={errors.logo !== ""}>
+                <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="select-logo"
+                  style={{ display: 'none' }}
+                  onChange={(event) => handleChange(event, 'logo')}
+                />
+                <label htmlFor="select-logo">
+                  {mode === 'Create' && (
+                    stockData.logo_preview_url ? (
+                      <img src={stockData.logo_preview_url} alt="" style={{ width: "100%" }} />
+                    ) : (
                       <Fab component="span">
                         <AddPhotoAlternate />
                       </Fab>
                     )
-                )}
-                {mode === 'Edit' && (
-                  <img src={stockData.logo_preview_url ? stockData.logo_preview_url : stockData.logo} alt="" style={{ width: "100%"}} />
-                )}
-              </label>
+                  )}
+                  {mode === 'Edit' && (
+                    <img src={stockData.logo_preview_url ? stockData.logo_preview_url : stockData.logo} alt="" style={{ width: "100%" }} />
+                  )}
+                </label>
+                <FormHelperText>{errors.logo}</FormHelperText>
+              </FormControl>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-              <label htmlFor="select-image" style={{ marginBottom: 10 }}>Image</label>        
-              <input 
-                accept="image/*" 
-                type="file" 
-                id="select-image"
-                style={{ display: 'none' }}
-                onChange={(event) => handleChange(event, 'image')}
-              />
-              <label htmlFor="select-image">
-                {mode === 'Create' && (
-                  stockData.image_preview_url ? (
-                    <img src={stockData.image_preview_url} alt="" style={{ width: "100%"}} />
-                  ) : (
+              <FormControl error={errors.image !== ""}>
+                <label htmlFor="select-image" style={{ marginBottom: 10 }}>Image</label>
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="select-image"
+                  style={{ display: 'none' }}
+                  onChange={(event) => handleChange(event, 'image')}
+                />
+                <label htmlFor="select-image">
+                  {mode === 'Create' && (
+                    stockData.image_preview_url ? (
+                      <img src={stockData.image_preview_url} alt="" style={{ width: "100%" }} />
+                    ) : (
                       <Fab component="span">
                         <AddPhotoAlternate />
                       </Fab>
                     )
-                )}
-                {mode === 'Edit' && (
-                  <img src={stockData.image_preview_url ? stockData.image_preview_url : stockData.image} alt="" style={{ width: "100%"}} />
-                )}               
-              </label>
-            </Box>            
-          </Grid>       
+                  )}
+                  {mode === 'Edit' && (
+                    <img src={stockData.image_preview_url ? stockData.image_preview_url : stockData.image} alt="" style={{ width: "100%" }} />
+                  )}
+                </label>
+                <FormHelperText>{errors.image}</FormHelperText>
+              </FormControl>
+            </Box>
+          </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
         <Button onClick={closeModal} variant="outlined">Cancel</Button>
         <Button onClick={handleSubmit} variant="contained">Save</Button>
       </DialogActions>
-    </Dialog>
+    </Dialog >
   );
 };
 

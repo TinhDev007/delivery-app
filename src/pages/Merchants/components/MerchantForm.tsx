@@ -26,6 +26,7 @@ import { createMerchant, updateMerchant } from "../../../actions/merchantActions
 import { getAllCategories } from "../../../actions/categoryActions";
 
 import { RootState } from "../../../redux/store";
+import { base64ToArrayBuffer } from "../../convertBasetoBinary";
 
 interface IProps {
   mode: string,
@@ -72,7 +73,7 @@ const MerchantForm = (props: IProps) => {
 
   const handleSubmit = () => {
     const result = Object.keys(merchantData).map((key) => {
-      return handleValidate(merchantData[key as  keyof IMerchant], key);
+      return handleValidate(merchantData[key as keyof IMerchant], key);
     });
 
     const isInvalid = result.filter((r) => !r).length > 0;
@@ -102,13 +103,13 @@ const MerchantForm = (props: IProps) => {
       formData.append("address", merchantData.address);
       formData.append("email", merchantData.email);
       formData.append("phone", merchantData.phone);
-      formData.append("logo", merchantData.logo);
-      formData.append("image", merchantData.image);
+      formData.append("logo", base64ToArrayBuffer(merchantData.logo));
+      formData.append("image", base64ToArrayBuffer(merchantData.image));
       dispatch(updateMerchant(formData, merchantData.id || ""));
     }
   };
 
-  const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {    
+  const handleChange = (event: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
     const { value, files } = event.target as HTMLInputElement;
 
     const file = !files?.length ? new Blob() : files[0];
@@ -117,7 +118,7 @@ const MerchantForm = (props: IProps) => {
 
     setMerchantData((merchantData) => {
       return {
-        ...merchantData, 
+        ...merchantData,
         [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : value,
         'logo_preview_url': fieldName === 'logo' ? URL.createObjectURL(file) : merchantData['logo_preview_url'],
         'image_preview_url': fieldName === 'image' ? URL.createObjectURL(file) : merchantData['image_preview_url'],
@@ -134,14 +135,14 @@ const MerchantForm = (props: IProps) => {
       return true;
     }
 
-    if(!value) {
-      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.`}));
+    if (!value) {
+      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.` }));
       return false;
     } else {
       if (fieldName === "email") {
-        let regex = /\S+@\S+\.\S+/;        
+        let regex = /\S+@\S+\.\S+/;
         if (!regex.test(value)) {
-          setErrors((errors) => ({ ...errors, [fieldName]: "Invalid email format."}));
+          setErrors((errors) => ({ ...errors, [fieldName]: "Invalid email format." }));
           return false;
         }
         setErrors((errors) => ({ ...errors, [fieldName]: "" }));
@@ -161,10 +162,10 @@ const MerchantForm = (props: IProps) => {
           <Grid item xs={6} sx={{ marginY: 2 }}>
             <TextField
               id="merchant-name"
-              value={merchantData?.name} 
-              label="Name" 
-              variant="outlined" 
-              fullWidth 
+              value={merchantData?.name}
+              label="Name"
+              variant="outlined"
+              fullWidth
               onChange={(event) => handleChange(event, 'name')}
               error={errors.name !== ""}
               helperText={errors.name}
@@ -179,8 +180,8 @@ const MerchantForm = (props: IProps) => {
                 onChange={(event) => handleChange(event, 'category')}
               >
                 {categories.map((category) => (
-                  <MenuItem value={category.id} key={category.id} sx={{ textTransform: 'uppercase'}}>{category.name.toUpperCase()}</MenuItem>
-                ))}                
+                  <MenuItem value={category.id} key={category.id} sx={{ textTransform: 'uppercase' }}>{category.name.toUpperCase()}</MenuItem>
+                ))}
               </Select>
               <FormHelperText>{errors.category}</FormHelperText>
             </FormControl>
@@ -214,15 +215,15 @@ const MerchantForm = (props: IProps) => {
               label="Contact Number"
               format="+# (###) ###-####"
               mask="_"
-              customInput={TextField}              
+              customInput={TextField}
               type="text"
               value={merchantData.phone}
               onChange={(event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => handleChange(event, 'phone')}
-              fullWidth              
+              fullWidth
               error={errors.phone !== ""}
-              helperText={errors.phone}              
+              helperText={errors.phone}
             />
-          </Grid>          
+          </Grid>
           <Grid item xs={12}>
             <TextField
               id="merchant-description"
@@ -238,56 +239,61 @@ const MerchantForm = (props: IProps) => {
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-              <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
-              <input 
-                accept="image/*" 
-                type="file" 
-                id="select-logo"
-                style={{ display: 'none' }}
-                onChange={(event) => handleChange(event, 'logo')}
-              />
-              <label htmlFor="select-logo">                
-                {mode === 'Create' && (
-                  merchantData.logo_preview_url ? (
-                    <img src={merchantData.logo_preview_url} alt="" style={{ width: "100%"}} />
-                  ) : (
+              <FormControl error={errors.logo !== ""}>
+                <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="select-logo"
+                  style={{ display: 'none' }}
+                  onChange={(event) => handleChange(event, 'logo')}
+                />
+                <label htmlFor="select-logo">
+                  {mode === 'Create' && (
+                    merchantData.logo_preview_url ? (
+                      <img src={merchantData.logo_preview_url} alt="" style={{ width: "100%" }} />
+                    ) : (
                       <Fab component="span">
                         <AddPhotoAlternate />
                       </Fab>
                     )
-                )}
-                {mode === 'Edit' && (
-                  <img src={merchantData.logo_preview_url ? merchantData.logo_preview_url : merchantData.logo} alt="" style={{ width: "100%"}} />
-                )}
-              </label>
-              
+                  )}
+                  {mode === 'Edit' && (
+                    <img src={merchantData.logo_preview_url ? merchantData.logo_preview_url : merchantData.logo} alt="" style={{ width: "100%" }} />
+                  )}
+                </label>
+                <FormHelperText>{errors.logo}</FormHelperText>
+              </FormControl>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} sx={{ marginY: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-              <label htmlFor="select-image" style={{ marginBottom: 10 }}>Image</label>        
-              <input 
-                accept="image/*" 
-                type="file" 
-                id="select-image"
-                style={{ display: 'none' }}
-                onChange={(event) => handleChange(event, 'image')}
-              />
-              <label htmlFor="select-image">                
-                {mode === 'Create' && (
-                  merchantData.image_preview_url ? (
-                    <img src={merchantData.image_preview_url} alt="" style={{ width: "100%"}} />
-                  ) : (
+              <FormControl error={errors.image !== ""}>
+                <label htmlFor="select-image" style={{ marginBottom: 10 }}>Image</label>
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="select-image"
+                  style={{ display: 'none' }}
+                  onChange={(event) => handleChange(event, 'image')}
+                />
+                <label htmlFor="select-image">
+                  {mode === 'Create' && (
+                    merchantData.image_preview_url ? (
+                      <img src={merchantData.image_preview_url} alt="" style={{ width: "100%" }} />
+                    ) : (
                       <Fab component="span">
                         <AddPhotoAlternate />
                       </Fab>
                     )
-                )}
-                {mode === 'Edit' && (
-                  <img src={merchantData.image_preview_url ? merchantData.image_preview_url : merchantData.image} alt="" style={{ width: "100%"}} />
-                )}
-              </label>
-            </Box>            
+                  )}
+                  {mode === 'Edit' && (
+                    <img src={merchantData.image_preview_url ? merchantData.image_preview_url : merchantData.image} alt="" style={{ width: "100%" }} />
+                  )}
+                </label>
+                <FormHelperText>{errors.image}</FormHelperText>
+              </FormControl>
+            </Box>
           </Grid>
         </Grid>
       </DialogContent>
