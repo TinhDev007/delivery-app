@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dispatch } from 'redux';
 import { useDispatch } from "react-redux";
 import {
@@ -10,11 +10,14 @@ import {
   DialogContent,
   DialogActions,
   Fab,
-  Box
+  Box,
+  FormHelperText,
+  FormControl
 } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
 import { ICategory } from "../../types/CategoryTypes";
 import { createCategory, updateCategory } from "../../actions/categoryActions";
+import { base64ToArrayBuffer } from "../convertBasetoBinary";
 
 interface IProps {
   mode: string,
@@ -35,7 +38,7 @@ const CategoryForm = (props: IProps) => {
 
   const [errors, setErrors] = useState({
     name: "",
-    image: "",        
+    image: "",
   });
 
   const [categoryData, setCategoryData] = useState(category ? category : categoryFormData);
@@ -49,8 +52,8 @@ const CategoryForm = (props: IProps) => {
       return true;
     }
 
-    if(!value) {
-      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.`}));
+    if (!value) {
+      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.` }));
       return false;
     } else {
       setErrors((errors) => ({ ...errors, [fieldName]: "" }));
@@ -58,7 +61,7 @@ const CategoryForm = (props: IProps) => {
     }
   };
 
-  const handleChange = (event:  React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
     const { value, files } = event.target as HTMLInputElement;
 
     const file = !files?.length ? new Blob() : files[0];
@@ -76,7 +79,7 @@ const CategoryForm = (props: IProps) => {
 
   const handleSubmit = () => {
     const result = Object.keys(categoryData).map((key) => {
-      return handleValidate(categoryData[key as  keyof ICategory], key);
+      return handleValidate(categoryData[key as keyof ICategory], key);
     });
 
     const isInvalid = result.filter((r) => !r).length > 0;
@@ -89,14 +92,14 @@ const CategoryForm = (props: IProps) => {
 
     if (mode === 'Create') {
       const formData = new FormData();
-      formData.append( "name", categoryData.name);
-      formData.append( "image", categoryData.image);
+      formData.append("name", categoryData.name);
+      formData.append("image", categoryData.image);
       dispatch(createCategory(formData));
     } else {
       const formData = new FormData();
       formData.append("id", categoryData.id || "");
-      formData.append( "name", categoryData.name);
-      formData.append( "image", categoryData.image);
+      formData.append("name", categoryData.name);
+      formData.append("image", base64ToArrayBuffer(categoryData.image));
       dispatch(updateCategory(formData, categoryData.id || ""));
     }
   };
@@ -109,39 +112,42 @@ const CategoryForm = (props: IProps) => {
           <Grid item xs={12} sx={{ marginY: 2 }}>
             <TextField
               id="merchant-name"
-              value={categoryData?.name} 
-              label="Name" 
-              variant="outlined" 
-              fullWidth 
+              value={categoryData?.name}
+              label="Name"
+              variant="outlined"
+              fullWidth
               onChange={(event) => handleChange(event, 'name')}
               error={errors.name !== ""}
               helperText={errors.name}
             />
-          </Grid>          
+          </Grid>
           <Grid item xs={12} sx={{ marginY: 2 }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-              <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
-              <input 
-                accept="image/*" 
-                type="file" 
-                id="select-logo"
-                style={{ display: 'none' }}
-                onChange={(event) => handleChange(event, 'image')}
-              />
-              <label htmlFor="select-logo">
-                {mode === 'Create' && (
-                  categoryData.image_preview_url ? (
-                    <img src={categoryData.image_preview_url} alt="" style={{ width: "100%"}} />
-                  ) : (
+              <FormControl error={errors.image !== ""}>
+                <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="select-logo"
+                  style={{ display: 'none' }}
+                  onChange={(event) => handleChange(event, 'image')}
+                />
+                <label htmlFor="select-logo">
+                  {mode === 'Create' && (
+                    categoryData.image_preview_url ? (
+                      <img src={categoryData.image_preview_url} alt="" style={{ width: "100%" }} />
+                    ) : (
                       <Fab component="span">
                         <AddPhotoAlternate />
                       </Fab>
                     )
-                )}
-                {mode === 'Edit' && (
-                  <img src={categoryData.image_preview_url ? categoryData.image_preview_url : categoryData.image} alt="" style={{ width: "100%"}} />
-                )}                
-              </label>
+                  )}
+                  {mode === 'Edit' && (
+                    <img src={categoryData.image_preview_url ? categoryData.image_preview_url : categoryData.image} alt="" style={{ width: "100%" }} />
+                  )}
+                </label>
+                <FormHelperText>{errors.image}</FormHelperText>
+              </FormControl>
             </Box>
           </Grid>
         </Grid>
