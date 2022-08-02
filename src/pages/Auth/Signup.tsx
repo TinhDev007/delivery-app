@@ -28,7 +28,7 @@ const Signup = () => {
     email: ""
   });
 
-  const [merchantRole, setMerchantRole] = useState(true);
+  const [merchantRole, setMerchantRole] = useState(false);
 
   const handleMerchantRole = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMerchantRole(event.target.checked);
