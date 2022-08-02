@@ -3,6 +3,7 @@ import { Dispatch } from "redux";
 import MerchantApi from "../api/MerchantApi";
 import {
   getMerchantsSuccess, getMerchantsFailure,
+  getMerchantByIDSuccess, getMerchantByIDFailure,
   createMerchantSuccess, createMerchantFailure,
   updateMerchantSuccess, updateMerchantFailure,
   deleteMerchantSuccess, deleteMerchantFailure
@@ -17,6 +18,19 @@ export const getAllMerchants = () => {
         })
       .catch(error => {
         return dispatch(getMerchantsFailure(error.response.data))
+      });
+  };  
+};
+
+export const getMerchantById = (id: string | undefined) => {
+  return async (dispatch: Dispatch) => {
+    return MerchantApi
+      .getMerchantById(id)
+      .then(resp => {
+          return dispatch(getMerchantByIDSuccess(resp.data.data))
+        })
+      .catch(error => {
+        return dispatch(getMerchantByIDFailure(error.response.data))
       });
   };  
 };

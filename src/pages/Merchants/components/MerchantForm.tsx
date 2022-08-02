@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dispatch } from 'redux';
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import NumberFormat from 'react-number-format';
 import {
   TextField,
@@ -36,7 +35,7 @@ interface IProps {
 }
 
 const MerchantForm = (props: IProps) => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const { open, closeModal, merchant, mode } = props;
   const merchantFormData: IMerchant = {
     id: "",
@@ -65,7 +64,7 @@ const MerchantForm = (props: IProps) => {
 
   const [merchantData, setMerchantData] = useState(merchant ? merchant : merchantFormData);
 
-  const categories = useSelector((state: RootState) => state.categories.list);
+  const categories = useAppSelector((state: RootState) => state.categories.list);
 
   useEffect(() => {
     dispatch(getAllCategories());

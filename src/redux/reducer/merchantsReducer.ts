@@ -5,13 +5,24 @@ import { IMerchant } from '../../types/MerchantTypes';
 interface MerchantsState {
   isLoading: boolean,
   error: string,
-  list: IMerchant[]  
+  list: IMerchant[],
+  merchant: IMerchant
 }
 
 const initialState: MerchantsState = {
   isLoading: false,
   error: '',
-  list: []  
+  list: [],
+  merchant: {
+    name: '',
+    description: '',
+    category: '',
+    address: '',
+    phone: '',
+    email: '',
+    logo: '',
+    image: '',
+  }
 }
 
 export const merchantsSlice = createSlice({
@@ -24,6 +35,15 @@ export const merchantsSlice = createSlice({
       state.list = payload;
     },
     getMerchantsFailure: (state, action) => {
+      const { payload } = action;
+      state.error = payload;
+    },
+    getMerchantByIDRequest: () => {},
+    getMerchantByIDSuccess: (state, action) => {
+      const { payload } = action;
+      state.merchant = payload[0];
+    },
+    getMerchantByIDFailure: (state, action) => {
       const { payload } = action;
       state.error = payload;
     },
@@ -64,6 +84,7 @@ export const merchantsSlice = createSlice({
 
 export const { 
   getMerchantsRequest, getMerchantsSuccess, getMerchantsFailure,
+  getMerchantByIDRequest, getMerchantByIDSuccess, getMerchantByIDFailure,
   createMerchantRequest, createMerchantSuccess, createMerchantFailure,
   updateMerchantRequest, updateMerchantSuccess, updateMerchantFailure,
   deleteMerchantRequest, deleteMerchantSuccess, deleteMerchantFailure

@@ -12,6 +12,8 @@ import StockForm from "../Stocks/components/StockForm";
 import { ShoppingCart } from "@mui/icons-material";
 import { makeStyles } from '@mui/styles';
 import { getAllProducts } from "../../actions/productActions";
+import { getMerchantById } from "../../actions/merchantActions";
+import MerchantForm from "./components/MerchantForm";
 
 const useStyles = makeStyles((theme) => (
   {
@@ -65,15 +67,18 @@ const MerchantDetail = () => {
   const [createStockModal, setCreateStockModal] = useState(false);
   const [subTotal, setSubTotal] = useState(0);
   const [shoppingProductsCount, setShoppingProductsCount] = useState(0);
+  const [showMerchantModal, setShowMerchantModal] = useState(false);
 
   const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
   const shoppingProducts = useAppSelector((state) => state.cart.list);
   const userRole = useAppSelector((state) => state.auth.role);
   const userId = useAppSelector((state) => state.auth.user_id);
+  const merchant = useAppSelector((state) => state.merchants.merchant);
 
   useEffect(() => {
     dispatch(getAllProducts());
-  }, [dispatch]);
+    dispatch(getMerchantById(id));
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (shoppingProducts.length > 0) {
@@ -103,14 +108,21 @@ const MerchantDetail = () => {
     navigate(`/merchants/` + id + `/product-groups`);
   };
 
+  const handleCloseEditMerchantModal = () => {
+    setShowMerchantModal(false);
+  }
+
   return (
     <>
       <Box sx={{ paddingY: 8, position: 'relative' }}>
         <Container>
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography variant="h2" sx={{ marginY: 5, textAlign: `${matches ? 'center' : 'left'}` }}>
               Store Information
-            </Typography>            
+            </Typography>
+            {(userRole === "merchant" && id === userId) && (
+              <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setShowMerchantModal(true)}>Edit Merchant</Button>
+            )}           
           </Box>
         </Container>
         {products.length > 0 && (
@@ -150,7 +162,7 @@ const MerchantDetail = () => {
                   </ToggleButton>            
                 </ToggleButtonGroup>
               </Box>
-            )}      
+            )}  
           </Box>
           {viewMode === 'list' ? (
             <ProductsGridView />
@@ -182,6 +194,14 @@ const MerchantDetail = () => {
           open={createStockModal}
           mode="Create"
           closeModal={() => handleCloseModal()}
+        />
+      }
+      {showMerchantModal && 
+        <MerchantForm
+          open={showMerchantModal}
+          mode="Edit"
+          closeModal={() => handleCloseEditMerchantModal()}
+          merchant={merchant}
         />
       }
     </>

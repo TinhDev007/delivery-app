@@ -13,6 +13,17 @@ class MerchantApi extends BaseApi {
     );
   }
 
+  getMerchantById(id: string | undefined) {
+    return axios.get(
+      this.REACT_APP_SERVER_URL + 'merchants/' + id,    
+      {        
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  }
+
   createMerchant(data: any) {
     return axios.post(
       this.REACT_APP_SERVER_URL + 'merchants/create',

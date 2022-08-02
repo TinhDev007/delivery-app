@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Dispatch } from 'redux';
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useAppDispatch } from "../../redux/hooks";
 import {
   TextField,
   Grid,
@@ -27,7 +26,7 @@ interface IProps {
 }
 
 const CategoryForm = (props: IProps) => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const { open, closeModal, category, mode } = props;
   const categoryFormData: ICategory = {
     id: "",
