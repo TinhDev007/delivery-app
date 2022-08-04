@@ -10,9 +10,9 @@ import TableView from "./components/Table";
 const ProductGroups = () => {
   const { id } = useParams();
   const [visibleForm, setVisibleForm] = useState(false);
-  const userRole = localStorage.getItem("role");
 
   const userId = useAppSelector((state) => state.auth.user_id);
+  const userRole = useAppSelector((state) => state.auth.role);
 
   const handleCloseFormModal = () => {
     setVisibleForm(false);

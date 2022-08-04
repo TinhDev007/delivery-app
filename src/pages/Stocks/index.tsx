@@ -22,6 +22,7 @@ const StockListPage = () => {
   const [createStockModal, setCreateStockModal] = useState(false);
 
   const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const userRole = useAppSelector((state) => state.auth.role);
 
   const handleCloseModal = () => {
     setCreateStockModal(false);
@@ -30,8 +31,6 @@ const StockListPage = () => {
   useEffect(() => {
     dispatch(getAllProducts());
   }, [dispatch]);
-
-  const userRole = localStorage.getItem("role");
 
   return (
     <>

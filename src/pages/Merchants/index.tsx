@@ -22,9 +22,9 @@ const MerchantListPage = () => {
   const matches = useMediaQuery(theme.breakpoints.down('sm'));
   const [viewMode, setViewMode] = useState("list");
   const [createMerchantModal, setCreateMerchantModal] = useState(false);
-  const userRole = localStorage.getItem("role");
 
   const merchants = useAppSelector((state) => state.merchants.list);
+  const userRole = useAppSelector((state) => state.auth.role);
 
   const handleCloseModal = () => {
     setCreateMerchantModal(false);

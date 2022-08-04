@@ -39,7 +39,7 @@ const CategoryListPage = () => {
   }, [dispatch]);
 
   const categories = useAppSelector((state) => state.categories.list);
-  const userRole = localStorage.getItem("role");
+  const userRole = useAppSelector((state) => state.auth.role);
 
   const showEditModal = (category: ICategory) => {
     setVisibleCategoryForm(true);
