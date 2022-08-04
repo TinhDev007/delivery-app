@@ -24,7 +24,6 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import { createMerchant, updateMerchant } from "../../../actions/merchantActions";
 import { getAllCategories } from "../../../actions/categoryActions";
 
-import { RootState } from "../../../redux/store";
 import { base64ToArrayBuffer } from "../../convertBasetoBinary";
 
 interface IProps {
@@ -64,7 +63,7 @@ const MerchantForm = (props: IProps) => {
 
   const [merchantData, setMerchantData] = useState(merchant ? merchant : merchantFormData);
 
-  const categories = useAppSelector((state: RootState) => state.categories.list);
+  const categories = useAppSelector((state) => state.categories.list);
 
   useEffect(() => {
     dispatch(getAllCategories());

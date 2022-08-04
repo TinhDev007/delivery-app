@@ -1,7 +1,6 @@
 import React,  { useState } from "react";
 import { useParams } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../../redux/hooks";
 import {
   TextField,
   Grid,
@@ -22,7 +21,7 @@ interface IProps {
 }
 
 const ProductGroupForm = (props: IProps) => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const { id } = useParams();
   const { open, closeModal, group, mode } = props;
 

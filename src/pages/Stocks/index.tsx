@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Container, Typography, Grid, Box, ToggleButtonGroup,ToggleButton, Button } from "@mui/material";
 import { List, GridView } from '@mui/icons-material';
 import StockCard from "../../components/Card/Stock";
 import TableView from "./components/Table";
 import StockForm from "./components/StockForm";
 import { getAllProducts } from "../../actions/productActions";
-import { RootState } from "../../redux/store";
 import { IStock } from "../../types/StockTypes";
 
 const StockListPage = () => {
   const { id } = useParams();
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const [viewMode, setViewMode] = useState("list");
   const [createStockModal, setCreateStockModal] = useState(false);
 
-  const products = useSelector((state: RootState) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
 
   const handleCloseModal = () => {
     setCreateStockModal(false);

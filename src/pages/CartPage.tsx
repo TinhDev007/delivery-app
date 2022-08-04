@@ -1,12 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../redux/hooks";
 import { Container, Typography, Box, Divider, Button } from "@mui/material";
-import { RootState } from "../redux/store";
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const cartProducts = useSelector((state: RootState) => state.cart.list);
+  const cartProducts = useAppSelector((state) => state.cart.list);
 
   const subTotal = cartProducts.map((item) => {    
       const total = item.price * item.carts_quantity;

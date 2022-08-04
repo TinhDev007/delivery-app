@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Card, CardContent, Avatar, Typography, useTheme } from "@mui/material";
 import useEmblaCarousel from "embla-carousel-react";
 import "./styles.css";
@@ -8,15 +7,13 @@ import "./styles.css";
 import { ICategory } from "../../types/CategoryTypes";
 import { getAllCategories } from "../../actions/categoryActions";
 
-import type { RootState } from '../../redux/store';
-
 interface IProps {
   selectedCategory: ICategory | undefined,
   handleSelectCategory: (category: ICategory | undefined) => void
 };
 
 const CategorySlides = (props: IProps) => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const { selectedCategory, handleSelectCategory } = props;
   const [viewportRef] = useEmblaCarousel({
@@ -24,7 +21,7 @@ const CategorySlides = (props: IProps) => {
     loop: true
   });
 
-  const categories = useSelector((state: RootState) => state.categories.list);
+  const categories = useAppSelector((state) => state.categories.list);
 
   const showStoresForCategory = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, category: ICategory) => {
     localStorage.setItem("category", category.id);

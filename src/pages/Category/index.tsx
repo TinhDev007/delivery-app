@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import {
   Container,
   TableContainer,
@@ -16,17 +15,14 @@ import {
   Dialog, 
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
-
-import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
-
 import { Delete, Edit } from "@mui/icons-material";
-import { RootState } from "../../redux/store";
+import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
 import { ICategory } from "../../types/CategoryTypes";
 import CategoryForm from "./CategoryForm";
 
 
 const CategoryListPage = () => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const [mode, setMode] = useState('Create');
   const [selectedCategory, setSelectedCategory] = useState<ICategory>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
@@ -36,7 +32,7 @@ const CategoryListPage = () => {
     dispatch(getAllCategories());
   }, [dispatch]);
 
-  const categories = useSelector((state: RootState) => state.categories.list);
+  const categories = useAppSelector((state) => state.categories.list);
   const userRole = localStorage.getItem("role");
 
   const showEditModal = (category: ICategory) => {

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "./redux/hooks";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from "@mui/material";
@@ -21,8 +21,6 @@ import QRCodePage from "./pages/QRCode";
 import CategoryListPage from "./pages/Category";
 
 import Header from "./components/Header";
-
-import { RootState } from './redux/store';
 
 type ProtectedRouteProps = {
   isAuthenticated: boolean;
@@ -46,7 +44,7 @@ const RoutesList = () => {
     authenticationPath: '/',
   };
 
-  const themeMode = useSelector((state: RootState) => state.settings.theme);
+  const themeMode = useAppSelector((state) => state.settings.theme);
 
   const theme = useMemo(
     () =>
