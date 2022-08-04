@@ -10,5 +10,6 @@ export interface IStock {
   carts_quantity: number,
   logo_preview_url?: string,
   image_preview_url?: string,
-  merchantid: string | undefined
+  merchantid: string | undefined,
+  published: boolean
 };

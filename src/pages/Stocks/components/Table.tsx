@@ -60,6 +60,7 @@ const TableView = () => {
               <TableCell>Group</TableCell>
               <TableCell>Price</TableCell>            
               <TableCell>Quantity</TableCell>
+              <TableCell>Published</TableCell>
               <TableCell>Image</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -86,7 +87,8 @@ const TableView = () => {
                 <TableCell>{stock.description}</TableCell>
                 <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
                 <TableCell>€{stock.price}</TableCell>
-                <TableCell>{stock.quantity}</TableCell>              
+                <TableCell>{stock.quantity}</TableCell>
+                <TableCell>{stock.published ? 'Yes' : 'No'}</TableCell>
                 <TableCell>
                   <CardMedia
                     component="img"

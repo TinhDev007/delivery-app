@@ -45,7 +45,7 @@ const ProductsGridView = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-              {products.filter((stock) => stock.prod_group === group.id).map((stock: IStock) => (
+              {products.filter((stock) => stock.prod_group === group.id).filter((stock) => stock.published).map((stock: IStock) => (
                 <Grid item xs={12} sm={4} md={4} key={stock.id}>
                   <UserStockItem stock={stock} />
                 </Grid>
