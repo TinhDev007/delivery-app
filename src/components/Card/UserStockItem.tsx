@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dispatch } from "redux";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Typography, Box, IconButton, Card } from "@mui/material";
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import RemoveCircleSharpIcon from '@mui/icons-material/RemoveCircleSharp';
@@ -8,21 +7,24 @@ import RemoveCircleSharpIcon from '@mui/icons-material/RemoveCircleSharp';
 import { IStock } from "../../types/StockTypes";
 
 import { addProductToCart, removeProductFromCart } from "../../redux/reducer/cartReducer";
-import { RootState } from "../../redux/store";
 
 interface IProps {
   stock: IStock | undefined
 }
 
 const UserStockItem = (props: IProps) => {
-  const dispatch: Dispatch<any> = useDispatch();
+  const dispatch = useAppDispatch();
   const { stock } = props;
 
-  const cartProducts = useSelector((state: RootState) => state.cart.list);
+  const cartProducts = useAppSelector((state) => state.cart.list);
+  const currentCartMerchant = useAppSelector((state) => state.cart.currentMerchant);
 
   const [currentProduct, setCurrentProduct] = useState<IStock>();
 
   const handleAddProductToCart = () => {
+    if (currentCartMerchant !== stock?.merchantid) {
+      alert('The new cart will be created.')
+    }
     dispatch(addProductToCart({ product: stock }));
   };
 
@@ -63,7 +65,7 @@ const UserStockItem = (props: IProps) => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <Box>
             <Typography variant="h6">
-              ${currentProduct?.price}
+              €{currentProduct?.price}
             </Typography>
           </Box>
           <Box

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Container, Typography, Box, Divider, Button } from "@mui/material";
@@ -34,7 +34,7 @@ const CartPage = () => {
                     {item.name}
                   </Typography>
                   <Typography variant="h6" sx={{ marginY: 2 }}>
-                    ${item.price * item.carts_quantity}
+                    €{item.price * item.carts_quantity}
                   </Typography>
                 </Box>
               ))}
@@ -42,7 +42,7 @@ const CartPage = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Typography variant="h5" sx={{ marginY: 2 }} />
                 <Typography variant="h6" sx={{ marginY: 2 }}>
-                  ${subTotal}
+                  €{subTotal}
                 </Typography>
               </Box>
               <Box sx={{ textAlign: 'center' }}>

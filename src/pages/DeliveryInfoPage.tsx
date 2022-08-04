@@ -78,10 +78,6 @@ const DeliveryInfoPage = () => {
 
   };
 
-  const goToCartPage = () => {
-    navigate("/cart");
-  };
-
   return (
     <Box sx={{ paddingY: 10 }}>
       <Container sx={{ maxWidth: '900px !imoportant;' }}>    

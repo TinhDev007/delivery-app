@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardActions, Typography, Rating, Box,
-  Dialog, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery
+import { 
+  Card, CardContent, Typography, Box, Dialog, DialogContent, DialogContentText, DialogActions, Button, useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { IStock } from '../../types/StockTypes';
@@ -49,21 +49,13 @@ const StockCard = (props: IProps) => {
             sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 2, flexDirection: `${matches ? 'column' : 'row'}` }}
           >
             <Typography variant="h5">
-              ${stock?.price}
+              €{stock?.price}
             </Typography>
             <Typography variant="h6">
               Quantity: {stock?.quantity}
             </Typography>
           </Box>
         </CardContent>
-        {/* <CardActions disableSpacing sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: "center" }}>
-            <Rating name="read-only" value={stock?.ratings} precision={0.1} readOnly />
-            <Typography variant="body2" sx={{ marginLeft: 1 }}>
-              {!matches ? `${stock?.reviewers + ' Reviews'}` : ''}
-            </Typography>
-          </Box>
-        </CardActions> */}
       </Card>
       {visibleConfirmModal && (
         <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>          

@@ -105,7 +105,7 @@ const OrderForm = (props: IProps) => {
                   {stock?.description}
                 </Typography>
                 <Typography variant="h4">
-                  ${stock?.price}
+                  €{stock?.price}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={6}>

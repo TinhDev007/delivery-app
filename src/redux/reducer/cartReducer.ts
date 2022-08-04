@@ -3,12 +3,14 @@ import { IStock } from '../../types/StockTypes';
 
 interface CartState {
   isLoading: boolean,
-  list: IStock[]
+  list: IStock[],
+  currentMerchant: string
 }
 
 const initialState: CartState = {
   isLoading: false,
   list: [],
+  currentMerchant: ''
 }
 
 export const categoriesSlice = createSlice({
@@ -20,6 +22,7 @@ export const categoriesSlice = createSlice({
     },
     addProductToCart: (state, action) => {
       const { product } = action.payload;
+      state.currentMerchant = product.merchantid;
       const productIDs = current(state.list).map((product) => product.id);      
       if (productIDs.includes(product.id)) {
         const index = state.list.findIndex((item) => item.id === product.id);

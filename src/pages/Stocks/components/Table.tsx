@@ -79,7 +79,7 @@ const TableView = () => {
                 </TableCell>
                 <TableCell>{stock.description}</TableCell>
                 <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
-                <TableCell>${stock.price}</TableCell>
+                <TableCell>€{stock.price}</TableCell>
                 <TableCell>{stock.quantity}</TableCell>              
                 <TableCell>
                   <CardMedia

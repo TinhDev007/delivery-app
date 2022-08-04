@@ -117,8 +117,8 @@ const MerchantDetail = () => {
       <Box sx={{ paddingY: 8, position: 'relative' }}>
         <Container>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h2" sx={{ marginY: 5, textAlign: `${matches ? 'center' : 'left'}` }}>
-              Store Information
+            <Typography variant="h3" sx={{ marginY: 5, textAlign: `${matches ? 'center' : 'left'}` }}>
+              {merchant.name}
             </Typography>
             {(userRole === "merchant" && id === userId) && (
               <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setShowMerchantModal(true)}>Edit Merchant</Button>
@@ -183,7 +183,7 @@ const MerchantDetail = () => {
                 Checkout
               </Typography>
               <Typography variant="h6">
-                ${subTotal}
+                €{subTotal}
               </Typography>
             </Box>
           </Box>

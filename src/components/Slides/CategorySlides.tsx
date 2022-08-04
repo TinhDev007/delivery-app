@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { Dispatch } from "redux";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Card, CardContent, Avatar, Typography, useTheme } from "@mui/material";
-// import { PrevButton, NextButton } from "./EmblaCarouselButtons";
 import useEmblaCarousel from "embla-carousel-react";
 import "./styles.css";
 
@@ -21,30 +19,12 @@ const CategorySlides = (props: IProps) => {
   const dispatch: Dispatch<any> = useDispatch();
   const theme = useTheme();
   const { selectedCategory, handleSelectCategory } = props;
-  const [viewportRef, embla] = useEmblaCarousel({
+  const [viewportRef] = useEmblaCarousel({
     dragFree: true,
-    // containScroll: "trimSnaps",
     loop: true
   });
 
-  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
-  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
-
   const categories = useSelector((state: RootState) => state.categories.list);
-
-  const scrollPrev = useCallback(() => embla && embla.scrollPrev(), [embla]);
-  const scrollNext = useCallback(() => embla && embla.scrollNext(), [embla]);
-  const onSelect = useCallback(() => {
-    if (!embla) return;
-    setPrevBtnEnabled(embla.canScrollPrev());
-    setNextBtnEnabled(embla.canScrollNext());
-  }, [embla]);
-
-  useEffect(() => {
-    if (!embla) return;
-    embla.on("select", onSelect);
-    onSelect();
-  }, [embla, onSelect]);
 
   const showStoresForCategory = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, category: ICategory) => {
     localStorage.setItem("category", category.id);
@@ -89,8 +69,6 @@ const CategorySlides = (props: IProps) => {
           ))}
         </div>
       </div>
-      {/* <PrevButton onClick={scrollPrev} enabled={prevBtnEnabled} />
-      <NextButton onClick={scrollNext} enabled={nextBtnEnabled} /> */}
     </div>
   );
 };
