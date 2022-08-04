@@ -59,8 +59,6 @@ const StockForm = (props: IProps) => {
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
   const groups = useAppSelector((state) => state.products.productGroups);
 
-  console.log('stockData', stockData);
-
   useEffect(() => {
     dispatch(getProductGroupsByMerchantId(id));
   }, [dispatch, id]);
