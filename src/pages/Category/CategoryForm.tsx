@@ -14,9 +14,15 @@ import {
   FormControl
 } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
+
+// Import Types
 import { ICategory } from "../../types/CategoryTypes";
+
+// Import Actions
 import { createCategory, updateCategory } from "../../actions/categoryActions";
-import { base64ToArrayBuffer } from "../convertBasetoBinary";
+
+// Import Utility
+import { base64ToArrayBuffer } from "../../utils/convertBasetoBinary";
 
 interface IProps {
   mode: string,

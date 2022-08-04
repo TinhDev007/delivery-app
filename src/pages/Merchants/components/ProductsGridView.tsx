@@ -2,9 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import { Grid, Box, Accordion, AccordionSummary, Typography, AccordionDetails } from "@mui/material";
-import UserStockItem from "../../../components/Card/UserStockItem";
-import { IStock } from "../../../types/StockTypes";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
+// Import Components
+import UserStockItem from "../../../components/Card/UserStockItem";
+
+// Import Types
+import { IStock } from "../../../types/StockTypes";
+
+// Import Actions
 import { getProductGroupsByMerchantId } from "../../../actions/productActions";
 
 const ProductsGridView = () => {

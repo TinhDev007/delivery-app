@@ -4,16 +4,22 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useTheme } from '@mui/material/styles';
 import { Container, Typography, Grid, Box, ToggleButtonGroup,ToggleButton, Button, useMediaQuery } from "@mui/material";
 import { List, GridView } from '@mui/icons-material';
-import UserStockItem from "../../components/Card/UserStockItem";
-import { IStock } from "../../types/StockTypes";
-import TableView from "../Stocks/components/Table";
-import ProductsGridView from "./components/ProductsGridView";
-import StockForm from "../Stocks/components/StockForm";
 import { ShoppingCart } from "@mui/icons-material";
 import { makeStyles } from '@mui/styles';
+
+// Import Components
+import ProductsGridView from "./components/ProductsGridView";
+import MerchantForm from "./components/MerchantForm";
+import TableView from "../Stocks/components/Table";
+import StockForm from "../Stocks/components/StockForm";
+import UserStockItem from "../../components/Card/UserStockItem";
+
+// Import Types
+import { IStock } from "../../types/StockTypes";
+
+// Import Actions
 import { getAllProducts } from "../../actions/productActions";
 import { getMerchantById } from "../../actions/merchantActions";
-import MerchantForm from "./components/MerchantForm";
 
 const useStyles = makeStyles((theme) => (
   {

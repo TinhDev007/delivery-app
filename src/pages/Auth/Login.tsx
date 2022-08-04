@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../redux/hooks";
 import { Button, TextField, Grid, Typography, Container, Box, Link } from "@mui/material";
 import { makeStyles } from '@mui/styles';
+
+// Import Actions
 import { login } from "../../actions/authActions";
 
 const useStyles = makeStyles({

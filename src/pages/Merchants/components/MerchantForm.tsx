@@ -17,14 +17,18 @@ import {
   Box,
   FormHelperText
 } from "@mui/material";
-import { AddPhotoAlternate } from '@mui/icons-material';
-import { IMerchant } from '../../../types/MerchantTypes';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { AddPhotoAlternate } from '@mui/icons-material';
 
+// Import Types
+import { IMerchant } from '../../../types/MerchantTypes';
+
+// Import Actions
 import { createMerchant, updateMerchant } from "../../../actions/merchantActions";
 import { getAllCategories } from "../../../actions/categoryActions";
 
-import { base64ToArrayBuffer } from "../../convertBasetoBinary";
+// Import Utility
+import { base64ToArrayBuffer } from "../../../utils/convertBasetoBinary";
 
 interface IProps {
   mode: string,

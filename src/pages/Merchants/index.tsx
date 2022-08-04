@@ -3,10 +3,16 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Container, Grid, Box, Typography, ToggleButtonGroup, ToggleButton, Button, useMediaQuery } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import { List, GridView } from '@mui/icons-material';
-import MerchantCard from "../../components/Card/Merchant";
-import { IMerchant } from "../../types/MerchantTypes";
+
+// Import Components
 import TableView from "./components/Table";
 import MerchantForm from "./components/MerchantForm";
+import MerchantCard from "../../components/Card/Merchant";
+
+// Import Types
+import { IMerchant } from "../../types/MerchantTypes";
+
+// Import Actions
 import { getAllMerchants } from "../../actions/merchantActions";
 import { getAllCategories } from "../../actions/categoryActions";
 

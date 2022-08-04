@@ -16,9 +16,15 @@ import {
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
-import { ICategory } from "../../types/CategoryTypes";
+
+// Import Components
 import CategoryForm from "./CategoryForm";
+
+// Import Types
+import { ICategory } from "../../types/CategoryTypes";
+
+// Import Actions
+import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
 
 
 const CategoryListPage = () => {

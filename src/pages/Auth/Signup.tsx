@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Button, TextField, Link, Grid, Typography, Container, Box, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { makeStyles } from '@mui/styles';
+
+// Import Actions
 import { signup } from "../../actions/authActions";
 
 const useStyles = makeStyles({

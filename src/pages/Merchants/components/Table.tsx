@@ -16,11 +16,15 @@ import {
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
 import { Delete, Edit, RemoveRedEye } from "@mui/icons-material";
+
+// Import Components
 import MerchantForm from "./MerchantForm";
+
+// Import Types
 import { IMerchant } from "../../../types/MerchantTypes";
+
+// Import Actions
 import { deleteMerchant } from "../../../actions/merchantActions";
-
-
 
 const TableView = () => {
   const dispatch = useAppDispatch();
