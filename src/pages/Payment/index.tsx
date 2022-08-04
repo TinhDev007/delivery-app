@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NumberFormat from 'react-number-format';
 import { Container, Typography, Box, TextField, Grid, Button } from "@mui/material";
+
+// Import Components
 import FrontSvg from "./components/FrontSvg";
 import BackSvg from "./components/BackSvg";
+
+// Import Styles
 import "./payment.css";
 
 interface IPaymentData {

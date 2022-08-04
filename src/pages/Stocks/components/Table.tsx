@@ -5,8 +5,14 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
-import { IStock } from "../../../types/StockTypes";
+
+// Import Components
 import StockForm from "./StockForm";
+
+// Import Types
+import { IStock } from "../../../types/StockTypes";
+
+// Import Actions
 import { getAllProducts, deleteProduct } from "../../../actions/productActions";
 
 const TableView = () => {

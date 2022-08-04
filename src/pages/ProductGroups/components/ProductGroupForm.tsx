@@ -10,7 +10,11 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+
+// Import Types
 import { IGroup } from "../../../types/GroupType";
+
+// Import Actions
 import { createProductGroup, updateProductGroup } from "../../../actions/productActions";
 
 interface IProps {

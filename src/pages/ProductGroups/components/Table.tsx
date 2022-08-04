@@ -15,11 +15,16 @@ import {
   Dialog, 
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
-
 import { Delete, Edit } from "@mui/icons-material";
-import { IGroup } from "../../../types/GroupType";
-import { getProductGroupsByMerchantId, deleteProductGroup } from "../../../actions/productActions";
+
+// Import Components
 import ProductGroupForm from "./ProductGroupForm";
+
+// Import Types
+import { IGroup } from "../../../types/GroupType";
+
+// Import Actions
+import { getProductGroupsByMerchantId, deleteProductGroup } from "../../../actions/productActions";
 
 const TableView = () => {
   const dispatch = useAppDispatch();

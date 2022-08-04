@@ -10,6 +10,8 @@ import { IStock } from "../../../types/StockTypes";
 
 // Import Actions
 import { createProduct, updateProduct, getProductGroupsByMerchantId } from "../../../actions/productActions";
+
+// Import Utility
 import { base64ToArrayBuffer } from "../../../utils/convertBasetoBinary";
 
 interface IProps {

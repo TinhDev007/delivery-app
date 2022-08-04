@@ -3,11 +3,17 @@ import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Container, Typography, Grid, Box, ToggleButtonGroup,ToggleButton, Button } from "@mui/material";
 import { List, GridView } from '@mui/icons-material';
-import StockCard from "../../components/Card/Stock";
+
+// Import Components
 import TableView from "./components/Table";
 import StockForm from "./components/StockForm";
-import { getAllProducts } from "../../actions/productActions";
+import StockCard from "../../components/Card/Stock";
+
+// Import Types
 import { IStock } from "../../types/StockTypes";
+
+// Import Actions
+import { getAllProducts } from "../../actions/productActions";
 
 const StockListPage = () => {
   const { id } = useParams();
