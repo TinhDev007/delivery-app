@@ -199,7 +199,7 @@ const StockForm = (props: IProps) => {
           </Grid>
           <Grid item xs={6} sx={{ marginY: 1 }}>
             <FormGroup>
-              <FormControlLabel control={<Checkbox value={stockData?.published} onChange={(event) => handleChange(event, 'published')}/>} label="Published" />
+              <FormControlLabel control={<Checkbox value={stockData.published} checked={stockData.published} onChange={(event) => handleChange(event, 'published')}/>} label="Published" />
             </FormGroup>
           </Grid>
           <Grid item xs={12} sx={{ marginY: 1 }}>
