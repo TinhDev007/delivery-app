@@ -102,7 +102,8 @@ class ProductApi extends BaseApi {
       data,
       {      
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
         }
       }
     );
@@ -110,7 +111,12 @@ class ProductApi extends BaseApi {
 
   deleteProductGroup(id: string | undefined) {
     return axios.delete(
-      this.REACT_APP_SERVER_URL + "productgroups/" + id
+      this.REACT_APP_SERVER_URL + "productgroups/" + id,
+      {
+        headers: {
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      }
     );
   }  
 }
