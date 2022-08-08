@@ -17,11 +17,7 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 
 // Import Types
 import { ICategory } from "../../types/CategoryTypes";
-
-// Import Actions
-import { createCategory, updateCategory } from "../../actions/categoryActions";
-
-// Import Utility
+import { createCategory, getAllCategories, updateCategory } from "../../actions/categoryActions";
 import { base64ToArrayBuffer } from "../../utils/convertBasetoBinary";
 
 interface IProps {
@@ -82,7 +78,7 @@ const CategoryForm = (props: IProps) => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = Object.keys(categoryData).map((key) => {
       return handleValidate(categoryData[key as keyof ICategory], key);
     });
@@ -99,14 +95,15 @@ const CategoryForm = (props: IProps) => {
       const formData = new FormData();
       formData.append("name", categoryData.name);
       formData.append("image", categoryData.image);
-      dispatch(createCategory(formData));
+      await dispatch(createCategory(formData));
     } else {
       const formData = new FormData();
       formData.append("id", categoryData.id || "");
       formData.append("name", categoryData.name);
       formData.append("image", base64ToArrayBuffer(categoryData.image));
-      dispatch(updateCategory(formData, categoryData.id || ""));
+      await dispatch(updateCategory(formData, categoryData.id || ""));
     }
+    await dispatch(getAllCategories());
   };
 
   return (

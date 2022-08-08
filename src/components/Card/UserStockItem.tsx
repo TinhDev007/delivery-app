@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { Typography, Box, IconButton, Card } from "@mui/material";
+import { Typography, Box, IconButton, Card, Dialog, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import RemoveCircleSharpIcon from '@mui/icons-material/RemoveCircleSharp';
 
 import { IStock } from "../../types/StockTypes";
 
-import { addProductToCart, removeProductFromCart } from "../../redux/reducer/cartReducer";
+import { addProductToCart, removeAllProductFromCart, removeProductFromCart } from "../../redux/reducer/cartReducer";
 
 interface IProps {
   stock: IStock | undefined
@@ -20,12 +20,19 @@ const UserStockItem = (props: IProps) => {
   const currentCartMerchant = useAppSelector((state) => state.cart.currentMerchant);
 
   const [currentProduct, setCurrentProduct] = useState<IStock>();
+  const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
 
-  const handleAddProductToCart = () => {
-    if (currentCartMerchant !== stock?.merchantid) {
-      alert('The new cart will be created.')
+  const handleAddProductToCart = async () => {
+    if (currentCartMerchant !== stock?.merchantid && cartProducts.length >= 0) {
+      await dispatch(removeAllProductFromCart({ product: [] }));
+      await dispatch(addProductToCart({ product: stock }));
+      setVisibleConfirmModal(false);
     }
-    dispatch(addProductToCart({ product: stock }));
+    if (currentCartMerchant === stock?.merchantid && cartProducts.length >= 0) {
+      // await dispatch(removeAllProductFromCart({ product: [] }));
+      await dispatch(addProductToCart({ product: stock }));
+      setVisibleConfirmModal(false);
+    }
   };
 
   const handleRemoveProductFromCart = () => {
@@ -46,7 +53,7 @@ const UserStockItem = (props: IProps) => {
       sx={{ padding: 2, borderRadius: 7, boxShadow: 10 }}
     >
       <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
             <Typography variant="h6">
               {currentProduct?.name}
@@ -62,14 +69,14 @@ const UserStockItem = (props: IProps) => {
             <img src={currentProduct?.image} alt="" width="100%" height="100px" style={{ objectFit: 'contain', borderRadius: 8 }} />
           </Box>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
             <Typography variant="h6">
               €{currentProduct?.price}
             </Typography>
           </Box>
           <Box
-            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
           >
             {!!currentProduct?.carts_quantity && currentProduct?.carts_quantity > 0 && (
               <>
@@ -81,13 +88,28 @@ const UserStockItem = (props: IProps) => {
                 </Typography>
               </>
             )}
-            <IconButton onClick={() => handleAddProductToCart()}>
+
+            <IconButton disabled={currentProduct?.quantity === 0} onClick={() => setVisibleConfirmModal(true)}>
               <AddCircleSharpIcon />
             </IconButton>
           </Box>
         </Box>
       </Box>
-    </Card> 
+      {currentProduct?.quantity === 0 ? <p style={{ margin: '0px', color: "#00000042" }}>sold out</p> : ""}
+      {visibleConfirmModal && (
+        <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>
+          <DialogContent>
+            <DialogContentText>
+              The new cart will be created.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setVisibleConfirmModal(false)}>No</Button>
+            <Button onClick={() => { handleAddProductToCart() }}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+      )}
+    </Card>
   );
 };
 

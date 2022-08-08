@@ -1,4 +1,4 @@
-import React,  { useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch } from "../../../redux/hooks";
 import {
@@ -13,9 +13,7 @@ import {
 
 // Import Types
 import { IGroup } from "../../../types/GroupType";
-
-// Import Actions
-import { createProductGroup, updateProductGroup } from "../../../actions/productActions";
+import { createProductGroup, getProductGroupsByMerchantId, updateProductGroup } from "../../../actions/productActions";
 
 interface IProps {
   mode: string,
@@ -36,7 +34,7 @@ const ProductGroupForm = (props: IProps) => {
   };
 
   const [errors, setErrors] = useState({
-    name: "",      
+    name: "",
   });
 
   const [productGroupData, setProductGroupData] = useState(group ? group : productGroupFormData);
@@ -50,8 +48,8 @@ const ProductGroupForm = (props: IProps) => {
       return true;
     }
 
-    if(!value) {
-      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.`}));
+    if (!value) {
+      setErrors((errors) => ({ ...errors, [fieldName]: `The ${fieldName} should be not empty.` }));
       return false;
     } else {
       setErrors((errors) => ({ ...errors, [fieldName]: "" }));
@@ -59,7 +57,7 @@ const ProductGroupForm = (props: IProps) => {
     }
   };
 
-  const handleChange = (event:  React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, fieldName: string) => {
     const { value } = event.target as HTMLInputElement;
     handleValidate(value, fieldName);
 
@@ -71,9 +69,9 @@ const ProductGroupForm = (props: IProps) => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = Object.keys(productGroupData).map((key) => {
-      return handleValidate(productGroupData[key as  keyof IGroup], key);
+      return handleValidate(productGroupData[key as keyof IGroup], key);
     });
 
     const isInvalid = result.filter((r) => !r).length > 0;
@@ -89,10 +87,11 @@ const ProductGroupForm = (props: IProps) => {
         name: productGroupData.name,
         merchantid: id
       };
-      dispatch(createProductGroup(formData));
+      await dispatch(createProductGroup(formData));
     } else {
-      dispatch(updateProductGroup(productGroupData));
+      await dispatch(updateProductGroup(productGroupData));
     }
+    await dispatch(getProductGroupsByMerchantId(id));
   };
 
   return (
@@ -103,15 +102,15 @@ const ProductGroupForm = (props: IProps) => {
           <Grid item xs={12} sx={{ marginY: 2 }}>
             <TextField
               id="produc-group-name"
-              value={productGroupData?.name} 
-              label="Product Group Name" 
-              variant="outlined" 
-              fullWidth 
+              value={productGroupData?.name}
+              label="Product Group Name"
+              variant="outlined"
+              fullWidth
               onChange={(event) => handleChange(event, 'name')}
               error={errors.name !== ""}
               helperText={errors.name}
             />
-          </Grid>          
+          </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
