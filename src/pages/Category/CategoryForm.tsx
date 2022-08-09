@@ -17,7 +17,7 @@ import { AddPhotoAlternate } from '@mui/icons-material';
 
 // Import Types
 import { ICategory } from "../../types/CategoryTypes";
-import { createCategory, getAllCategories, updateCategory } from "../../actions/categoryActions";
+import { createCategory, updateCategory } from "../../actions/categoryActions";
 import { base64ToArrayBuffer } from "../../utils/convertBasetoBinary";
 
 interface IProps {
@@ -103,7 +103,6 @@ const CategoryForm = (props: IProps) => {
       formData.append("image", base64ToArrayBuffer(categoryData.image));
       await dispatch(updateCategory(formData, categoryData.id || ""));
     }
-    await dispatch(getAllCategories());
   };
 
   return (
