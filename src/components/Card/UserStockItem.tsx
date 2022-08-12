@@ -103,7 +103,7 @@ const UserStockItem = (props: IProps) => {
           </Box>
         </Box>
       </Box>
-      {currentProduct?.quantity === 0 ? <p style={{ margin: '0px', color: "#00000042" }}>sold out</p> : ""}
+      {currentProduct?.quantity === 0 ? <p style={{ margin: '0px', color: "#00000042" }}>Sold out</p> : ""}
       {visibleConfirmModal && (
         <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>
           <DialogContent>
