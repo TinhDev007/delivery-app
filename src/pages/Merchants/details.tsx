@@ -137,11 +137,19 @@ const MerchantDetail = () => {
               Featured Products
             </Typography>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 12, md: 12 }}>
-              {products.slice(0, 4).filter((stock) => stock.published).map((stock: IStock) => (
-                <Grid item xs={12} sm={6} md={4} key={stock.id}>
-                  <UserStockItem stock={stock} />
-                </Grid>
-              ))}
+              {userRole === 'admin' ? (
+                products.filter((product) => product.featured).map((stock: IStock) => (
+                  <Grid item xs={12} sm={6} md={4} key={stock.id}>
+                    <UserStockItem stock={stock} />
+                  </Grid>
+                ))
+              ) : (
+                products.filter((product) => product.featured).filter((stock) => stock.published).map((stock: IStock) => (
+                  <Grid item xs={12} sm={6} md={4} key={stock.id}>
+                    <UserStockItem stock={stock} />
+                  </Grid>
+                ))
+              )}
             </Grid>
           </Container>
         )}        

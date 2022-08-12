@@ -41,7 +41,8 @@ const StockForm = (props: IProps) => {
     image_preview_url: "",
     merchantid: "",
     carts_quantity: 0,
-    published: false
+    published: false,
+    featured: false
   };
 
   const [errors, setErrors] = useState({
@@ -53,7 +54,8 @@ const StockForm = (props: IProps) => {
     image: "",
     logo: "",
     prod_group: "",
-    published: ""
+    published: "",
+    featured: ""
   });
 
   const [stockData, setStockData] = useState(stock ? stock : stockFormData);
@@ -68,7 +70,7 @@ const StockForm = (props: IProps) => {
       return true;
     }
 
-    if (fieldName === 'logo_preview_url' || fieldName === 'image_preview_url' || fieldName === 'carts_quantity' || fieldName === 'merchantid' || fieldName === 'published') {
+    if (fieldName === 'logo_preview_url' || fieldName === 'image_preview_url' || fieldName === 'carts_quantity' || fieldName === 'merchantid' || fieldName === 'published' || fieldName === 'featured') {
       return true;
     }
 
@@ -91,7 +93,7 @@ const StockForm = (props: IProps) => {
     setStockData((stockData) => {
       return {
         ...stockData,
-        [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : fieldName === 'published' ? checked : value,
+        [fieldName]: (fieldName === 'logo' || fieldName === 'image') ? file : (fieldName === 'published' || fieldName === 'featured') ? checked : value,
         'logo_preview_url': fieldName === 'logo' ? URL.createObjectURL(file) : stockData['logo_preview_url'],
         'image_preview_url': fieldName === 'image' ? URL.createObjectURL(file) : stockData['image_preview_url'],
       }
@@ -109,6 +111,8 @@ const StockForm = (props: IProps) => {
       return;
     }
 
+    console.log('stockData', stockData);
+
     closeModal();
 
     if (mode === 'Create') {
@@ -121,6 +125,7 @@ const StockForm = (props: IProps) => {
       formData.append("logo", stockData.logo);
       formData.append("image", stockData.image);
       formData.append("published", stockData.published.toString());
+      formData.append("featured", stockData.featured.toString());
       formData.append("merchantid", id || "");
       dispatch(createProduct(formData));
     } else {
@@ -132,6 +137,7 @@ const StockForm = (props: IProps) => {
       formData.append("prod_group", stockData.prod_group);
       formData.append("description", stockData.description);
       formData.append("published", stockData.published.toString());
+      formData.append("featured", stockData.featured.toString());
       formData.append("logo", base64ToArrayBuffer(stockData.logo));
       formData.append("image", base64ToArrayBuffer(stockData.image));
       formData.append("merchantid", id || "");
@@ -180,7 +186,7 @@ const StockForm = (props: IProps) => {
               helperText={errors.quantity}
             />
           </Grid>
-          <Grid item xs={6} sx={{ marginY: 1 }}>
+          <Grid item xs={12} sx={{ marginY: 1 }}>
             <FormControl fullWidth error={errors.prod_group !== ""}>
               <InputLabel id="product-group">Group</InputLabel>
               <Select
@@ -196,6 +202,11 @@ const StockForm = (props: IProps) => {
               </Select>
               <FormHelperText>{errors.prod_group}</FormHelperText>
             </FormControl>
+          </Grid>
+          <Grid item xs={6} sx={{ marginY: 1 }}>
+            <FormGroup>
+              <FormControlLabel control={<Checkbox value={stockData.featured} checked={stockData.featured} onChange={(event) => handleChange(event, 'featured')}/>} label="Featured" />
+            </FormGroup>
           </Grid>
           <Grid item xs={6} sx={{ marginY: 1 }}>
             <FormGroup>

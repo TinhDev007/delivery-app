@@ -11,5 +11,6 @@ export interface IStock {
   logo_preview_url?: string,
   image_preview_url?: string,
   merchantid: string | undefined,
-  published: boolean
+  published: boolean,
+  featured: boolean
 };

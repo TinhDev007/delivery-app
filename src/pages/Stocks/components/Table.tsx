@@ -61,6 +61,7 @@ const TableView = () => {
               <TableCell>Price</TableCell>            
               <TableCell>Quantity</TableCell>
               <TableCell>Published</TableCell>
+              <TableCell>Featured</TableCell>
               <TableCell>Image</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -89,6 +90,7 @@ const TableView = () => {
                 <TableCell>€{stock.price}</TableCell>
                 <TableCell>{stock.quantity}</TableCell>
                 <TableCell>{stock.published ? 'Yes' : 'No'}</TableCell>
+                <TableCell>{stock.featured ? 'Yes' : 'No'}</TableCell>
                 <TableCell>
                   <CardMedia
                     component="img"

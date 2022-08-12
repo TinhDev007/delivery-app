@@ -17,6 +17,8 @@ const ProductsGridView = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const groups = useAppSelector((state) => state.products.productGroups);
+  const userRole = useAppSelector((state) => state.auth.role);
+  const userId = useAppSelector((state) => state.auth.user_id);
   const [expanded, setExpanded] = useState<string | false>(groups[0]?.name);  
 
   useEffect(() => {
@@ -45,11 +47,19 @@ const ProductsGridView = () => {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 12, sm: 8, md: 12 }}>
-              {products.filter((stock) => stock.prod_group === group.id).filter((stock) => stock.published).map((stock: IStock) => (
-                <Grid item xs={12} sm={4} md={4} key={stock.id}>
-                  <UserStockItem stock={stock} />
-                </Grid>
-              ))}
+              {((userRole === "merchant" && id === userId) || userRole === 'admin') ? (
+                products.filter((stock) => stock.prod_group === group.id).map((stock: IStock) => (
+                  <Grid item xs={12} sm={4} md={4} key={stock.id}>
+                    <UserStockItem stock={stock} />
+                  </Grid>
+                ))
+              ) : (                
+                products.filter((stock) => stock.prod_group === group.id).filter((stock) => stock.published).map((stock: IStock) => (
+                  <Grid item xs={12} sm={4} md={4} key={stock.id}>
+                    <UserStockItem stock={stock} />
+                  </Grid>
+                ))
+              )}              
             </Grid>
           </AccordionDetails>
         </Accordion>
