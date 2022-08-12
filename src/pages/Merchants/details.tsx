@@ -120,7 +120,7 @@ const MerchantDetail = () => {
 
   return (
     <>
-      <Box sx={{ paddingY: 8, position: 'relative' }}>
+      <Box sx={{ paddingY: 8, position: 'relative' }} >
         <Container>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Typography variant="h3" sx={{ marginY: 5, textAlign: `${matches ? 'center' : 'left'}` }}>
