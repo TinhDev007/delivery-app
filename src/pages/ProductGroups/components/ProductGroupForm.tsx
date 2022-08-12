@@ -13,7 +13,7 @@ import {
 
 // Import Types
 import { IGroup } from "../../../types/GroupType";
-import { createProductGroup, getProductGroupsByMerchantId, updateProductGroup } from "../../../actions/productActions";
+import { createProductGroup, updateProductGroup } from "../../../actions/productActions";
 
 interface IProps {
   mode: string,
@@ -91,7 +91,6 @@ const ProductGroupForm = (props: IProps) => {
     } else {
       await dispatch(updateProductGroup(productGroupData));
     }
-    await dispatch(getProductGroupsByMerchantId(id));
   };
 
   return (

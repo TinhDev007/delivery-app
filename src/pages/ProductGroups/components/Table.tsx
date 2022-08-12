@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 
-import { 
+import {
   TableContainer,
   Table,
   TableHead,
@@ -12,7 +12,7 @@ import {
   Paper,
   IconButton,
   Box,
-  Dialog, 
+  Dialog,
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
@@ -32,6 +32,7 @@ const TableView = () => {
   const [editForm, setEditForm] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<IGroup>();
+  const [groupList, setGroupList] = useState<any>();
 
   const groups = useAppSelector((state) => state.products.productGroups);
 
@@ -41,7 +42,7 @@ const TableView = () => {
 
   const showEditModal = (group: IGroup) => {
     setEditForm(true);
-    setSelectedGroup(group);   
+    setSelectedGroup(group);
   };
 
   const showDeleteConfirmModal = (group: IGroup) => {
@@ -58,25 +59,35 @@ const TableView = () => {
     dispatch(deleteProductGroup(selectedGroup?.id));
   };
 
+  useEffect(() => {
+    if (groups && groups.length > 0) {
+      let data = [...groups]
+      const sortList = data?.sort((a: IGroup, b: IGroup) => {
+        return a.name > b.name ? 1 : -1;
+      })
+      setGroupList(sortList);
+    }
+  }, [groups])
+
   return (
     <>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>              
+              <TableCell>Name</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {groups.map((group) => (
+            {groupList?.length > 0 && groupList?.map((group: IGroup) => (
               <TableRow
                 key={group.id}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell>
                   {group.name}
-                </TableCell>                
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 90 }}>
                     <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(group)} size="small">
@@ -85,7 +96,7 @@ const TableView = () => {
                     <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(group)} size="small">
                       <Delete />
                     </IconButton>
-                  </Box>                
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
@@ -101,7 +112,7 @@ const TableView = () => {
         />
       )}
       {confirmModal && (
-        <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>          
+        <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>
           <DialogContent>
             <DialogContentText>
               Are you sure to delete this product group?

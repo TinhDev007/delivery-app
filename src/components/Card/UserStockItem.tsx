@@ -28,11 +28,6 @@ const UserStockItem = (props: IProps) => {
       await dispatch(addProductToCart({ product: stock }));
       setVisibleConfirmModal(false);
     }
-    if (currentCartMerchant === stock?.merchantid && cartProducts.length >= 0) {
-      // await dispatch(removeAllProductFromCart({ product: [] }));
-      await dispatch(addProductToCart({ product: stock }));
-      setVisibleConfirmModal(false);
-    }
   };
 
   const handleRemoveProductFromCart = () => {
@@ -47,6 +42,19 @@ const UserStockItem = (props: IProps) => {
       setCurrentProduct(stock);
     }
   }, [cartProducts, stock]);
+
+  const handleConfirm = async () => {
+    if (currentCartMerchant) {
+      if (currentCartMerchant === stock?.merchantid) {
+        await dispatch(addProductToCart({ product: stock }));
+      } else {
+        setVisibleConfirmModal(true)
+      }
+    }
+    else {
+      await dispatch(addProductToCart({ product: stock }));
+    }
+  }
 
   return (
     <Card
@@ -89,7 +97,7 @@ const UserStockItem = (props: IProps) => {
               </>
             )}
 
-            <IconButton disabled={currentProduct?.quantity === 0} onClick={() => setVisibleConfirmModal(true)}>
+            <IconButton disabled={currentProduct?.quantity === 0} onClick={() => { handleConfirm() }}>
               <AddCircleSharpIcon />
             </IconButton>
           </Box>
