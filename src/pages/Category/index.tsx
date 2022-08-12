@@ -17,6 +17,15 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DroppableProvided,
+  DraggableStateSnapshot
+} from "react-beautiful-dnd";
+
 // Import Components
 import CategoryForm from "./CategoryForm";
 
@@ -25,7 +34,6 @@ import { ICategory } from "../../types/CategoryTypes";
 
 // Import Actions
 import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
-
 
 const CategoryListPage = () => {
   const dispatch = useAppDispatch();
@@ -64,13 +72,27 @@ const CategoryListPage = () => {
 
   useEffect(() => {
     if (categories && categories.length > 0) {
-      let data = [...categories]      
+      let data = [...categories]
       const sortList = data?.sort((a: ICategory, b: ICategory) => {
         return a.name > b.name ? 1 : -1;
       })
       setCategoryList(sortList);
     }
   }, [categories])
+
+  const onDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+
+    setCategoryList((prev: any) => {
+      const category = [...prev];
+      const d = category[result.destination!.index];
+      category[result.destination!.index] = category[result.source.index];
+      category[result.source.index] = d;
+      return category;
+    });
+  }
 
   return (
     <>
@@ -92,36 +114,48 @@ const CategoryListPage = () => {
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {categoryList?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={3}>There is no categories</TableCell>
-                </TableRow>
-              )}
-              {categoryList?.length > 0 && categoryList?.map((category: ICategory) => (
-                <TableRow
-                  key={category.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell>
-                    {category.name}
-                  </TableCell>
-                  <TableCell>
-                    <img src={category.image} alt="" height={120} />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
-                        <Delete />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable" direction="vertical">
+                {(droppableProvided: DroppableProvided) => (
+                  <TableBody ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                    {categoryList?.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={3}>There is no categories</TableCell>
+                      </TableRow>
+                    )}
+                    {categoryList?.length > 0 && categoryList?.map((category: ICategory, index: number) => (
+                      <Draggable key={category.id} draggableId={category.id} index={index}>
+                        {(draggableProvided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+                          return (
+                            <TableRow
+                              ref={draggableProvided.innerRef}
+                              style={{ ...draggableProvided.draggableProps.style }}
+                              {...draggableProvided.draggableProps}
+                              {...draggableProvided.dragHandleProps}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                              <TableCell>{category.name}</TableCell>
+                              <TableCell ><img src={category.image} alt="" height={120} /></TableCell>
+                              <TableCell>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                  <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
+                                    <Edit />
+                                  </IconButton>
+                                  <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
+                                    <Delete />
+                                  </IconButton>
+                                </Box>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }}
+                      </Draggable>
+                    ))}
+                    {droppableProvided.placeholder}
+                  </TableBody>
+                )}
+              </Droppable>
+            </DragDropContext>
           </Table>
         </TableContainer>
       </Container>

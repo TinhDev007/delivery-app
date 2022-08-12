@@ -16,6 +16,13 @@ import {
   DialogContent, DialogContentText, DialogActions, Button
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DroppableProvided
+} from "react-beautiful-dnd";
 
 // Import Components
 import ProductGroupForm from "./ProductGroupForm";
@@ -69,6 +76,20 @@ const TableView = () => {
     }
   }, [groups])
 
+  const onDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+
+    setGroupList((prev: any) => {
+      const group = [...prev];
+      const d = group[result.destination!.index];
+      group[result.destination!.index] = group[result.source.index];
+      group[result.source.index] = d;
+      return group;
+    });
+  }
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -79,30 +100,43 @@ const TableView = () => {
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {groupList?.length > 0 && groupList?.map((group: IGroup) => (
-              <TableRow
-                key={group.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell>
-                  {group.name}
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 90 }}>
-                    <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(group)} size="small">
-                      <Edit />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(group)} size="small">
-                      <Delete />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="vertical">
+              {(droppableProvided: DroppableProvided) => (
+                <TableBody ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                  {groupList?.length > 0 && groupList?.map((group: IGroup, index: number) => (
+                    <Draggable key={group.id} draggableId={group.id} index={index}>
+                      {(draggableProvided: DraggableProvided) => {
+                        return (
+                          <TableRow
+                            ref={draggableProvided.innerRef}
+                            style={{ ...draggableProvided.draggableProps.style }}
+                            {...draggableProvided.draggableProps}
+                            {...draggableProvided.dragHandleProps}
+                          >
+                            <TableCell style={{ width: '100%' }} >{group.name}</TableCell>
+                            <TableCell>
+                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 90 }}>
+                                <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(group)} size="small">
+                                  <Edit />
+                                </IconButton>
+                                <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(group)} size="small">
+                                  <Delete />
+                                </IconButton>
+                              </Box>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }}
+                    </Draggable>
+                  ))}
+                  {droppableProvided.placeholder}
+                </TableBody>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </Table >
+      </TableContainer >
       {editForm && (
         <ProductGroupForm
           mode="Edit"
@@ -111,19 +145,21 @@ const TableView = () => {
           group={selectedGroup}
         />
       )}
-      {confirmModal && (
-        <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure to delete this product group?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setConfirmModal(false)}>No</Button>
-            <Button onClick={() => handleDeleteProductGroup()}>Yes</Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      {
+        confirmModal && (
+          <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure to delete this product group?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setConfirmModal(false)}>No</Button>
+              <Button onClick={() => handleDeleteProductGroup()}>Yes</Button>
+            </DialogActions>
+          </Dialog>
+        )
+      }
     </>
   )
 }

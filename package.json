@@ -23,6 +23,7 @@
     "embla-carousel-react": "^7.0.0-rc01",
     "node-base64-image": "^2.0.4",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.0",
     "react-dom": "^18.2.0",
     "react-imask": "^6.4.2",
     "react-number-format": "^4.9.3",
@@ -56,5 +57,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-beautiful-dnd": "^13.1.2"
   }
 }
