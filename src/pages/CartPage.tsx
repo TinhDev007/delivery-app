@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/hooks";
-import { Container, Typography, Box, Divider, Button } from "@mui/material";
+import { Container, Typography, Box, Divider, Button, TextField } from "@mui/material";
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -43,6 +43,18 @@ const CartPage = () => {
                 <Typography variant="h6" sx={{ marginY: 2 }}>
                   €{subTotal}
                 </Typography>
+              </Box>
+              <Box sx={{ marginBottom: 3 }}>
+                <Typography variant="h4" sx={{ marginY: 2 }}>
+                  Comnents
+                </Typography>
+                <TextField
+                  id="order-comments"                  
+                  placeholder="Add Comments Here..."
+                  multiline
+                  rows={5}
+                  fullWidth                  
+                />
               </Box>
               <Box sx={{ textAlign: 'center' }}>
                 <Button variant="contained" onClick={() => goToCheckoutPage()}>Checkout</Button>
