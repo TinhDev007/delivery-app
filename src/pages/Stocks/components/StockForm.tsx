@@ -111,8 +111,6 @@ const StockForm = (props: IProps) => {
       return;
     }
 
-    console.log('stockData', stockData);
-
     closeModal();
 
     if (mode === 'Create') {
