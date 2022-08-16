@@ -34,6 +34,7 @@ import { ICategory } from "../../types/CategoryTypes";
 
 // Import Actions
 import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
+import '../responsiveTable.css';
 
 const CategoryListPage = () => {
   const dispatch = useAppDispatch();
@@ -98,15 +99,15 @@ const CategoryListPage = () => {
     <>
       <Container sx={{ marginY: 10 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h3" sx={{ marginY: 5 }}>
+          <Typography className="category-title" variant="h3" sx={{ marginY: 5 }}>
             Categories
           </Typography>
           {userRole === "admin" && (
             <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setVisibleCategoryForm(true)}>Create</Button>
           )}
         </Box>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer component={Paper} className="category-container">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table" className="category_table">
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>

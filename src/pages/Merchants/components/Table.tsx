@@ -84,8 +84,8 @@ const TableView = () => {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer component={Paper} className="merchant-container">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table" className="merchant_table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -126,9 +126,9 @@ const TableView = () => {
                             <TableCell>{merchant.address}</TableCell>
                             <TableCell>{merchant.phone}</TableCell>
                             <TableCell>{merchant.email}</TableCell>
-                            <TableCell><img src={merchant.image} alt="StoreImage" height={120} /></TableCell>
+                            <TableCell><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></TableCell>
                             <TableCell>
-                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}  className="merchant-icon">
                                 <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
                                   <RemoveRedEye />
                                 </IconButton>

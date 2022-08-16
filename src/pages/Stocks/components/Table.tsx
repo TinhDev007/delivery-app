@@ -78,8 +78,8 @@ const TableView = () => {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer component={Paper} className="stock-container">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table" className="stock_table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -130,14 +130,16 @@ const TableView = () => {
                             <TableCell>{stock.featured ? 'Yes' : 'No'}</TableCell>
                             <TableCell>
                               <CardMedia
+                                className="stock-image"
                                 component="img"
                                 height="120"
+                                width="120"
                                 image={stock.image}
                                 alt="Store Image"
                               />
                             </TableCell>
                             <TableCell>
-                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="stock-icons">
                                 <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(stock)}>
                                   <Edit />
                                 </IconButton>
