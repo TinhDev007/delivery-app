@@ -34,7 +34,7 @@ const TableView = () => {
   const [productList, setProductList] = useState<any>();
   const [windowWidth, setWindowWidth] = useState<any>();
 
-  const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const products = useAppSelector((state) => state.products.list);
   const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
 
   const [expanded, setExpanded] = useState<string | false>(products[0]?.name);
@@ -68,8 +68,8 @@ const TableView = () => {
   };
 
   useEffect(() => {
-    setProductList(products);
-  }, [])
+    setProductList(products.filter((item) => item.merchantid?.toString() === id));
+  }, [id, products])
 
   const onDragEnd = (result: any) => {
     if (!result.destination) {
