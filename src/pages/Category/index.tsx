@@ -13,9 +13,18 @@ import {
   Box,
   Typography,
   Dialog,
-  DialogContent, DialogContentText, DialogActions, Button
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, ExpandMore } from "@mui/icons-material";
+
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DroppableProvided,
+  DraggableStateSnapshot
+} from "react-beautiful-dnd";
 
 // Import Components
 import CategoryForm from "./CategoryForm";
@@ -25,7 +34,8 @@ import { ICategory } from "../../types/CategoryTypes";
 
 // Import Actions
 import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
-
+import '../responsiveTable.css';
+import { isWindow, resizeFun } from "../../components/common";
 
 const CategoryListPage = () => {
   const dispatch = useAppDispatch();
@@ -34,6 +44,7 @@ const CategoryListPage = () => {
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
   const [visibleCategoryForm, setVisibleCategoryForm] = useState(false);
   const [categoryList, setCategoryList] = useState<any>();
+  const [windowWidth, setWindowWidth] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllCategories());
@@ -41,6 +52,13 @@ const CategoryListPage = () => {
 
   const categories = useAppSelector((state) => state.categories.list);
   const userRole = useAppSelector((state) => state.auth.role);
+
+  const [expanded, setExpanded] = useState<string | false>(categories[0]?.name)
+
+  const handleChangePanel =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   const showEditModal = (category: ICategory) => {
     setVisibleCategoryForm(true);
@@ -64,7 +82,7 @@ const CategoryListPage = () => {
 
   useEffect(() => {
     if (categories && categories.length > 0) {
-      let data = [...categories]      
+      let data = [...categories]
       const sortList = data?.sort((a: ICategory, b: ICategory) => {
         return a.name > b.name ? 1 : -1;
       })
@@ -72,19 +90,60 @@ const CategoryListPage = () => {
     }
   }, [categories])
 
+  const onDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+
+    setCategoryList((prev: any) => {
+      const category = [...prev];
+      const d = category[result.destination!.index];
+      category[result.destination!.index] = category[result.source.index];
+      category[result.source.index] = d;
+      return category;
+    });
+  }
+
+  const getWidth = () => isWindow ? window.innerWidth : windowWidth;
+
+  const resize = () => setWindowWidth(getWidth());
+
+  useEffect(() => {
+    if (isWindow) {
+      setWindowWidth(getWidth());
+      resizeFun(resize)
+    }
+  }, [isWindow]);
+
+  const tableContent = (category: ICategory) => {
+    return <>
+      <TableCell>{category.name}</TableCell>
+      <TableCell ><img src={category.image} alt="" height={120} className="merchant-image" /></TableCell>
+      <TableCell>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
+            <Edit />
+          </IconButton>
+          <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      </TableCell></>
+  }
+
   return (
     <>
       <Container sx={{ marginY: 10 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h3" sx={{ marginY: 5 }}>
+          <Typography className="category-title" variant="h3" sx={{ marginY: 5 }}>
             Categories
           </Typography>
           {userRole === "admin" && (
             <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setVisibleCategoryForm(true)}>Create</Button>
           )}
         </Box>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer component={Paper} className="category-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table" className="category_table">
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
@@ -92,36 +151,54 @@ const CategoryListPage = () => {
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {categoryList?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={3}>There is no categories</TableCell>
-                </TableRow>
-              )}
-              {categoryList?.length > 0 && categoryList?.map((category: ICategory) => (
-                <TableRow
-                  key={category.id}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell>
-                    {category.name}
-                  </TableCell>
-                  <TableCell>
-                    <img src={category.image} alt="" height={120} />
-                  </TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
-                        <Delete />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable" direction="vertical">
+                {(droppableProvided: DroppableProvided) => (
+                  <TableBody ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                    {categoryList?.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={3}>There is no categories</TableCell>
+                      </TableRow>
+                    )}
+                    {categoryList?.length > 0 && categoryList?.map((category: ICategory, index: number) => (
+                      <Draggable key={category.id} draggableId={category.id} index={index}>
+                        {(draggableProvided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+                          return (
+                            <TableRow
+                              ref={draggableProvided.innerRef}
+                              style={{ ...draggableProvided.draggableProps.style }}
+                              {...draggableProvided.draggableProps}
+                              {...draggableProvided.dragHandleProps}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                              {windowWidth <= 1024 ?
+                                <>
+                                  <Accordion expanded={expanded === category.name} onChange={handleChangePanel(category.name)} sx={{ marginBottom: 2 }} key={category.id}>
+                                    <AccordionSummary
+                                      expandIcon={<ExpandMore />}
+                                      aria-controls="panel1bh-content"
+                                      id="panel1bh-header"
+                                    >
+                                      <Typography sx={{ flexShrink: 0 }}>
+                                        {category.name}
+                                      </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                      {tableContent(category)}
+                                    </AccordionDetails>
+                                  </Accordion>
+                                </>
+                                : tableContent(category)}
+                            </TableRow>
+                          );
+                        }}
+                      </Draggable>
+                    ))}
+                    {droppableProvided.placeholder}
+                  </TableBody>
+                )}
+              </Droppable>
+            </DragDropContext>
           </Table>
         </TableContainer>
       </Container>

@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog, 
-  DialogContent, DialogContentText, DialogActions, Button
+import {
+  TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog,
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, ExpandMore } from "@mui/icons-material";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DroppableProvided,
+  DraggableStateSnapshot
+} from "react-beautiful-dnd";
 
 // Import Components
 import StockForm from "./StockForm";
@@ -14,6 +23,7 @@ import { IStock } from "../../../types/StockTypes";
 
 // Import Actions
 import { getAllProducts, deleteProduct } from "../../../actions/productActions";
+import { isWindow, resizeFun } from "../../../components/common";
 
 const TableView = () => {
   const { id } = useParams();
@@ -21,9 +31,18 @@ const TableView = () => {
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState<IStock>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
+  const [productList, setProductList] = useState<any>([]);
+  const [windowWidth, setWindowWidth] = useState<any>();
 
-  const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
+  const products = useAppSelector((state) => state.products.list);
   const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
+
+  const [expanded, setExpanded] = useState<string | false>(products[0]?.name);
+
+  const handleChangePanel =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   const handleCloseModal = () => {
     setVisibleEditModal(false);
@@ -48,17 +67,85 @@ const TableView = () => {
     dispatch(deleteProduct(selectedStock?.id));
   };
 
+  useEffect(() => {
+    setProductList(products.filter((item) => item.merchantid?.toString() === id));
+  }, [id, products])
+
+  const onDragEnd = (result: any) => {
+    if (!result.destination) {
+      return;
+    }
+
+    setProductList((prev: any) => {
+      const product = [...prev];
+      const d = product[result.destination!.index];
+      product[result.destination!.index] = product[result.source.index];
+      product[result.source.index] = d;
+      return product;
+    });
+  }
+
+  const getWidth = () => isWindow ? window.innerWidth : windowWidth;
+
+  const resize = () => setWindowWidth(getWidth());
+
+  useEffect(() => {
+    if (isWindow) {
+      setWindowWidth(getWidth());
+      resizeFun(resize)
+    }
+  }, [isWindow]);
+
+  const tableContent = (stock: IStock) => {
+    return <>
+      <TableCell>
+        {stock.name}
+      </TableCell>
+      <TableCell>
+        <Avatar aria-label="recipe">
+          <img src={stock.logo} alt="" />
+        </Avatar>
+      </TableCell>
+      <TableCell>{stock.description}</TableCell>
+      <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
+      <TableCell>€{stock.price}</TableCell>
+      <TableCell>{stock.quantity}</TableCell>
+      <TableCell>{stock.published ? 'Yes' : 'No'}</TableCell>
+      <TableCell>{stock.featured ? 'Yes' : 'No'}</TableCell>
+      <TableCell>
+        <CardMedia
+          className="stock-image"
+          component="img"
+          height="120"
+          width="120"
+          image={stock.image}
+          alt="Store Image"
+        />
+      </TableCell>
+      <TableCell>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="stock-icons">
+          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(stock)}>
+            <Edit />
+          </IconButton>
+          <IconButton aria-label="delete" color="secondary" onClick={() => showConfirmDelteModal(stock)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      </TableCell>
+    </>
+  }
+
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <TableContainer component={Paper} className="stock-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }} >
+        <Table sx={{ minWidth: 650 }} aria-label="simple table" className="stock_table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Group</TableCell>
-              <TableCell>Price</TableCell>            
+              <TableCell>Price</TableCell>
               <TableCell>Quantity</TableCell>
               <TableCell>Published</TableCell>
               <TableCell>Featured</TableCell>
@@ -66,52 +153,55 @@ const TableView = () => {
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {products.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={8}>There is no products</TableCell>
-              </TableRow>
-            )}
-            {products.map((stock) => (
-              <TableRow
-                key={stock.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell>
-                  {stock.name}
-                </TableCell>
-                <TableCell>                
-                  <Avatar aria-label="recipe">
-                    <img src={stock.logo} alt="" />
-                  </Avatar>
-                </TableCell>
-                <TableCell>{stock.description}</TableCell>
-                <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
-                <TableCell>€{stock.price}</TableCell>
-                <TableCell>{stock.quantity}</TableCell>
-                <TableCell>{stock.published ? 'Yes' : 'No'}</TableCell>
-                <TableCell>{stock.featured ? 'Yes' : 'No'}</TableCell>
-                <TableCell>
-                  <CardMedia
-                    component="img"
-                    height="120"
-                    image={stock.image}
-                    alt="Store Image"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>                  
-                    <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(stock)}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="secondary" onClick={() => showConfirmDelteModal(stock)}>
-                      <Delete />
-                    </IconButton>
-                  </Box>                
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="vertical">
+              {(droppableProvided: DroppableProvided) => (
+                <TableBody ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                  {productList?.length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={8}>There is no products</TableCell>
+                    </TableRow>
+                  )}
+                  {productList?.length > 0 && productList?.map((stock: any, index: number) => (
+                    <Draggable key={stock.id} draggableId={stock.id} index={index}>
+                      {(draggableProvided: DraggableProvided, snapshot: DraggableStateSnapshot) => {
+                        return (
+                          <TableRow
+                            ref={draggableProvided.innerRef}
+                            style={{ ...draggableProvided.draggableProps.style }}
+                            {...draggableProvided.draggableProps}
+                            {...draggableProvided.dragHandleProps}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            {windowWidth <= 1024 ?
+                              <>
+                                <Accordion expanded={expanded === stock.name} onChange={handleChangePanel(stock.name)} sx={{ marginBottom: 2 }} key={stock.id}>
+                                  <AccordionSummary
+                                    expandIcon={<ExpandMore />}
+                                    aria-controls="panel1bh-content"
+                                    id="panel1bh-header"
+                                  >
+                                    <Typography sx={{ flexShrink: 0 }}>
+                                      {stock.name}
+                                    </Typography>
+                                  </AccordionSummary>
+                                  <AccordionDetails>
+                                    {tableContent(stock)}
+                                  </AccordionDetails>
+                                </Accordion>
+                              </>
+                              : tableContent(stock)
+                            }
+                          </TableRow>
+                        );
+                      }}
+                    </Draggable>
+                  ))}
+                  {droppableProvided.placeholder}
+                </TableBody>
+              )}
+            </Droppable>
+          </DragDropContext>
         </Table>
       </TableContainer>
       {visibleEditModal && (
@@ -123,7 +213,7 @@ const TableView = () => {
         />
       )}
       {visibleConfirmModal && (
-        <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>          
+        <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>
           <DialogContent>
             <DialogContentText>
               Are you sure to delete this product?

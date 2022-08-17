@@ -1,11 +1,11 @@
 export const base64ToArrayBuffer = (base64: any): any => {
     const imageData = base64.toString()
     if (imageData?.includes("data:image") || imageData?.includes("data:application")) {
-        let binary_string
+        let binary_string;
         if (imageData?.includes("data:image")) {
-            binary_string = atob(imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''));
+            binary_string = window.atob(imageData.replace(/^data:image\/(png|jpeg|jpg);base64,/, ''));
         } else {
-            binary_string = atob(imageData.replace("data:application/octet-stream;base64,", ''));
+            binary_string = window.atob(imageData.replace("data:application/octet-stream;base64,", ''));
         }
         var len = new Array(binary_string.length);
         for (var i = 0; i < binary_string.length; i++) {

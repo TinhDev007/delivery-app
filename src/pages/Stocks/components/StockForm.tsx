@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText,
+import {
+  TextField, Grid, Button, Dialog, DialogTitle, DialogContent, DialogActions, Fab, Box, FormControl, InputLabel, Select, MenuItem, FormHelperText,
   FormGroup, FormControlLabel, Checkbox
 } from "@mui/material";
 import { AddPhotoAlternate } from '@mui/icons-material';
@@ -100,7 +101,7 @@ const StockForm = (props: IProps) => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = Object.keys(stockData).map((key) => {
       return handleValidate(stockData[key as keyof IStock], key);
     });
@@ -125,7 +126,7 @@ const StockForm = (props: IProps) => {
       formData.append("published", stockData.published.toString());
       formData.append("featured", stockData.featured.toString());
       formData.append("merchantid", id || "");
-      dispatch(createProduct(formData));
+     await dispatch(createProduct(formData));
     } else {
       const formData = new FormData();
       formData.append("id", stockData.id || "");
@@ -139,7 +140,7 @@ const StockForm = (props: IProps) => {
       formData.append("logo", base64ToArrayBuffer(stockData.logo));
       formData.append("image", base64ToArrayBuffer(stockData.image));
       formData.append("merchantid", id || "");
-      dispatch(updateProduct(formData, stockData.id || ""));
+      await dispatch(updateProduct(formData, stockData.id || ""));
     }
   }
 
@@ -203,12 +204,12 @@ const StockForm = (props: IProps) => {
           </Grid>
           <Grid item xs={6} sx={{ marginY: 1 }}>
             <FormGroup>
-              <FormControlLabel control={<Checkbox value={stockData.featured} checked={stockData.featured} onChange={(event) => handleChange(event, 'featured')}/>} label="Featured" />
+              <FormControlLabel control={<Checkbox value={stockData.featured} checked={stockData.featured} onChange={(event) => handleChange(event, 'featured')} />} label="Featured" />
             </FormGroup>
           </Grid>
           <Grid item xs={6} sx={{ marginY: 1 }}>
             <FormGroup>
-              <FormControlLabel control={<Checkbox value={stockData.published} checked={stockData.published} onChange={(event) => handleChange(event, 'published')}/>} label="Published" />
+              <FormControlLabel control={<Checkbox value={stockData.published} checked={stockData.published} onChange={(event) => handleChange(event, 'published')} />} label="Published" />
             </FormGroup>
           </Grid>
           <Grid item xs={12} sx={{ marginY: 1 }}>
@@ -229,7 +230,7 @@ const StockForm = (props: IProps) => {
               <FormControl error={errors.logo !== ""}>
                 <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
                 <input
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   type="file"
                   id="select-logo"
                   style={{ display: 'none' }}
@@ -258,7 +259,7 @@ const StockForm = (props: IProps) => {
               <FormControl error={errors.image !== ""}>
                 <label htmlFor="select-image" style={{ marginBottom: 10 }}>Image</label>
                 <input
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   type="file"
                   id="select-image"
                   style={{ display: 'none' }}

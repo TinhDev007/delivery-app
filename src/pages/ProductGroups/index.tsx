@@ -23,7 +23,7 @@ const ProductGroups = () => {
       <Box sx={{ paddingY: 8 }}>
         <Container>          
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="h3" sx={{ marginY: 5 }}>
+            <Typography variant="h3" sx={{ marginY: 5 }} className="productgroup-title">
               Product Groups
             </Typography>
             {((userRole === "merchant" && id === userId) || userRole === "admin") && (        

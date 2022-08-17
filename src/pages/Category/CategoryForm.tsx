@@ -127,7 +127,7 @@ const CategoryForm = (props: IProps) => {
               <FormControl error={errors.image !== ""}>
                 <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
                 <input
-                  accept="image/*"
+                  accept="image/png, image/jpg, image/jpeg"
                   type="file"
                   id="select-logo"
                   style={{ display: 'none' }}
