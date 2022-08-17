@@ -112,101 +112,127 @@ const TableView = () => {
 
   const tableContent = (group: IGroup) => {
     return <>
-      <TableCell style={{ width: '100%' }} >{group.name}</TableCell>
-      <TableCell>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 90 }}>
-          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(group)} size="small">
-            <Edit />
-          </IconButton>
-          <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(group)} size="small">
-            <Delete />
-          </IconButton>
-        </Box>
-      </TableCell>
+      {windowWidth <= 1024 ?
+        <>
+          <div className="responsive-content" style={{ width: '100%' }} >{group.name}</div>
+          <div className="responsive-content">
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 90 }}>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(group)} size="small">
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(group)} size="small">
+                <Delete />
+              </IconButton>
+            </Box>
+          </div>
+        </> :
+        <>
+          <TableCell style={{ width: '100%' }} >{group.name}</TableCell>
+          <TableCell>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 90 }}>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(group)} size="small">
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(group)} size="small">
+                <Delete />
+              </IconButton>
+            </Box>
+          </TableCell>
+        </>}
+
     </>
   }
 
   return (
     <>
-      <TableContainer component={Paper} style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table" className="product-group-table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell></TableCell>
-          </TableRow>
-        </TableHead>
+      {windowWidth <= 1024 ? <div className="product-group-table">
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable" direction="vertical">
             {(droppableProvided: DroppableProvided) => (
-              <TableBody ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+              <div ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
                 {groupList?.length > 0 && groupList?.map((group: IGroup, index: number) => (
                   <Draggable key={group.id} draggableId={group.id} index={index}>
                     {(draggableProvided: DraggableProvided) => {
                       return (
-                        <TableRow
+                        <div
                           ref={draggableProvided.innerRef}
                           style={{ ...draggableProvided.draggableProps.style }}
                           {...draggableProvided.draggableProps}
                           {...draggableProvided.dragHandleProps}
                         >
-                          {windowWidth <= 1024 ?
-                            <>
-                              <Accordion expanded={expanded === group.name} onChange={handleChangePanel(group.name)} sx={{ marginBottom: 2 }} key={group.id}>
-                                <AccordionSummary
-                                  expandIcon={<ExpandMore />}
-                                  aria-controls="panel1bh-content"
-                                  id="panel1bh-header"
-                                >
-                                  <Typography sx={{ flexShrink: 0 }}>
-                                    {group.name}
-                                  </Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                  {tableContent(group)}
-                                </AccordionDetails>
-                              </Accordion>
-                            </>
-                            : tableContent(group)
-                          }
-
-                        </TableRow>
+                          <Accordion expanded={expanded === group.name} onChange={handleChangePanel(group.name)} style={{ marginBottom: "15px" }} key={group.id}>
+                            <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1bh-content" id="panel1bh-header">
+                              <Typography sx={{ flexShrink: 0 }}>{group.name}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>{tableContent(group)}</AccordionDetails>
+                          </Accordion>
+                        </div>
                       );
                     }}
                   </Draggable>
                 ))}
                 {droppableProvided.placeholder}
-              </TableBody>
+              </div>
             )}
           </Droppable>
         </DragDropContext>
-      </Table >
-    </TableContainer >
-      {
-    editForm && (
-      <ProductGroupForm
-        mode="Edit"
-        open={editForm}
-        closeModal={() => handleCloseModal()}
-        group={selectedGroup}
-      />
-    )
-  }
-  {
-    confirmModal && (
-      <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure to delete this product group?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmModal(false)}>No</Button>
-          <Button onClick={() => handleDeleteProductGroup()}>Yes</Button>
-        </DialogActions>
-      </Dialog>
-    )
-  }
+      </div> : <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="vertical">
+              {(droppableProvided: DroppableProvided) => (
+                <TableBody ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                  {groupList?.length > 0 && groupList?.map((group: IGroup, index: number) => (
+                    <Draggable key={group.id} draggableId={group.id} index={index}>
+                      {(draggableProvided: DraggableProvided) => {
+                        return (
+                          <TableRow
+                            ref={draggableProvided.innerRef}
+                            style={{ ...draggableProvided.draggableProps.style }}
+                            {...draggableProvided.draggableProps}
+                            {...draggableProvided.dragHandleProps}
+                          >
+                            {tableContent(group)}
+                          </TableRow>
+                        );
+                      }}
+                    </Draggable>
+                  ))}
+                  {droppableProvided.placeholder}
+                </TableBody>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </Table >
+      </TableContainer>}
+
+      {editForm && (
+        <ProductGroupForm
+          mode="Edit"
+          open={editForm}
+          closeModal={() => handleCloseModal()}
+          group={selectedGroup}
+        />
+      )}
+      {confirmModal && (
+        <Dialog open={confirmModal} onClose={() => setConfirmModal(false)}>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure to delete this product group?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmModal(false)}>No</Button>
+            <Button onClick={() => handleDeleteProductGroup()}>Yes</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </>
   )
 }

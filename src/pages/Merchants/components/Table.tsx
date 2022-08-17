@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -102,35 +102,92 @@ const TableView = () => {
   }, [isWindow]);
 
   const tableContent = (merchant: IMerchant) => {
-    return <Fragment>
-      <TableCell>{merchant.name}</TableCell>
-      <TableCell><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></TableCell>
-      <TableCell>{merchant.description}</TableCell>
-      <TableCell>{categories.find((category) => category.id === merchant.category)?.name}</TableCell>
-      <TableCell>{merchant.address}</TableCell>
-      <TableCell>{merchant.phone}</TableCell>
-      <TableCell>{merchant.email}</TableCell>
-      <TableCell><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></TableCell>
-      <TableCell>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="merchant-icon">
-          <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
-            <RemoveRedEye />
-          </IconButton>
-          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
-            <Edit />
-          </IconButton>
-          <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
-            <Delete />
-          </IconButton>
-        </Box>
-      </TableCell>
-    </Fragment>
+    return <>
+      {windowWidth <= 1024 ?
+        <>
+          <div className="responsive-content">{merchant.name}</div>
+          <div className="responsive-content"><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></div>
+          <div className="responsive-content">{merchant.description}</div>
+          <div className="responsive-content">{categories.find((category) => category.id === merchant.category)?.name}</div>
+          <div className="responsive-content">{merchant.address}</div>
+          <div className="responsive-content">{merchant.phone}</div>
+          <div className="responsive-content">{merchant.email}</div>
+          <div className="responsive-content"><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></div>
+          <div className="responsive-content">
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="merchant-icon">
+              <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
+                <RemoveRedEye />
+              </IconButton>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
+                <Delete />
+              </IconButton>
+            </Box>
+          </div>
+        </> :
+        <>
+          <TableCell>{merchant.name}</TableCell>
+          <TableCell><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></TableCell>
+          <TableCell>{merchant.description}</TableCell>
+          <TableCell>{categories.find((category) => category.id === merchant.category)?.name}</TableCell>
+          <TableCell>{merchant.address}</TableCell>
+          <TableCell>{merchant.phone}</TableCell>
+          <TableCell>{merchant.email}</TableCell>
+          <TableCell><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></TableCell>
+          <TableCell>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="merchant-icon">
+              <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
+                <RemoveRedEye />
+              </IconButton>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
+                <Delete />
+              </IconButton>
+            </Box>
+          </TableCell>
+        </>}
+    </>
   }
 
   return (
     <>
-      <TableContainer component={Paper} className="merchant-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table" className="merchant_table">
+      {windowWidth <= 1024 ? <div className="merchant_table">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="droppable" direction="vertical">
+            {(droppableProvided: DroppableProvided) => (
+              <div ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                {merchantList?.length > 0 && merchantList?.map((merchant: any, index: number) => (
+                  <Draggable key={merchant.id} draggableId={merchant.id} index={index}>
+                    {(draggableProvided: DraggableProvided) => {
+                      return (
+                        <div
+                          ref={draggableProvided.innerRef}
+                          style={{ ...draggableProvided.draggableProps.style }}
+                          {...draggableProvided.draggableProps}
+                          {...draggableProvided.dragHandleProps}
+                        >
+                          <Accordion expanded={expanded === merchant.name} onChange={handleChangePanel(merchant.name)} style={{ marginBottom: "15px" }} key={merchant.id}>
+                            <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1bh-content" id="panel1bh-header">
+                              <Typography sx={{ flexShrink: 0 }}>{merchant.name}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>{tableContent(merchant)}</AccordionDetails>
+                          </Accordion>
+                        </div>
+                      );
+                    }}
+                  </Draggable>
+                ))}
+                {droppableProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div> : <TableContainer component={Paper} className="merchant-container">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -164,25 +221,7 @@ const TableView = () => {
                             {...draggableProvided.dragHandleProps}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            {windowWidth <= 1024 ?
-                              <Fragment>
-                                <Accordion expanded={expanded === merchant.name} onChange={handleChangePanel(merchant.name)} sx={{ marginBottom: 2 }} key={merchant.id}>
-                                  <AccordionSummary
-                                    expandIcon={<ExpandMore />}
-                                    aria-controls="panel1bh-content"
-                                    id="panel1bh-header"
-                                  >
-                                    <Typography sx={{ flexShrink: 0 }}>
-                                      {merchant.name}
-                                    </Typography>
-                                  </AccordionSummary>
-                                  <AccordionDetails>
-                                    {tableContent(merchant)}
-                                  </AccordionDetails>
-                                </Accordion>
-                              </Fragment>
-                              :
-                              tableContent(merchant)}
+                            {tableContent(merchant)}
                           </TableRow>
                         );
                       }}
@@ -195,6 +234,7 @@ const TableView = () => {
           </DragDropContext>
         </Table>
       </TableContainer>
+      }
       {visibleMerchantFormMdoal && (
         <MerchantForm
           open={visibleMerchantFormMdoal}
