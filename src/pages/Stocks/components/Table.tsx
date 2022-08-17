@@ -31,7 +31,7 @@ const TableView = () => {
   const [visibleEditModal, setVisibleEditModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState<IStock>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
-  const [productList, setProductList] = useState<any>();
+  const [productList, setProductList] = useState<any>([]);
   const [windowWidth, setWindowWidth] = useState<any>();
 
   const products = useAppSelector((state) => state.products.list);
@@ -137,7 +137,7 @@ const TableView = () => {
 
   return (
     <>
-      <TableContainer component={Paper} className="stock-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 991 ? "#eee" : "#fff" }} >
+      <TableContainer component={Paper} className="stock-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }} >
         <Table sx={{ minWidth: 650 }} aria-label="simple table" className="stock_table">
           <TableHead>
             <TableRow>
@@ -173,7 +173,7 @@ const TableView = () => {
                             {...draggableProvided.dragHandleProps}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            {windowWidth <= 991 ?
+                            {windowWidth <= 1024 ?
                               <>
                                 <Accordion expanded={expanded === stock.name} onChange={handleChangePanel(stock.name)} sx={{ marginBottom: 2 }} key={stock.id}>
                                   <AccordionSummary

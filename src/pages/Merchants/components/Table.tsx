@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -102,7 +102,7 @@ const TableView = () => {
   }, [isWindow]);
 
   const tableContent = (merchant: IMerchant) => {
-    return <>
+    return <Fragment>
       <TableCell>{merchant.name}</TableCell>
       <TableCell><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></TableCell>
       <TableCell>{merchant.description}</TableCell>
@@ -124,12 +124,12 @@ const TableView = () => {
           </IconButton>
         </Box>
       </TableCell>
-    </>
+    </Fragment>
   }
 
   return (
     <>
-      <TableContainer component={Paper} className="merchant-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 991 ? "#eee" : "#fff" }}>
+      <TableContainer component={Paper} className="merchant-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table" className="merchant_table">
           <TableHead>
             <TableRow>
@@ -164,8 +164,8 @@ const TableView = () => {
                             {...draggableProvided.dragHandleProps}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            {windowWidth <= 991 ?
-                              <>
+                            {windowWidth <= 1024 ?
+                              <Fragment>
                                 <Accordion expanded={expanded === merchant.name} onChange={handleChangePanel(merchant.name)} sx={{ marginBottom: 2 }} key={merchant.id}>
                                   <AccordionSummary
                                     expandIcon={<ExpandMore />}
@@ -180,7 +180,7 @@ const TableView = () => {
                                     {tableContent(merchant)}
                                   </AccordionDetails>
                                 </Accordion>
-                              </>
+                              </Fragment>
                               :
                               tableContent(merchant)}
                           </TableRow>

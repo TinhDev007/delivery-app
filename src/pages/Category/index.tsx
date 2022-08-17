@@ -118,7 +118,7 @@ const CategoryListPage = () => {
   const tableContent = (category: ICategory) => {
     return <>
       <TableCell>{category.name}</TableCell>
-      <TableCell ><img src={category.image} alt="" height={120} /></TableCell>
+      <TableCell ><img src={category.image} alt="" height={120} className="merchant-image" /></TableCell>
       <TableCell>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
@@ -142,7 +142,7 @@ const CategoryListPage = () => {
             <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setVisibleCategoryForm(true)}>Create</Button>
           )}
         </Box>
-        <TableContainer component={Paper} className="category-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 991 ? "#eee" : "#fff" }}>
+        <TableContainer component={Paper} className="category-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table" className="category_table">
             <TableHead>
               <TableRow>
@@ -171,7 +171,7 @@ const CategoryListPage = () => {
                               {...draggableProvided.dragHandleProps}
                               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                              {windowWidth <= 991 ?
+                              {windowWidth <= 1024 ?
                                 <>
                                   <Accordion expanded={expanded === category.name} onChange={handleChangePanel(category.name)} sx={{ marginBottom: 2 }} key={category.id}>
                                     <AccordionSummary

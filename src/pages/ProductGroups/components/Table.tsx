@@ -128,7 +128,7 @@ const TableView = () => {
 
   return (
     <>
-      <TableContainer component={Paper} style={{ boxShadow: "none", backgroundColor: windowWidth <= 991 ? "#eee" : "#fff" }}>
+      <TableContainer component={Paper} style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table" className="product-group-table">
         <TableHead>
           <TableRow>
@@ -150,7 +150,7 @@ const TableView = () => {
                           {...draggableProvided.draggableProps}
                           {...draggableProvided.dragHandleProps}
                         >
-                          {windowWidth <= 991 ?
+                          {windowWidth <= 1024 ?
                             <>
                               <Accordion expanded={expanded === group.name} onChange={handleChangePanel(group.name)} sx={{ marginBottom: 2 }} key={group.id}>
                                 <AccordionSummary
