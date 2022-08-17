@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import {
   TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog,
-  DialogContent, DialogContentText, DialogActions, Button
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, ExpandMore } from "@mui/icons-material";
 import {
   DragDropContext,
   Droppable,
@@ -23,6 +23,7 @@ import { IStock } from "../../../types/StockTypes";
 
 // Import Actions
 import { getAllProducts, deleteProduct } from "../../../actions/productActions";
+import { isWindow, resizeFun } from "../../../components/common";
 
 const TableView = () => {
   const { id } = useParams();
@@ -31,9 +32,17 @@ const TableView = () => {
   const [selectedStock, setSelectedStock] = useState<IStock>();
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
   const [productList, setProductList] = useState<any>();
+  const [windowWidth, setWindowWidth] = useState<any>();
 
   const products = useAppSelector((state) => state.products.list).filter((item) => item.merchantid?.toString() === id);
   const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
+
+  const [expanded, setExpanded] = useState<string | false>(products[0]?.name);
+
+  const handleChangePanel =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   const handleCloseModal = () => {
     setVisibleEditModal(false);
@@ -76,9 +85,59 @@ const TableView = () => {
     });
   }
 
+  const getWidth = () => isWindow ? window.innerWidth : windowWidth;
+
+  const resize = () => setWindowWidth(getWidth());
+
+  useEffect(() => {
+    if (isWindow) {
+      setWindowWidth(getWidth());
+      resizeFun(resize)
+    }
+  }, [isWindow]);
+
+  const tableContent = (stock: IStock) => {
+    return <>
+      <TableCell>
+        {stock.name}
+      </TableCell>
+      <TableCell>
+        <Avatar aria-label="recipe">
+          <img src={stock.logo} alt="" />
+        </Avatar>
+      </TableCell>
+      <TableCell>{stock.description}</TableCell>
+      <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
+      <TableCell>€{stock.price}</TableCell>
+      <TableCell>{stock.quantity}</TableCell>
+      <TableCell>{stock.published ? 'Yes' : 'No'}</TableCell>
+      <TableCell>{stock.featured ? 'Yes' : 'No'}</TableCell>
+      <TableCell>
+        <CardMedia
+          className="stock-image"
+          component="img"
+          height="120"
+          width="120"
+          image={stock.image}
+          alt="Store Image"
+        />
+      </TableCell>
+      <TableCell>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="stock-icons">
+          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(stock)}>
+            <Edit />
+          </IconButton>
+          <IconButton aria-label="delete" color="secondary" onClick={() => showConfirmDelteModal(stock)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      </TableCell>
+    </>
+  }
+
   return (
     <>
-      <TableContainer component={Paper} className="stock-container">
+      <TableContainer component={Paper} className="stock-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 991 ? "#eee" : "#fff" }} >
         <Table sx={{ minWidth: 650 }} aria-label="simple table" className="stock_table">
           <TableHead>
             <TableRow>
@@ -114,40 +173,25 @@ const TableView = () => {
                             {...draggableProvided.dragHandleProps}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            <TableCell>
-                              {stock.name}
-                            </TableCell>
-                            <TableCell>
-                              <Avatar aria-label="recipe">
-                                <img src={stock.logo} alt="" />
-                              </Avatar>
-                            </TableCell>
-                            <TableCell>{stock.description}</TableCell>
-                            <TableCell>{groups.find((group) => group.id === stock.prod_group)?.name}</TableCell>
-                            <TableCell>€{stock.price}</TableCell>
-                            <TableCell>{stock.quantity}</TableCell>
-                            <TableCell>{stock.published ? 'Yes' : 'No'}</TableCell>
-                            <TableCell>{stock.featured ? 'Yes' : 'No'}</TableCell>
-                            <TableCell>
-                              <CardMedia
-                                className="stock-image"
-                                component="img"
-                                height="120"
-                                width="120"
-                                image={stock.image}
-                                alt="Store Image"
-                              />
-                            </TableCell>
-                            <TableCell>
-                              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="stock-icons">
-                                <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(stock)}>
-                                  <Edit />
-                                </IconButton>
-                                <IconButton aria-label="delete" color="secondary" onClick={() => showConfirmDelteModal(stock)}>
-                                  <Delete />
-                                </IconButton>
-                              </Box>
-                            </TableCell>
+                            {windowWidth <= 991 ?
+                              <>
+                                <Accordion expanded={expanded === stock.name} onChange={handleChangePanel(stock.name)} sx={{ marginBottom: 2 }} key={stock.id}>
+                                  <AccordionSummary
+                                    expandIcon={<ExpandMore />}
+                                    aria-controls="panel1bh-content"
+                                    id="panel1bh-header"
+                                  >
+                                    <Typography sx={{ flexShrink: 0 }}>
+                                      {stock.name}
+                                    </Typography>
+                                  </AccordionSummary>
+                                  <AccordionDetails>
+                                    {tableContent(stock)}
+                                  </AccordionDetails>
+                                </Accordion>
+                              </>
+                              : tableContent(stock)
+                            }
                           </TableRow>
                         );
                       }}

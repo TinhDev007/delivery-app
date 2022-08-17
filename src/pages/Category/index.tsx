@@ -13,9 +13,9 @@ import {
   Box,
   Typography,
   Dialog,
-  DialogContent, DialogContentText, DialogActions, Button
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, ExpandMore } from "@mui/icons-material";
 
 import {
   DragDropContext,
@@ -35,6 +35,7 @@ import { ICategory } from "../../types/CategoryTypes";
 // Import Actions
 import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
 import '../responsiveTable.css';
+import { isWindow, resizeFun } from "../../components/common";
 
 const CategoryListPage = () => {
   const dispatch = useAppDispatch();
@@ -43,6 +44,7 @@ const CategoryListPage = () => {
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
   const [visibleCategoryForm, setVisibleCategoryForm] = useState(false);
   const [categoryList, setCategoryList] = useState<any>();
+  const [windowWidth, setWindowWidth] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllCategories());
@@ -50,6 +52,13 @@ const CategoryListPage = () => {
 
   const categories = useAppSelector((state) => state.categories.list);
   const userRole = useAppSelector((state) => state.auth.role);
+
+  const [expanded, setExpanded] = useState<string | false>(categories[0]?.name)
+
+  const handleChangePanel =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   const showEditModal = (category: ICategory) => {
     setVisibleCategoryForm(true);
@@ -95,6 +104,33 @@ const CategoryListPage = () => {
     });
   }
 
+  const getWidth = () => isWindow ? window.innerWidth : windowWidth;
+
+  const resize = () => setWindowWidth(getWidth());
+
+  useEffect(() => {
+    if (isWindow) {
+      setWindowWidth(getWidth());
+      resizeFun(resize)
+    }
+  }, [isWindow]);
+
+  const tableContent = (category: ICategory) => {
+    return <>
+      <TableCell>{category.name}</TableCell>
+      <TableCell ><img src={category.image} alt="" height={120} /></TableCell>
+      <TableCell>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
+            <Edit />
+          </IconButton>
+          <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
+            <Delete />
+          </IconButton>
+        </Box>
+      </TableCell></>
+  }
+
   return (
     <>
       <Container sx={{ marginY: 10 }}>
@@ -106,7 +142,7 @@ const CategoryListPage = () => {
             <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setVisibleCategoryForm(true)}>Create</Button>
           )}
         </Box>
-        <TableContainer component={Paper} className="category-container">
+        <TableContainer component={Paper} className="category-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 991 ? "#eee" : "#fff" }}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table" className="category_table">
             <TableHead>
               <TableRow>
@@ -135,18 +171,24 @@ const CategoryListPage = () => {
                               {...draggableProvided.dragHandleProps}
                               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                              <TableCell>{category.name}</TableCell>
-                              <TableCell ><img src={category.image} alt="" height={120} /></TableCell>
-                              <TableCell>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                  <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
-                                    <Edit />
-                                  </IconButton>
-                                  <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
-                                    <Delete />
-                                  </IconButton>
-                                </Box>
-                              </TableCell>
+                              {windowWidth <= 991 ?
+                                <>
+                                  <Accordion expanded={expanded === category.name} onChange={handleChangePanel(category.name)} sx={{ marginBottom: 2 }} key={category.id}>
+                                    <AccordionSummary
+                                      expandIcon={<ExpandMore />}
+                                      aria-controls="panel1bh-content"
+                                      id="panel1bh-header"
+                                    >
+                                      <Typography sx={{ flexShrink: 0 }}>
+                                        {category.name}
+                                      </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                      {tableContent(category)}
+                                    </AccordionDetails>
+                                  </Accordion>
+                                </>
+                                : tableContent(category)}
                             </TableRow>
                           );
                         }}
