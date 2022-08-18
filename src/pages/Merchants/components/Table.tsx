@@ -13,7 +13,7 @@ import {
   IconButton,
   Box,
   Dialog,
-  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails, TableSortLabel
 } from "@mui/material";
 import { Delete, Edit, ExpandMore, RemoveRedEye } from "@mui/icons-material";
 import {
@@ -42,6 +42,8 @@ const TableView = () => {
   const [selectedMerchant, setSelectedMerchant] = useState<IMerchant>();
   const [merchantList, setMerchantList] = useState<any>();
   const [windowWidth, setWindowWidth] = useState<any>();
+  const [orderDirection, setorderDirection] = useState<any>("asc")
+  const [defaultSort, setDefaultSort] = useState<any>("name");
 
   const merchants = useAppSelector((state) => state.merchants.list);
   const categories = useAppSelector((state) => state.categories.list);
@@ -75,6 +77,62 @@ const TableView = () => {
   useEffect(() => {
     setMerchantList(merchants);
   }, [merchants])
+
+
+  const sortData = (sortBy: any, sortOrder: any) => {
+    var itemsToSort = [...merchants];
+    var sortedItems = [];
+    var compareFn;
+    switch (sortBy) {
+      case "name":
+        compareFn = (i: any, j: any) => {
+          if (i.name < j.name) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.name > j.name) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      case "category":
+        compareFn = (i: any, j: any) => {
+          if (i.category < j.category) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.category > j.category) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    sortedItems = itemsToSort.sort(compareFn);
+    return sortedItems;
+  }
+
+  const requestSort = (pSortBy: any) => {
+    let sortBy = defaultSort;
+    let sortOrder = orderDirection;
+
+    return () => {
+      if (pSortBy === defaultSort) {
+        sortOrder = sortOrder === "asc" ? setorderDirection("desc") : setorderDirection("asc");
+        
+      } else {
+        sortBy = setDefaultSort(pSortBy);
+        sortOrder = "asc";
+      }
+      var sortedItems = sortData(sortBy, orderDirection);
+      setMerchantList(sortedItems)
+    };
+  }
 
   const onDragEnd = (result: any) => {
     if (!result.destination) {
@@ -190,10 +248,18 @@ const TableView = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell className="header-title">
+                <TableSortLabel
+                  active={defaultSort === "name"}
+                  direction={orderDirection}
+                  onClick={requestSort("name")}>Name</TableSortLabel></TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Category</TableCell>
+              <TableCell className="header-title">
+                <TableSortLabel
+                  active={defaultSort === "category"}
+                  direction={orderDirection}
+                  onClick={requestSort("category")}>Category</TableSortLabel></TableCell>
               <TableCell>Address</TableCell>
               <TableCell style={{ width: "100%" }}>Contact Number</TableCell>
               <TableCell>Contact Mail</TableCell>

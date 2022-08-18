@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../../redux/hooks";
 import {
   TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, CardMedia, Avatar, IconButton, Box, Dialog,
-  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails, TableSortLabel
 } from "@mui/material";
 import { Delete, Edit, ExpandMore } from "@mui/icons-material";
 import {
@@ -33,6 +33,8 @@ const TableView = () => {
   const [visibleConfirmModal, setVisibleConfirmModal] = useState(false);
   const [productList, setProductList] = useState<any>();
   const [windowWidth, setWindowWidth] = useState<any>();
+  const [orderDirection, setorderDirection] = useState<any>("asc")
+  const [defaultSort, setDefaultSort] = useState<any>("name");
 
   const products = useAppSelector((state) => state.products.list);
   const groups = useAppSelector((state) => state.products.productGroups).filter((group) => group.merchantid === id);
@@ -70,6 +72,87 @@ const TableView = () => {
   useEffect(() => {
     setProductList(products.filter((item) => item.merchantid?.toString() === id));
   }, [id, products])
+
+  const sortData = (sortBy: any, sortOrder: any) => {
+    var itemsToSort = [...productList];
+    var sortedItems = [];
+    var compareFn;
+    switch (sortBy) {
+      case "name":
+        compareFn = (i: any, j: any) => {
+          if (i.name < j.name) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.name > j.name) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      case "prod_group":
+        compareFn = (i: any, j: any) => {
+          if (i.prod_group < j.prod_group) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.prod_group > j.prod_group) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      case "price":
+        compareFn = (i: any, j: any) => {
+          if (i.price < j.price) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.price > j.price) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      case "quantity":
+        compareFn = (i: any, j: any) => {
+          if (i.quantity < j.quantity) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.quantity > j.quantity) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    sortedItems = itemsToSort.sort(compareFn);
+    return sortedItems;
+  }
+
+  const requestSort = (pSortBy: any) => {
+    let sortBy = defaultSort;
+    let sortOrder = orderDirection;
+
+    return () => {
+      if (pSortBy === defaultSort) {
+        sortOrder = sortOrder === "asc" ? setorderDirection("desc") : setorderDirection("asc");
+
+      } else {
+        sortBy = setDefaultSort(pSortBy);
+        sortOrder = "asc";
+      }
+      var sortedItems = sortData(sortBy, orderDirection);
+      setProductList(sortedItems)
+    };
+  }
 
   const onDragEnd = (result: any) => {
     if (!result.destination) {
@@ -177,12 +260,24 @@ const TableView = () => {
         <Table sx={{ minWidth: 650 }} aria-label="simple table" >
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell><TableSortLabel
+                active={defaultSort === "name"}
+                direction={orderDirection}
+                onClick={requestSort("name")}>Name</TableSortLabel></TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Group</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Quantity</TableCell>
+              <TableCell><TableSortLabel
+                active={defaultSort === "prod_group"}
+                direction={orderDirection}
+                onClick={requestSort("prod_group")}>Group</TableSortLabel></TableCell>
+              <TableCell><TableSortLabel
+                active={defaultSort === "price"}
+                direction={orderDirection}
+                onClick={requestSort("price")}>Price</TableSortLabel></TableCell>
+              <TableCell><TableSortLabel
+                active={defaultSort === "quantity"}
+                direction={orderDirection}
+                onClick={requestSort("quantity")}>Quantity</TableSortLabel></TableCell>
               <TableCell>Published</TableCell>
               <TableCell>Featured</TableCell>
               <TableCell>Image</TableCell>

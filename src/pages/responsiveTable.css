@@ -9,9 +9,15 @@
 .stock_table {
   min-width: 0px !important;
 }
+.header-title {
+  cursor: pointer;
+}
 @media only screen and (max-width: 760px),
   (min-device-width: 761px) and (max-device-width: 1024px) {
-  .stock_table, .merchant_table, .category_table, .product-group-table {
+  .stock_table,
+  .merchant_table,
+  .category_table,
+  .product-group-table {
     display: block !important;
   }
 
@@ -42,7 +48,7 @@
     padding-right: 10px;
     white-space: nowrap;
   }
-  
+
   /* category table lables */
   .category_table .responsive-content:nth-of-type(1):before {
     content: "Name";

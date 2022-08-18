@@ -13,7 +13,7 @@ import {
   Box,
   Typography,
   Dialog,
-  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, AccordionDetails
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, AccordionDetails, TableSortLabel
 } from "@mui/material";
 import { Delete, Edit, ExpandMore } from "@mui/icons-material";
 
@@ -45,6 +45,8 @@ const CategoryListPage = () => {
   const [visibleCategoryForm, setVisibleCategoryForm] = useState(false);
   const [categoryList, setCategoryList] = useState<any>();
   const [windowWidth, setWindowWidth] = useState<any>();
+  const [orderDirection, setorderDirection] = useState<any>("asc")
+  const [defaultSort, setDefaultSort] = useState<any>("name");
 
   useEffect(() => {
     dispatch(getAllCategories());
@@ -89,6 +91,46 @@ const CategoryListPage = () => {
       setCategoryList(sortList);
     }
   }, [categories])
+
+  const sortData = (sortBy: any, sortOrder: any) => {
+    var itemsToSort = [...categories];
+    var sortedItems = [];
+    var compareFn;
+    switch (sortBy) {
+      case "name":
+        compareFn = (i: any, j: any) => {
+          if (i.name < j.name) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.name > j.name) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    sortedItems = itemsToSort.sort(compareFn);
+    return sortedItems;
+  }
+
+  const requestSort = (pSortBy: any) => {
+    let sortBy = defaultSort;
+    let sortOrder = orderDirection;
+    return () => {
+      if (pSortBy === defaultSort) {
+        sortOrder = sortOrder === "asc" ? setorderDirection("desc") : setorderDirection("asc");
+      } else {
+        sortBy = setDefaultSort(pSortBy);
+        sortOrder = "asc";
+      }
+      var sortedItems = sortData(sortBy, orderDirection);
+      setCategoryList(sortedItems)
+    };
+  }
 
   const onDragEnd = (result: any) => {
     if (!result.destination) {
@@ -195,7 +237,11 @@ const CategoryListPage = () => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell className="header-title">
+                  <TableSortLabel
+                    active={defaultSort === "name"}
+                    direction={orderDirection}
+                    onClick={requestSort("name")}>Name</TableSortLabel></TableCell>
                 <TableCell>Image</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
