@@ -13,7 +13,7 @@ import {
   Box,
   Typography,
   Dialog,
-  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, AccordionDetails
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, AccordionDetails, TableSortLabel
 } from "@mui/material";
 import { Delete, Edit, ExpandMore } from "@mui/icons-material";
 
@@ -45,6 +45,8 @@ const CategoryListPage = () => {
   const [visibleCategoryForm, setVisibleCategoryForm] = useState(false);
   const [categoryList, setCategoryList] = useState<any>();
   const [windowWidth, setWindowWidth] = useState<any>();
+  const [orderDirection, setorderDirection] = useState<any>("asc")
+  const [defaultSort, setDefaultSort] = useState<any>("name");
 
   useEffect(() => {
     dispatch(getAllCategories());
@@ -90,6 +92,46 @@ const CategoryListPage = () => {
     }
   }, [categories])
 
+  const sortData = (sortBy: any, sortOrder: any) => {
+    var itemsToSort = [...categories];
+    var sortedItems = [];
+    var compareFn;
+    switch (sortBy) {
+      case "name":
+        compareFn = (i: any, j: any) => {
+          if (i.name < j.name) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.name > j.name) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    sortedItems = itemsToSort.sort(compareFn);
+    return sortedItems;
+  }
+
+  const requestSort = (pSortBy: any) => {
+    let sortBy = defaultSort;
+    let sortOrder = orderDirection;
+    return () => {
+      if (pSortBy === defaultSort) {
+        sortOrder = sortOrder === "asc" ? setorderDirection("desc") : setorderDirection("asc");
+      } else {
+        sortBy = setDefaultSort(pSortBy);
+        sortOrder = "asc";
+      }
+      var sortedItems = sortData(sortBy, orderDirection);
+      setCategoryList(sortedItems)
+    };
+  }
+
   const onDragEnd = (result: any) => {
     if (!result.destination) {
       return;
@@ -117,18 +159,36 @@ const CategoryListPage = () => {
 
   const tableContent = (category: ICategory) => {
     return <>
-      <TableCell>{category.name}</TableCell>
-      <TableCell ><img src={category.image} alt="" height={120} className="merchant-image" /></TableCell>
-      <TableCell>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
-            <Edit />
-          </IconButton>
-          <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
-            <Delete />
-          </IconButton>
-        </Box>
-      </TableCell></>
+      {windowWidth <= 1024 ?
+        <>
+          <div className="responsive-content">{category.name}</div>
+          <div className="responsive-content"><img src={category.image} alt="" height={120} className="merchant-image" /></div>
+          <div className="responsive-content">
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
+                <Delete />
+              </IconButton>
+            </Box>
+          </div>
+        </> :
+        <>
+          <TableCell>{category.name}</TableCell>
+          <TableCell ><img src={category.image} alt="" height={120} className="merchant-image" /></TableCell>
+          <TableCell>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(category)}>
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(category)}>
+                <Delete />
+              </IconButton>
+            </Box>
+          </TableCell>
+        </>}
+    </>
   }
 
   return (
@@ -142,11 +202,46 @@ const CategoryListPage = () => {
             <Button variant="contained" sx={{ marginRight: 2 }} onClick={() => setVisibleCategoryForm(true)}>Create</Button>
           )}
         </Box>
-        <TableContainer component={Paper} className="category-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table" className="category_table">
+        {windowWidth <= 1024 ? <div className="category_table">
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="vertical">
+              {(droppableProvided: DroppableProvided) => (
+                <div ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                  {categoryList?.length > 0 && categoryList?.map((category: ICategory, index: number) => (
+                    <Draggable key={category.id} draggableId={category.id} index={index}>
+                      {(draggableProvided: DraggableProvided) => {
+                        return (
+                          <div
+                            ref={draggableProvided.innerRef}
+                            style={{ ...draggableProvided.draggableProps.style }}
+                            {...draggableProvided.draggableProps}
+                            {...draggableProvided.dragHandleProps}
+                          >
+                            <Accordion expanded={expanded === category.name} onChange={handleChangePanel(category.name)} style={{ marginBottom: "15px" }} key={category.id}>
+                              <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1bh-content" id="panel1bh-header">
+                                <Typography sx={{ flexShrink: 0 }}>{category.name}</Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>{tableContent(category)}</AccordionDetails>
+                            </Accordion>
+                          </div>
+                        );
+                      }}
+                    </Draggable>
+                  ))}
+                  {droppableProvided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div> : <TableContainer component={Paper} className="category-container">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell className="header-title">
+                  <TableSortLabel
+                    active={defaultSort === "name"}
+                    direction={orderDirection}
+                    onClick={requestSort("name")}>Name</TableSortLabel></TableCell>
                 <TableCell>Image</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
@@ -171,24 +266,7 @@ const CategoryListPage = () => {
                               {...draggableProvided.dragHandleProps}
                               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                              {windowWidth <= 1024 ?
-                                <>
-                                  <Accordion expanded={expanded === category.name} onChange={handleChangePanel(category.name)} sx={{ marginBottom: 2 }} key={category.id}>
-                                    <AccordionSummary
-                                      expandIcon={<ExpandMore />}
-                                      aria-controls="panel1bh-content"
-                                      id="panel1bh-header"
-                                    >
-                                      <Typography sx={{ flexShrink: 0 }}>
-                                        {category.name}
-                                      </Typography>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                      {tableContent(category)}
-                                    </AccordionDetails>
-                                  </Accordion>
-                                </>
-                                : tableContent(category)}
+                              {tableContent(category)}
                             </TableRow>
                           );
                         }}
@@ -201,6 +279,7 @@ const CategoryListPage = () => {
             </DragDropContext>
           </Table>
         </TableContainer>
+        }
       </Container>
       {visibleConfirmModal && (
         <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>

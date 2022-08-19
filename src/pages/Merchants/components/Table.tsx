@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import {
@@ -13,7 +13,7 @@ import {
   IconButton,
   Box,
   Dialog,
-  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails
+  DialogContent, DialogContentText, DialogActions, Button, Accordion, AccordionSummary, Typography, AccordionDetails, TableSortLabel
 } from "@mui/material";
 import { Delete, Edit, ExpandMore, RemoveRedEye } from "@mui/icons-material";
 import {
@@ -42,6 +42,8 @@ const TableView = () => {
   const [selectedMerchant, setSelectedMerchant] = useState<IMerchant>();
   const [merchantList, setMerchantList] = useState<any>();
   const [windowWidth, setWindowWidth] = useState<any>();
+  const [orderDirection, setorderDirection] = useState<any>("asc")
+  const [defaultSort, setDefaultSort] = useState<any>("name");
 
   const merchants = useAppSelector((state) => state.merchants.list);
   const categories = useAppSelector((state) => state.categories.list);
@@ -76,6 +78,62 @@ const TableView = () => {
     setMerchantList(merchants);
   }, [merchants])
 
+
+  const sortData = (sortBy: any, sortOrder: any) => {
+    var itemsToSort = [...merchants];
+    var sortedItems = [];
+    var compareFn;
+    switch (sortBy) {
+      case "name":
+        compareFn = (i: any, j: any) => {
+          if (i.name < j.name) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.name > j.name) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      case "category":
+        compareFn = (i: any, j: any) => {
+          if (i.category < j.category) {
+            return sortOrder === "asc" ? -1 : 1;
+          } else {
+            if (i.category > j.category) {
+              return sortOrder === "asc" ? 1 : -1;
+            } else {
+              return 0;
+            }
+          }
+        };
+        break;
+      default:
+        break;
+    }
+    sortedItems = itemsToSort.sort(compareFn);
+    return sortedItems;
+  }
+
+  const requestSort = (pSortBy: any) => {
+    let sortBy = defaultSort;
+    let sortOrder = orderDirection;
+
+    return () => {
+      if (pSortBy === defaultSort) {
+        sortOrder = sortOrder === "asc" ? setorderDirection("desc") : setorderDirection("asc");
+        
+      } else {
+        sortBy = setDefaultSort(pSortBy);
+        sortOrder = "asc";
+      }
+      var sortedItems = sortData(sortBy, orderDirection);
+      setMerchantList(sortedItems)
+    };
+  }
+
   const onDragEnd = (result: any) => {
     if (!result.destination) {
       return;
@@ -102,41 +160,106 @@ const TableView = () => {
   }, [isWindow]);
 
   const tableContent = (merchant: IMerchant) => {
-    return <Fragment>
-      <TableCell>{merchant.name}</TableCell>
-      <TableCell><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></TableCell>
-      <TableCell>{merchant.description}</TableCell>
-      <TableCell>{categories.find((category) => category.id === merchant.category)?.name}</TableCell>
-      <TableCell>{merchant.address}</TableCell>
-      <TableCell>{merchant.phone}</TableCell>
-      <TableCell>{merchant.email}</TableCell>
-      <TableCell><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></TableCell>
-      <TableCell>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="merchant-icon">
-          <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
-            <RemoveRedEye />
-          </IconButton>
-          <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
-            <Edit />
-          </IconButton>
-          <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
-            <Delete />
-          </IconButton>
-        </Box>
-      </TableCell>
-    </Fragment>
+    return <>
+      {windowWidth <= 1024 ?
+        <>
+          <div className="responsive-content">{merchant.name}</div>
+          <div className="responsive-content"><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></div>
+          <div className="responsive-content">{merchant.description}</div>
+          <div className="responsive-content">{categories.find((category) => category.id === merchant.category)?.name}</div>
+          <div className="responsive-content">{merchant.address}</div>
+          <div className="responsive-content">{merchant.phone}</div>
+          <div className="responsive-content">{merchant.email}</div>
+          <div className="responsive-content"><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></div>
+          <div className="responsive-content">
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="merchant-icon">
+              <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
+                <RemoveRedEye />
+              </IconButton>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
+                <Delete />
+              </IconButton>
+            </Box>
+          </div>
+        </> :
+        <>
+          <TableCell>{merchant.name}</TableCell>
+          <TableCell><Avatar aria-label="recipe"><img src={merchant.logo} alt="" /></Avatar></TableCell>
+          <TableCell>{merchant.description}</TableCell>
+          <TableCell>{categories.find((category) => category.id === merchant.category)?.name}</TableCell>
+          <TableCell>{merchant.address}</TableCell>
+          <TableCell>{merchant.phone}</TableCell>
+          <TableCell>{merchant.email}</TableCell>
+          <TableCell><img className="merchant-image" src={merchant.image} alt="StoreImage" height={120} /></TableCell>
+          <TableCell>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} className="merchant-icon">
+              <IconButton aria-label="view" onClick={() => { navigate("/merchants/" + merchant.id) }} size="small">
+                <RemoveRedEye />
+              </IconButton>
+              <IconButton aria-label="edit" color="primary" onClick={() => showEditModal(merchant)} size="small">
+                <Edit />
+              </IconButton>
+              <IconButton aria-label="delete" color="secondary" onClick={() => showDeleteConfirmModal(merchant)} size="small">
+                <Delete />
+              </IconButton>
+            </Box>
+          </TableCell>
+        </>}
+    </>
   }
 
   return (
     <>
-      <TableContainer component={Paper} className="merchant-container" style={{ boxShadow: "none", backgroundColor: windowWidth <= 1024 ? "#eee" : "#fff" }}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table" className="merchant_table">
+      {windowWidth <= 1024 ? <div className="merchant_table">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="droppable" direction="vertical">
+            {(droppableProvided: DroppableProvided) => (
+              <div ref={droppableProvided.innerRef}{...droppableProvided.droppableProps}>
+                {merchantList?.length > 0 && merchantList?.map((merchant: any, index: number) => (
+                  <Draggable key={merchant.id} draggableId={merchant.id} index={index}>
+                    {(draggableProvided: DraggableProvided) => {
+                      return (
+                        <div
+                          ref={draggableProvided.innerRef}
+                          style={{ ...draggableProvided.draggableProps.style }}
+                          {...draggableProvided.draggableProps}
+                          {...draggableProvided.dragHandleProps}
+                        >
+                          <Accordion expanded={expanded === merchant.name} onChange={handleChangePanel(merchant.name)} style={{ marginBottom: "15px" }} key={merchant.id}>
+                            <AccordionSummary expandIcon={<ExpandMore />} aria-controls="panel1bh-content" id="panel1bh-header">
+                              <Typography sx={{ flexShrink: 0 }}>{merchant.name}</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>{tableContent(merchant)}</AccordionDetails>
+                          </Accordion>
+                        </div>
+                      );
+                    }}
+                  </Draggable>
+                ))}
+                {droppableProvided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div> : <TableContainer component={Paper} className="merchant-container">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell className="header-title">
+                <TableSortLabel
+                  active={defaultSort === "name"}
+                  direction={orderDirection}
+                  onClick={requestSort("name")}>Name</TableSortLabel></TableCell>
               <TableCell>Logo</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Category</TableCell>
+              <TableCell className="header-title">
+                <TableSortLabel
+                  active={defaultSort === "category"}
+                  direction={orderDirection}
+                  onClick={requestSort("category")}>Category</TableSortLabel></TableCell>
               <TableCell>Address</TableCell>
               <TableCell style={{ width: "100%" }}>Contact Number</TableCell>
               <TableCell>Contact Mail</TableCell>
@@ -164,25 +287,7 @@ const TableView = () => {
                             {...draggableProvided.dragHandleProps}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            {windowWidth <= 1024 ?
-                              <Fragment>
-                                <Accordion expanded={expanded === merchant.name} onChange={handleChangePanel(merchant.name)} sx={{ marginBottom: 2 }} key={merchant.id}>
-                                  <AccordionSummary
-                                    expandIcon={<ExpandMore />}
-                                    aria-controls="panel1bh-content"
-                                    id="panel1bh-header"
-                                  >
-                                    <Typography sx={{ flexShrink: 0 }}>
-                                      {merchant.name}
-                                    </Typography>
-                                  </AccordionSummary>
-                                  <AccordionDetails>
-                                    {tableContent(merchant)}
-                                  </AccordionDetails>
-                                </Accordion>
-                              </Fragment>
-                              :
-                              tableContent(merchant)}
+                            {tableContent(merchant)}
                           </TableRow>
                         );
                       }}
@@ -195,6 +300,7 @@ const TableView = () => {
           </DragDropContext>
         </Table>
       </TableContainer>
+      }
       {visibleMerchantFormMdoal && (
         <MerchantForm
           open={visibleMerchantFormMdoal}

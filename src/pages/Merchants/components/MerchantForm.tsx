@@ -244,7 +244,7 @@ const MerchantForm = (props: IProps) => {
               <FormControl error={errors.logo !== ""}>
                 <label htmlFor="select-logo" style={{ marginBottom: 10 }}>Logo</label>
                 <input
-                  accept="image/png, image/gif, image/jpeg"
+                  accept="image/png, image/jpg, image/jpeg"
                   type="file"
                   id="select-logo"
                   style={{ display: 'none' }}
