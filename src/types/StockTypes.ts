@@ -1,5 +1,6 @@
 export interface IStock {
   id: string | undefined,
+  order?: string,
   name: string,
   description: string,
   quantity: number,

@@ -10,7 +10,8 @@ import {
   getAllProductGroupsSuccess, getAllProductGroupsFailure,
   createProductGroupSuccess, createProductGroupFailure,
   updateProductGroupSuccess, updateProductGroupFailure,
-  deleteProductGroupSuccess, deleteProductGroupFailure
+  deleteProductGroupSuccess, deleteProductGroupFailure,
+  updateProductOrderSuccess, updateProductOrderFailure
 } from "../redux/reducer/productsReducer";
 
 export const getAllProducts = () => {
@@ -63,6 +64,19 @@ export const updateProduct = (data: any, categoryID: string) => {
         return dispatch(updateProductFailure(error.response.data))
       });
   };  
+};
+
+export const updateProductOrder = (originalOrder: string, destinationOrder: string) => {
+  return async (dispatch: Dispatch) => {
+    return ProductApi
+      .updateProductOrder(originalOrder, destinationOrder)
+      .then(resp => {
+          return dispatch(updateProductOrderSuccess({originalOrder, destinationOrder}))
+        })
+      .catch(error => {        
+        return dispatch(updateProductOrderFailure(error.response.data))
+      });
+  }; 
 };
 
 

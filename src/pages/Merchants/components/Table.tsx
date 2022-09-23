@@ -139,6 +139,8 @@ const TableView = () => {
       return;
     }
 
+    console.log('result', result);
+
     setMerchantList((prev: any) => {
       const merchant = [...prev];
       const d = merchant[result.destination!.index];

@@ -51,6 +51,16 @@ export const productsSlice = createSlice({
       state.list[index] = payload;
     },
     updateProductFailure: (state, action) => {},
+    updateProductOrderRequest: (state, action) => {},
+    updateProductOrderSuccess: (state, action) => {
+      const { payload } = action;
+      console.log('payload', payload);
+      const originalIndex = state.list.findIndex((item) => item.order === payload.originalOrder);
+      state.list[originalIndex].order = payload.destinationOrder;
+      const destinationIndex = state.list.findIndex((item) => item.order === payload.destinationOrder);
+      state.list[destinationIndex].order = payload.originalOrder;
+    },
+    updateProductOrderFailure: (state, action) => {},
     deleteProductRequest: () => {},
     deleteProductSuccess: (state, action) => {
       const { payload } = action;
@@ -83,7 +93,7 @@ export const productsSlice = createSlice({
       const { payload } = action;
       state.productGroups = state.productGroups.filter((item) => item.id !== payload);
     },
-    deleteProductGroupFailure: (state, action) => {},
+    deleteProductGroupFailure: (state, action) => {}    
   },
 })
 
@@ -91,12 +101,13 @@ export const {
   getProductsRequest, getProductsSuccess, getProductsFailure,
   createProductRequest, createProductSuccess, createProductFailure,
   updateProductRequest, updateProductSuccess, updateProductFailure,
+  updateProductOrderRequest, updateProductOrderSuccess, updateProductOrderFailure,
   deleteProductRequest, deleteProductSuccess, deleteProductFailure,
   getProductsByMerchantIDRequest, getProductsByMerchantIDSuccess, getProductsByMerchantIDFailure,
   getAllProductGroupsRequest, getAllProductGroupsSuccess, getAllProductGroupsFailure,
   createProductGroupRequest, createProductGroupSuccess, createProductGroupFailure,
   updateProductGroupRequest, updateProductGroupSuccess, updateProductGroupFailure,
-  deleteProductGroupRequest, deleteProductGroupSuccess, deleteProductGroupFailure
+  deleteProductGroupRequest, deleteProductGroupSuccess, deleteProductGroupFailure  
 
 } = productsSlice.actions;
 

@@ -22,7 +22,7 @@ import StockForm from "./StockForm";
 import { IStock } from "../../../types/StockTypes";
 
 // Import Actions
-import { getAllProducts, deleteProduct } from "../../../actions/productActions";
+import { getAllProducts, deleteProduct, updateProductOrder } from "../../../actions/productActions";
 import { isWindow, resizeFun } from "../../../components/common";
 
 const TableView = () => {
@@ -72,6 +72,8 @@ const TableView = () => {
   useEffect(() => {
     setProductList(products.filter((item) => item.merchantid?.toString() === id));
   }, [id, products])
+
+  // console.log('productList', productList);
 
   const sortData = (sortBy: any, sortOrder: any) => {
     var itemsToSort = [...productList];
@@ -158,6 +160,11 @@ const TableView = () => {
     if (!result.destination) {
       return;
     }
+
+    const originalOrder = productList.find((product: IStock) => product.id === result.draggableId).order;
+    const destinationOrder = productList[result.destination!.index].order;
+
+    dispatch(updateProductOrder(originalOrder, destinationOrder));
 
     setProductList((prev: any) => {
       const product = [...prev];

@@ -50,6 +50,22 @@ class ProductApi extends BaseApi {
     );
   }
 
+  updateProductOrder(originalOrder: string, destinationOrder: string) {
+    return axios.post(
+      this.REACT_APP_SERVER_URL + "products/order",
+      {
+        original_order: originalOrder,
+        destination_order: destinationOrder
+      },
+      {      
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      }
+    );
+  }
+
   deleteProduct(id: string | undefined) {
     return axios.delete(
       this.REACT_APP_SERVER_URL + "products/" + id,
