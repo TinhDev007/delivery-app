@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { Typography, Box, IconButton, Card, Dialog, DialogContent, DialogContentText, DialogActions, Button } from "@mui/material";
+import { Typography, Box, IconButton, Card, Dialog, DialogContent, DialogContentText, DialogActions, Button, Alert } from "@mui/material";
 import AddCircleSharpIcon from '@mui/icons-material/AddCircleSharp';
 import RemoveCircleSharpIcon from '@mui/icons-material/RemoveCircleSharp';
 
@@ -69,6 +69,7 @@ const UserStockItem = (props: IProps) => {
             <Typography variant="body2">
               {currentProduct?.description}
             </Typography>
+            {currentProduct?.quantity === 0 ? <p style={{ margin: '0px', color: "#ddd" }}>(Sold out)</p> : ""}
           </Box>
           <Box sx={{
             width: 130,
@@ -80,7 +81,7 @@ const UserStockItem = (props: IProps) => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box>
             <Typography variant="h6">
-              €{currentProduct?.price}
+              €{currentProduct?.price}              
             </Typography>
           </Box>
           <Box
@@ -102,18 +103,17 @@ const UserStockItem = (props: IProps) => {
             </IconButton>
           </Box>
         </Box>
-      </Box>
-      {currentProduct?.quantity === 0 ? <p style={{ margin: '0px', color: "#00000042" }}>Sold out</p> : ""}
+      </Box>      
       {visibleConfirmModal && (
         <Dialog open={visibleConfirmModal} onClose={() => setVisibleConfirmModal(false)}>
           <DialogContent>
             <DialogContentText>
-              The new cart will be created.
+              <Alert severity="warning">Warning. Your current cart will be lost, and a new cart will be created.</Alert>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setVisibleConfirmModal(false)}>No</Button>
-            <Button onClick={() => { handleAddProductToCart() }}>Yes</Button>
+            <Button onClick={() => setVisibleConfirmModal(false)} variant="outlined">Cancel</Button>
+            <Button onClick={() => { handleAddProductToCart() }} variant="contained">Continue</Button>
           </DialogActions>
         </Dialog>
       )}
