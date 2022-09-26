@@ -48,6 +48,9 @@ export const categoriesSlice = createSlice({
       const { payload } = action;
       state.error = payload;
     },
+    updateCategoryOrderRequest: () => {},
+    updateCategoryOrderSuccess: (state, action) => {},
+    updateCategoryOrderFailure: (state, action) => {},
     deleteCategoryRequest: () => {},
     deleteCategorySuccess: (state, action) => {
       const { payload } = action;
@@ -64,6 +67,7 @@ export const {
   getCategoriesRequest, getCategoriesSuccess, getCategoriesFailure,
   createCategoryRequest, createCategorySuccess, createCategoryFailure,
   updateCategoryRequest, updateCategorySuccess, updateCategoryFailure,
+  updateCategoryOrderRequest, updateCategoryOrderSuccess, updateCategoryOrderFailure,
   deleteCategoryRequest, deleteCategorySuccess, deleteCategoryFailure,
 } = categoriesSlice.actions;
 

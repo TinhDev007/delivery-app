@@ -84,6 +84,9 @@ export const productsSlice = createSlice({
       state.productGroups[index] = payload;
     },
     updateProductGroupFailure: (state, action) => {},
+    updateProductGroupOrderRequest: () => {},
+    updateProductGroupOrderSuccess: (state, action) => {},
+    updateProductGroupOrderFailure: (state, action) => {},
     deleteProductGroupRequest: (state, action) => {},
     deleteProductGroupSuccess: (state, action) => {
       const { payload } = action;
@@ -103,8 +106,8 @@ export const {
   getAllProductGroupsRequest, getAllProductGroupsSuccess, getAllProductGroupsFailure,
   createProductGroupRequest, createProductGroupSuccess, createProductGroupFailure,
   updateProductGroupRequest, updateProductGroupSuccess, updateProductGroupFailure,
-  deleteProductGroupRequest, deleteProductGroupSuccess, deleteProductGroupFailure  
-
+  deleteProductGroupRequest, deleteProductGroupSuccess, deleteProductGroupFailure,
+  updateProductGroupOrderRequest, updateProductGroupOrderSuccess, updateProductGroupOrderFailure
 } = productsSlice.actions;
 
 export default productsSlice.reducer

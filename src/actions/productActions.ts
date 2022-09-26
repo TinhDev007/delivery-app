@@ -11,7 +11,8 @@ import {
   createProductGroupSuccess, createProductGroupFailure,
   updateProductGroupSuccess, updateProductGroupFailure,
   deleteProductGroupSuccess, deleteProductGroupFailure,
-  updateProductOrderSuccess, updateProductOrderFailure
+  updateProductOrderSuccess, updateProductOrderFailure,
+  updateProductGroupOrderSuccess, updateProductGroupOrderFailure
 } from "../redux/reducer/productsReducer";
 
 export const getAllProducts = () => {
@@ -150,10 +151,10 @@ export const updateProductGroupOrder = (originalOrder: string, destinationOrder:
     return ProductApi
       .updateProductGroupOrder(originalOrder, destinationOrder)
       .then(resp => {
-          // return dispatch(deleteProductGroupSuccess(groupID))
+          return dispatch(updateProductGroupOrderSuccess({originalOrder, destinationOrder}))
         })
       .catch(error => {        
-        // return dispatch(deleteProductGroupFailure(error.response.data))
+        return dispatch(updateProductGroupOrderFailure(error.response.data))
       });
   };
 }

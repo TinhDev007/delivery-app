@@ -67,10 +67,10 @@ export const updateMerchantOrder = (originalOrder: string, destinationOrder: str
     return MerchantApi
       .updateMerchantOrder(originalOrder, destinationOrder)
       .then(resp => {
-          // return dispatch(updateMerchantOrderSuccess({originalOrder, destinationOrder}))
+          return dispatch(updateMerchantOrderSuccess({originalOrder, destinationOrder}))
         })
       .catch(error => {        
-        // return dispatch(updateMerchantOrderFailure(error.response.data))
+        return dispatch(updateMerchantOrderFailure(error.response.data))
       });
   }; 
 }

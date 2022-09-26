@@ -5,7 +5,8 @@ import {
   getCategoriesSuccess, getCategoriesFailure,
   createCategorySuccess, createCategoryFailure,
   updateCategorySuccess, updateCategoryFailure,
-  deleteCategorySuccess, deleteCategoryFailure
+  deleteCategorySuccess, deleteCategoryFailure,
+  updateCategoryOrderSuccess, updateCategoryOrderFailure
 } from "../redux/reducer/categoriesReducer";
 
 export const getAllCategories = () => {
@@ -52,10 +53,10 @@ export const updateCategoryOrder = (originalOrder: string, destinationOrder: str
     return CategoryApi
       .updateCategoryOrder(originalOrder, destinationOrder)
       .then(resp => {
-          // return dispatch(updateCategorySuccess(resp.data.data))
+          return dispatch(updateCategoryOrderSuccess({originalOrder, destinationOrder}))
         })
       .catch(error => {        
-        // return dispatch(updateCategoryFailure(error.response.data))
+        return dispatch(updateCategoryOrderFailure(error.response.data))
       });
   };
 }
