@@ -139,16 +139,31 @@ const TableView = () => {
     }
 
     const originalOrder = groupList.find((group: IGroup) => group.id === result.draggableId).order;
-    const destinationOrder = groupList[result.destination!.index].order;
+    const destinationOrder = groupList[result.destination!.index].order;    
 
     dispatch(updateProductGroupOrder(originalOrder, destinationOrder));
 
-    setGroupList((prev: any) => {
-      const group = [...prev];
-      const d = group[result.destination!.index];
-      group[result.destination!.index] = group[result.source.index];
-      group[result.source.index] = d;
-      return group;
+    setGroupList((prev: any) => {      
+      const group = [...prev];      
+      const src = {...group[result.source?.index]};
+
+      const srcIndex = result.source?.index
+      const destIndex = result.destination?.index
+
+      const direction = srcIndex - destIndex < 0;
+      const step =  direction ? 1 : -1;
+      return prev?.map((item: any, index: number) => {
+        if(index > Math.min(srcIndex, destIndex) && index < Math.max(srcIndex, destIndex)) {
+          return prev[index + step]
+        }
+        if(index === result.destination?.index) {          
+          return src
+        }
+        if(index === result.source?.index) {          
+          return prev[index + step]
+        }
+        return item
+      });
     });
   }
 

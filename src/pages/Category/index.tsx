@@ -147,11 +147,26 @@ const CategoryListPage = () => {
     dispatch(updateCategoryOrder(originalOrder, destinationOrder));
 
     setCategoryList((prev: any) => {
-      const category = [...prev];
-      const d = category[result.destination!.index];
-      category[result.destination!.index] = category[result.source.index];
-      category[result.source.index] = d;
-      return category;
+      const category = [...prev];      
+      const src = {...category[result.source?.index]};
+
+      const srcIndex = result.source?.index
+      const destIndex = result.destination?.index
+
+      const direction = srcIndex - destIndex < 0;
+      const step =  direction ? 1 : -1;
+      return prev?.map((item: any, index: number) => {
+        if(index > Math.min(srcIndex, destIndex) && index < Math.max(srcIndex, destIndex)) {
+          return prev[index + step]
+        }
+        if(index === result.destination?.index) {          
+          return src
+        }
+        if(index === result.source?.index) {          
+          return prev[index + step]
+        }
+        return item
+      });
     });
   }
 

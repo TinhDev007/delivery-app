@@ -145,11 +145,26 @@ const TableView = () => {
     dispatch(updateMerchantOrder(originalOrder, destinationOrder));
 
     setMerchantList((prev: any) => {
-      const merchant = [...prev];
-      const d = merchant[result.destination!.index];
-      merchant[result.destination!.index] = merchant[result.source.index];
-      merchant[result.source.index] = d;
-      return merchant;
+      const merchant = [...prev];      
+      const src = {...merchant[result.source?.index]};
+
+      const srcIndex = result.source?.index
+      const destIndex = result.destination?.index
+
+      const direction = srcIndex - destIndex < 0;
+      const step =  direction ? 1 : -1;
+      return prev?.map((item: any, index: number) => {
+        if(index > Math.min(srcIndex, destIndex) && index < Math.max(srcIndex, destIndex)) {
+          return prev[index + step]
+        }
+        if(index === result.destination?.index) {          
+          return src
+        }
+        if(index === result.source?.index) {          
+          return prev[index + step]
+        }
+        return item
+      });
     });
   }
 
