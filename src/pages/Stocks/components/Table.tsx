@@ -69,7 +69,7 @@ const TableView = () => {
     dispatch(deleteProduct(selectedStock?.id));
   };
 
-  useEffect(() => {
+  useEffect(() => {    
     setProductList(products.filter((item) => item.merchantid?.toString() === id));
   }, [id, products]);
 
@@ -165,11 +165,26 @@ const TableView = () => {
     dispatch(updateProductOrder(originalOrder, destinationOrder));
 
     setProductList((prev: any) => {
-      const product = [...prev];
-      const d = product[result.destination!.index];
-      product[result.destination!.index] = product[result.source.index];
-      product[result.source.index] = d;
-      return product;
+      const product = [...prev];      
+      const src = {...product[result.source?.index]};
+
+      const srcIndex = result.source?.index
+      const destIndex = result.destination?.index
+
+      const direction = srcIndex - destIndex < 0;
+      const step =  direction ? 1 : -1;
+      return prev?.map((item: any, index: number) => {
+        if(index > Math.min(srcIndex, destIndex) && index < Math.max(srcIndex, destIndex)) {
+          return prev[index + step]
+        }
+        if(index === result.destination?.index) {          
+          return src
+        }
+        if(index === result.source?.index) {          
+          return prev[index + step]
+        }
+        return item
+      });
     });
   }
 

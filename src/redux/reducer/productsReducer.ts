@@ -52,13 +52,7 @@ export const productsSlice = createSlice({
     },
     updateProductFailure: (state, action) => {},
     updateProductOrderRequest: (state, action) => {},
-    updateProductOrderSuccess: (state, action) => {
-      const { payload } = action;
-      const originalIndex = state.list.findIndex((item) => item.order === payload.originalOrder);
-      state.list[originalIndex].order = payload.destinationOrder;
-      const destinationIndex = state.list.findIndex((item) => item.order === payload.destinationOrder);
-      state.list[destinationIndex].order = payload.originalOrder;
-    },
+    updateProductOrderSuccess: (state, action) => {},
     updateProductOrderFailure: (state, action) => {},
     deleteProductRequest: () => {},
     deleteProductSuccess: (state, action) => {
