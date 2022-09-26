@@ -31,7 +31,7 @@ import MerchantForm from "./MerchantForm";
 import { IMerchant } from "../../../types/MerchantTypes";
 
 // Import Actions
-import { deleteMerchant } from "../../../actions/merchantActions";
+import { deleteMerchant, updateMerchantOrder } from "../../../actions/merchantActions";
 import { isWindow, resizeFun } from "../../../components/common";
 
 const TableView = () => {
@@ -77,6 +77,8 @@ const TableView = () => {
   useEffect(() => {
     setMerchantList(merchants);
   }, [merchants])
+
+  console.log('merchants', merchants);
 
 
   const sortData = (sortBy: any, sortOrder: any) => {
@@ -140,6 +142,11 @@ const TableView = () => {
     }
 
     console.log('result', result);
+
+    const originalOrder = merchantList.find((merchant: IMerchant) => merchant.id === result.draggableId).order;
+    const destinationOrder = merchantList[result.destination!.index].order;
+
+    dispatch(updateMerchantOrder(originalOrder, destinationOrder));
 
     setMerchantList((prev: any) => {
       const merchant = [...prev];

@@ -31,7 +31,7 @@ import ProductGroupForm from "./ProductGroupForm";
 import { IGroup } from "../../../types/GroupType";
 
 // Import Actions
-import { getProductGroupsByMerchantId, deleteProductGroup } from "../../../actions/productActions";
+import { getProductGroupsByMerchantId, deleteProductGroup, updateProductGroupOrder } from "../../../actions/productActions";
 import { isWindow, resizeFun } from "../../../components/common";
 
 const TableView = () => {
@@ -77,15 +77,21 @@ const TableView = () => {
     dispatch(deleteProductGroup(selectedGroup?.id));
   };
 
+  // useEffect(() => {
+  //   if (groups && groups.length > 0) {
+  //     let data = [...groups]
+  //     const sortList = data?.sort((a: IGroup, b: IGroup) => {
+  //       return a.name > b.name ? 1 : -1;
+  //     }).sort((a: any, b: any) => {
+  //       return parseInt(a.order) > parseInt(b.order) ? 1 : -1;
+  //     })
+  //     setGroupList(sortList);
+  //   }
+  // }, [groups])
+
   useEffect(() => {
-    if (groups && groups.length > 0) {
-      let data = [...groups]
-      const sortList = data?.sort((a: IGroup, b: IGroup) => {
-        return a.name > b.name ? 1 : -1;
-      })
-      setGroupList(sortList);
-    }
-  }, [groups])
+    setGroupList(groups);
+  }, [groups]);
 
   const sortData = (sortBy: any, sortOrder: any) => {
     var itemsToSort = [...groups];
@@ -131,6 +137,12 @@ const TableView = () => {
     if (!result.destination) {
       return;
     }
+
+    const originalOrder = groupList.find((group: IGroup) => group.id === result.draggableId).order;
+    const destinationOrder = groupList[result.destination!.index].order;
+
+    dispatch(updateProductGroupOrder(originalOrder, destinationOrder));
+
     setGroupList((prev: any) => {
       const group = [...prev];
       const d = group[result.destination!.index];

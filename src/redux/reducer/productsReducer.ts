@@ -54,7 +54,6 @@ export const productsSlice = createSlice({
     updateProductOrderRequest: (state, action) => {},
     updateProductOrderSuccess: (state, action) => {
       const { payload } = action;
-      console.log('payload', payload);
       const originalIndex = state.list.findIndex((item) => item.order === payload.originalOrder);
       state.list[originalIndex].order = payload.destinationOrder;
       const destinationIndex = state.list.findIndex((item) => item.order === payload.destinationOrder);
@@ -70,7 +69,10 @@ export const productsSlice = createSlice({
     getAllProductGroupsRequest: () => {},
     getAllProductGroupsSuccess: (state, action) => {
       const { payload } = action;
-      state.productGroups = payload;
+      const sortList = payload?.sort((a: any, b: any) => {
+        return parseInt(a.order) > parseInt(b.order) ? 1 : -1;
+      }); 
+      state.productGroups = sortList;
     },
     getAllProductGroupsFailure: (state, action) => {
       

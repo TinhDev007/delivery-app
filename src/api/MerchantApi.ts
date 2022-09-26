@@ -50,6 +50,22 @@ class MerchantApi extends BaseApi {
     );
   }
 
+  updateMerchantOrder(originalOrder: string, destinationOrder: string) {
+    return axios.post(
+      this.REACT_APP_SERVER_URL + "merchants/order",
+      {
+        original_order: originalOrder,
+        destination_order: destinationOrder
+      },
+      {      
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      }
+    );
+  }
+
   deleteMerchant(id: string | undefined) {
     return axios.delete(
       this.REACT_APP_SERVER_URL + "merchants/" + id,

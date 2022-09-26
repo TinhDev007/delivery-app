@@ -47,6 +47,20 @@ export const updateCategory = (data: any, categoryID: string) => {
   };  
 };
 
+export const updateCategoryOrder = (originalOrder: string, destinationOrder: string) => {
+  return async (dispatch: Dispatch) => {
+    return CategoryApi
+      .updateCategoryOrder(originalOrder, destinationOrder)
+      .then(resp => {
+          console.log('resp', resp);
+          // return dispatch(updateCategorySuccess(resp.data.data))
+        })
+      .catch(error => {        
+        // return dispatch(updateCategoryFailure(error.response.data))
+      });
+  };
+}
+
 
 export const deleteCategory = (categoryID: string | undefined) => {
   return async (dispatch: Dispatch) => {

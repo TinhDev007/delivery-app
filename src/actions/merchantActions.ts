@@ -6,7 +6,8 @@ import {
   getMerchantByIDSuccess, getMerchantByIDFailure,
   createMerchantSuccess, createMerchantFailure,
   updateMerchantSuccess, updateMerchantFailure,
-  deleteMerchantSuccess, deleteMerchantFailure
+  updateMerchantOrderSuccess, updateMerchantOrderFailure,
+  deleteMerchantSuccess, deleteMerchantFailure  
 } from "../redux/reducer/merchantsReducer";
 
 export const getAllMerchants = () => {
@@ -60,6 +61,20 @@ export const updateMerchant = (data: any, merchantID: string) => {
       });
   };  
 };
+
+export const updateMerchantOrder = (originalOrder: string, destinationOrder: string) => {
+  return async (dispatch: Dispatch) => {
+    return MerchantApi
+      .updateMerchantOrder(originalOrder, destinationOrder)
+      .then(resp => {
+        console.log('resp', resp);
+          // return dispatch(updateMerchantOrderSuccess({originalOrder, destinationOrder}))
+        })
+      .catch(error => {        
+        // return dispatch(updateMerchantOrderFailure(error.response.data))
+      });
+  }; 
+}
 
 
 export const deleteMerchant = (merchantID: string | undefined) => {

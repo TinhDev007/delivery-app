@@ -145,6 +145,20 @@ export const updateProductGroup = (data: any) => {
   };  
 };
 
+export const updateProductGroupOrder = (originalOrder: string, destinationOrder: string) => {
+  return async (dispatch: Dispatch) => {
+    return ProductApi
+      .updateProductGroupOrder(originalOrder, destinationOrder)
+      .then(resp => {
+        console.log('resp', resp);
+          // return dispatch(deleteProductGroupSuccess(groupID))
+        })
+      .catch(error => {        
+        // return dispatch(deleteProductGroupFailure(error.response.data))
+      });
+  };
+}
+
 export const deleteProductGroup = (groupID: string | undefined) => {
   return async (dispatch: Dispatch) => {
     return ProductApi

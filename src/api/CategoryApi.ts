@@ -39,6 +39,22 @@ class CategoryApi extends BaseApi {
     );
   }
 
+  updateCategoryOrder(originalOrder: string, destinationOrder: string) {
+    return axios.post(
+      this.REACT_APP_SERVER_URL + "categories/order",
+      {
+        original_order: originalOrder,
+        destination_order: destinationOrder
+      },
+      {      
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${this.getToken()}`
+        }
+      }
+    );
+  }
+
   deleteCategory(id: string | undefined) {
     return axios.delete(
       this.REACT_APP_SERVER_URL + "categories/" + id,

@@ -32,7 +32,10 @@ export const merchantsSlice = createSlice({
     getMerchantsRequest: () => {},
     getMerchantsSuccess: (state, action) => {
       const { payload } = action;
-      state.list = payload;
+      const sortList = payload?.sort((a: any, b: any) => {
+        return parseInt(a.order) > parseInt(b.order) ? 1 : -1;
+      });
+      state.list = sortList;
     },
     getMerchantsFailure: (state, action) => {
       const { payload } = action;
@@ -68,6 +71,9 @@ export const merchantsSlice = createSlice({
       const { payload } = action;
       state.error = payload;
     },
+    updateMerchantOrderRequest: (state, action) => {},
+    updateMerchantOrderSuccess: (state, action) => {},
+    updateMerchantOrderFailure: (state, action) => {},
     deleteMerchantRequest: (state, action) => {
       
     },
@@ -87,6 +93,7 @@ export const {
   getMerchantByIDRequest, getMerchantByIDSuccess, getMerchantByIDFailure,
   createMerchantRequest, createMerchantSuccess, createMerchantFailure,
   updateMerchantRequest, updateMerchantSuccess, updateMerchantFailure,
+  updateMerchantOrderRequest, updateMerchantOrderSuccess, updateMerchantOrderFailure,
   deleteMerchantRequest, deleteMerchantSuccess, deleteMerchantFailure
 } = merchantsSlice.actions;
 

@@ -33,7 +33,7 @@ import CategoryForm from "./CategoryForm";
 import { ICategory } from "../../types/CategoryTypes";
 
 // Import Actions
-import { getAllCategories, deleteCategory } from "../../actions/categoryActions";
+import { getAllCategories, deleteCategory, updateCategoryOrder } from "../../actions/categoryActions";
 import '../responsiveTable.css';
 import { isWindow, resizeFun } from "../../components/common";
 
@@ -82,15 +82,19 @@ const CategoryListPage = () => {
     setVisibleCategoryForm(false);
   };
 
+  // useEffect(() => {
+  //   if (categories && categories.length > 0) {
+  //     let data = [...categories]
+  //     const sortList = data?.sort((a: ICategory, b: ICategory) => {
+  //       return a.name > b.name ? 1 : -1;
+  //     })
+  //     setCategoryList(sortList);
+  //   }
+  // }, [categories]);
+
   useEffect(() => {
-    if (categories && categories.length > 0) {
-      let data = [...categories]
-      const sortList = data?.sort((a: ICategory, b: ICategory) => {
-        return a.name > b.name ? 1 : -1;
-      })
-      setCategoryList(sortList);
-    }
-  }, [categories])
+    setCategoryList(categories);
+  }, [categories]);
 
   const sortData = (sortBy: any, sortOrder: any) => {
     var itemsToSort = [...categories];
@@ -136,6 +140,11 @@ const CategoryListPage = () => {
     if (!result.destination) {
       return;
     }
+
+    const originalOrder = categoryList.find((category: ICategory) => category.id === result.draggableId).order;
+    const destinationOrder = categoryList[result.destination!.index].order;
+
+    dispatch(updateCategoryOrder(originalOrder, destinationOrder));
 
     setCategoryList((prev: any) => {
       const category = [...prev];

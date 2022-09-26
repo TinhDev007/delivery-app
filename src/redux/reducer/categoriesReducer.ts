@@ -20,7 +20,10 @@ export const categoriesSlice = createSlice({
     getCategoriesRequest: () => {},
     getCategoriesSuccess: (state, action) => {
       const { payload } = action;
-      state.list = payload;
+      const sortList = payload?.sort((a: any, b: any) => {
+        return parseInt(a.order) > parseInt(b.order) ? 1 : -1;
+      });      
+      state.list = sortList;
     },
     getCategoriesFailure: (state, action) => {
       const { payload } = action;
