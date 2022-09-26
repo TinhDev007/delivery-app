@@ -150,7 +150,6 @@ export const updateProductGroupOrder = (originalOrder: string, destinationOrder:
     return ProductApi
       .updateProductGroupOrder(originalOrder, destinationOrder)
       .then(resp => {
-        console.log('resp', resp);
           // return dispatch(deleteProductGroupSuccess(groupID))
         })
       .catch(error => {        

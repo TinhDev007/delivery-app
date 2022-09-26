@@ -71,9 +71,7 @@ const TableView = () => {
 
   useEffect(() => {
     setProductList(products.filter((item) => item.merchantid?.toString() === id));
-  }, [id, products])
-
-  // console.log('productList', productList);
+  }, [id, products]);
 
   const sortData = (sortBy: any, sortOrder: any) => {
     var itemsToSort = [...productList];

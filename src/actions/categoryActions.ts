@@ -52,7 +52,6 @@ export const updateCategoryOrder = (originalOrder: string, destinationOrder: str
     return CategoryApi
       .updateCategoryOrder(originalOrder, destinationOrder)
       .then(resp => {
-          console.log('resp', resp);
           // return dispatch(updateCategorySuccess(resp.data.data))
         })
       .catch(error => {        

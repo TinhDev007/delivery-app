@@ -67,7 +67,6 @@ export const updateMerchantOrder = (originalOrder: string, destinationOrder: str
     return MerchantApi
       .updateMerchantOrder(originalOrder, destinationOrder)
       .then(resp => {
-        console.log('resp', resp);
           // return dispatch(updateMerchantOrderSuccess({originalOrder, destinationOrder}))
         })
       .catch(error => {        

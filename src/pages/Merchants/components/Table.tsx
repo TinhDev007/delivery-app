@@ -76,9 +76,7 @@ const TableView = () => {
 
   useEffect(() => {
     setMerchantList(merchants);
-  }, [merchants])
-
-  console.log('merchants', merchants);
+  }, [merchants]);
 
 
   const sortData = (sortBy: any, sortOrder: any) => {
@@ -140,8 +138,6 @@ const TableView = () => {
     if (!result.destination) {
       return;
     }
-
-    console.log('result', result);
 
     const originalOrder = merchantList.find((merchant: IMerchant) => merchant.id === result.draggableId).order;
     const destinationOrder = merchantList[result.destination!.index].order;
